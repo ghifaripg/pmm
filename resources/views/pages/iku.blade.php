@@ -27,7 +27,6 @@ $departmentName = (string) $department->department_username;
         padding: 8px;
     }
 
-    /* Optional: Responsive tweaks for small screens */
     @media (max-width: 768px) {
         .table-container {
             max-height: 500px;

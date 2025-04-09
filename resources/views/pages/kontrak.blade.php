@@ -129,7 +129,7 @@
                 R (Responsible) : Penanggung Jawab, Pemilik Proses
                 S (Support) : Pendukung
             </h5>
-            <div class="ml-5 mb-3 main-content">
+            <div class="ml-5 mb-6 main-content">
                 <a href="{{ route('check-kontrak', ['year' => $selectedYear]) }}" class="btn btn-primary">
                     <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
