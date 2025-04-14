@@ -22,13 +22,9 @@ $departmentUsername = (string) $department->department_username;
     .table th,
     .table td {
         white-space: normal !important;
-        /* Allow text to wrap */
         overflow-wrap: break-word !important;
-        /* Ensure long words wrap properly */
         word-break: normal !important;
-        /* Prevents breaking inside words */
         max-width: 250px;
-        /* Prevents columns from becoming too wide */
     }
 
     th,
@@ -68,7 +64,8 @@ $departmentUsername = (string) $department->department_username;
                         <div class="col-lg-6 col-7">
                             <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                                 <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                                    <li class="breadcrumb-item"><a href="/dsahboard-admin"><i class="fas fa-home"></i></a></li>
+                                    <li class="breadcrumb-item"><a href="/dsahboard-admin"><i class="fas fa-home"></i></a>
+                                    </li>
                                     <li class="breadcrumb-item active" aria-current="page">Dashboard Admin</li>
                                 </ol>
                             </nav>
@@ -83,22 +80,66 @@ $departmentUsername = (string) $department->department_username;
                 <div class="col-xl-6">
                     <!-- Column Chart -->
                     <div class="card">
+                        <!-- Include Chart.js CDN in your page -->
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
                         <div class="card-header bg-transparent">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <h6 class="text-light text-uppercase ls-1 mb-1">Pilar</h6>
+                                    <h4 class="text-white p-2 mb-4" style="background-color: #0A48B3;">Pilar</h4>
                                 </div>
                             </div>
-                            <div class="d-block mb-3 mb-sm-0">
-                                <div id="column-chart"></div>
+                            <div class="row">
+                                <!-- Column Chart -->
+                                <div class="d-block mt-2 col-md-8">
+                                    <div id="column-chart"></div>
+                                </div>
+
+                                <!-- Doughnut Chart -->
+                                <div class="col-md-4 d-flex flex-column align-items-center">
+                                    <div style="position: relative; width: 200px; height: 200px;">
+                                        <canvas id="doughnutChart"></canvas>
+                                        <!-- Text inside doughnut -->
+                                        <div id="doughnutChartText"
+                                            style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); font-weight: 600; font-size: 14px; text-align: center;">
+                                            75.9<br><small>Gap: 2.12</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- List Section -->
+                                    <div class="mt-3 text-center" style="width: 100%;">
+                                        <h3 class="fw-bold mb-2">Top 3 Gap:</h3>
+                                        <ul class="list-unstyled small mb-0 px-2">
+                                            <li class="mb-1 d-flex justify-content-between">
+                                                <span>Business Innovation Development</span>
+                                                <span class="text-danger fw-bold">-10</span>
+                                            </li>
+                                            <li class="mb-1 d-flex justify-content-between">
+                                                <span>Investment Expansion</span>
+                                                <span class="text-danger fw-bold">-12</span>
+                                            </li>
+                                            <li class="d-flex justify-content-between">
+                                                <span>Talent Development</span>
+                                                <span class="text-danger fw-bold">-9</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                         <div class="card-body">
                             <div class="row">
+                                {{-- Bar Chart 1 --}}
                                 <div class="col-md-6">
+                                    <h4 class="text-white p-2 mb-4" style="background-color: #0A48B3;">Direktorat</h4>
+
                                     <div id="bar-chart"></div>
                                 </div>
+                                {{-- Bar Chart 2 --}}
                                 <div class="col-md-6">
+                                    <h4 class="text-white p-2 mb-4" style="background-color: #0A48B3;">Departemen</h4>
+
                                     <div id="bar-chart-2"></div>
                                 </div>
                             </div>
@@ -106,309 +147,294 @@ $departmentUsername = (string) $department->department_username;
                     </div>
                 </div>
                 <livewire:breakdown-iku-admin :year="$selectedYear" :month="$selectedMonth" />
-
             </div>
         </div>
 
         <script>
+            const ctx = document.getElementById('doughnutChart').getContext('2d');
+            const doughnutChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Total', 'Gap'],
+                    datasets: [{
+                        data: [75, 25],
+                        backgroundColor: ['#0A48B3', '#FF4560'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
             document.addEventListener("DOMContentLoaded", function() {
                 function createChart(selector, options) {
                     var chart = new ApexCharts(document.querySelector(selector), options);
                     chart.render();
                 }
 
-                var columnChartOptions = {
+                const data = [{
+                        x: 'Nilai Ekonomi dan Sosial Untuk Indonesia',
+                        actual: 67,
+                        target: 69
+                    },
+                    {
+                        x: 'Inovasi Model Bisnis',
+                        actual: 71,
+                        target: 81
+                    },
+                    {
+                        x: 'Kepemimpinan Teknologi',
+                        actual: 81,
+                        target: 75
+                    },
+                    {
+                        x: 'Peningkatan Investasi',
+                        actual: 90,
+                        target: 85
+                    },
+                    {
+                        x: 'Pengembangan Talenta',
+                        actual: 85,
+                        target: 73
+                    }
+                ];
+
+                const categories = data.map(d => d.x);
+
+                const actualSeries = data.map(d => d.actual);
+
+                const aboveTargetSeries = data.map(d => {
+                    return d.target > d.actual ? d.target - d.actual : 0;
+                });
+
+                const belowTargetSeries = data.map(d => {
+                    return d.target < d.actual ? d.actual - d.target : 0;
+                });
+
+                const options = {
                     series: [{
-                        name: 'Actual',
-                        data: [{
-                                x: '2011',
-                                y: 1292,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 1400,
-                                    strokeHeight: 5,
-                                    strokeColor: '#775DD0'
-                                }]
-                            },
-                            {
-                                x: '2012',
-                                y: 4432,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 5400,
-                                    strokeHeight: 5,
-                                    strokeColor: '#775DD0'
-                                }]
-                            },
-                            {
-                                x: '2013',
-                                y: 5423,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 5200,
-                                    strokeHeight: 5,
-                                    strokeColor: '#775DD0'
-                                }]
-                            },
-                            {
-                                x: '2014',
-                                y: 6653,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 6500,
-                                    strokeHeight: 5,
-                                    strokeColor: '#775DD0'
-                                }]
-                            },
-                            {
-                                x: '2015',
-                                y: 8133,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 6600,
-                                    strokeHeight: 13,
-                                    strokeWidth: 0,
-                                    strokeLineCap: 'round',
-                                    strokeColor: '#775DD0'
-                                }]
-                            },
-                            {
-                                x: '2016',
-                                y: 7132,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 7500,
-                                    strokeHeight: 5,
-                                    strokeColor: '#775DD0'
-                                }]
-                            },
-                            {
-                                x: '2017',
-                                y: 7332,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 8700,
-                                    strokeHeight: 5,
-                                    strokeColor: '#775DD0'
-                                }]
-                            },
-                            {
-                                x: '2018',
-                                y: 6553,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 7300,
-                                    strokeHeight: 2,
-                                    strokeDashArray: 2,
-                                    strokeColor: '#775DD0'
-                                }]
-                            }
-                        ]
-                    }],
+                            name: 'Actual',
+                            data: actualSeries
+                        },
+                        {
+                            name: 'Above Target',
+                            data: aboveTargetSeries
+                        },
+                        {
+                            name: 'Below Target',
+                            data: belowTargetSeries
+                        }
+                    ],
                     chart: {
-                        height: 350,
-                        type: 'bar'
+                        type: 'bar',
+                        height: 400,
+                        stacked: true
                     },
                     plotOptions: {
                         bar: {
-                            columnWidth: '60%'
+                            columnWidth: '40%'
                         }
                     },
-                    colors: ['#00E396'],
+                    colors: ['#008FFB', '#00E396', '#FF4560'],
+                    xaxis: {
+                        categories: categories,
+                        labels: {
+                            rotate: -40,
+                            trim: false,
+                            style: {
+                                fontSize: '9px'
+                            }
+                        }
+                    },
                     dataLabels: {
                         enabled: false
                     },
+                    tooltip: {
+                        shared: true,
+                        intersect: false
+                    },
                     legend: {
-                        show: true,
-                        showForSingleSeries: true,
-                        customLegendItems: ['Actual', 'Expected'],
-                        markers: {
-                            fillColors: ['#00E396', '#775DD0']
-                        }
+                        position: 'top',
+                        horizontalAlign: 'center'
                     }
                 };
 
-                var barChartOptions = {
+                const barChartData1 = [{
+                        x: '2011',
+                        y: 10,
+                        expected: 15
+                    },
+                    {
+                        x: '2012',
+                        y: 38,
+                        expected: 50
+                    },
+                    {
+                        x: '2013',
+                        y: 49,
+                        expected: 48
+                    },
+                    {
+                        x: '2014',
+                        y: 70,
+                        expected: 65
+                    },
+                    {
+                        x: '2015',
+                        y: 90,
+                        expected: 75
+                    },
+                    {
+                        x: '2016',
+                        y: 78,
+                        expected: 80
+                    }
+                ];
+
+                const categories1 = barChartData1.map(d => d.x);
+                const actualSeries1 = barChartData1.map(d => d.y);
+                const aboveTargetSeries1 = barChartData1.map(d => d.expected > d.y ? d.expected - d.y : 0);
+                const belowTargetSeries1 = barChartData1.map(d => d.expected < d.y ? d.y - d.expected : 0);
+
+                const barChartOptions1 = {
                     series: [{
-                        name: 'Actual',
-                        data: [{
-                                x: '2011',
-                                y: 12,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 14,
-                                    strokeWidth: 2,
-                                    strokeDashArray: 2,
-                                    strokeColor: '#775DD0'
-                                }]
-                            },
-                            {
-                                x: '2012',
-                                y: 44,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 54,
-                                    strokeWidth: 5,
-                                    strokeHeight: 10,
-                                    strokeColor: '#775DD0'
-                                }]
-                            },
-                            {
-                                x: '2013',
-                                y: 54,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 52,
-                                    strokeWidth: 10,
-                                    strokeHeight: 0,
-                                    strokeLineCap: 'round',
-                                    strokeColor: '#775DD0'
-                                }]
-                            },
-                            {
-                                x: '2014',
-                                y: 66,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 61,
-                                    strokeWidth: 10,
-                                    strokeHeight: 0,
-                                    strokeLineCap: 'round',
-                                    strokeColor: '#775DD0'
-                                }]
-                            },
-                            {
-                                x: '2015',
-                                y: 81,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 66,
-                                    strokeWidth: 10,
-                                    strokeHeight: 0,
-                                    strokeLineCap: 'round',
-                                    strokeColor: '#775DD0'
-                                }]
-                            },
-                            {
-                                x: '2016',
-                                y: 67,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 70,
-                                    strokeWidth: 5,
-                                    strokeHeight: 10,
-                                    strokeColor: '#775DD0'
-                                }]
-                            }
-                        ]
-                    }],
+                            name: 'Actual',
+                            data: actualSeries1
+                        },
+                        {
+                            name: 'Above Target',
+                            data: aboveTargetSeries1
+                        },
+                        {
+                            name: 'Below Target',
+                            data: belowTargetSeries1
+                        }
+                    ],
                     chart: {
-                        height: 350,
-                        type: 'bar'
+                        type: 'bar',
+                        height: 400,
+                        stacked: true
                     },
                     plotOptions: {
                         bar: {
-                            horizontal: true
+                            horizontal: true,
+                            barHeight: '60%'
                         }
                     },
-                    colors: ['#00E396'],
+                    colors: ['#008FFB', '#00E396', '#FF4560'],
+                    xaxis: {
+                        categories: categories1,
+                        labels: {
+                            style: {
+                                fontSize: '12px'
+                            }
+                        }
+                    },
                     dataLabels: {
-                        formatter: function(val, opt) {
-                            const goals = opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex].goals;
-                            return goals && goals.length ? `${val} / ${goals[0].value}` : val;
-                        }
+                        enabled: false
+                    },
+                    tooltip: {
+                        shared: true,
+                        intersect: false
                     },
                     legend: {
-                        show: true,
-                        showForSingleSeries: true,
-                        customLegendItems: ['Actual', 'Expected'],
-                        markers: {
-                            fillColors: ['#00E396', '#775DD0']
-                        }
+                        position: 'top',
+                        horizontalAlign: 'center'
                     }
                 };
 
-                var barChartOptions2 = {
+                const barChartData2 = [{
+                        x: '2011',
+                        y: 10,
+                        expected: 15
+                    },
+                    {
+                        x: '2012',
+                        y: 38,
+                        expected: 50
+                    },
+                    {
+                        x: '2013',
+                        y: 49,
+                        expected: 48
+                    },
+                    {
+                        x: '2014',
+                        y: 70,
+                        expected: 65
+                    },
+                    {
+                        x: '2015',
+                        y: 90,
+                        expected: 75
+                    },
+                    {
+                        x: '2016',
+                        y: 78,
+                        expected: 80
+                    }
+                ];
+
+                const categories2 = barChartData2.map(d => d.x);
+                const actualSeries2 = barChartData2.map(d => d.y);
+                const aboveTargetSeries2 = barChartData2.map(d => d.expected > d.y ? d.expected - d.y : 0);
+                const belowTargetSeries2 = barChartData2.map(d => d.expected < d.y ? d.y - d.expected : 0);
+
+                const barChartOptions2 = {
                     series: [{
-                        name: 'Comparison',
-                        data: [{
-                                x: '2011',
-                                y: 10,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 15,
-                                    strokeColor: '#FF4560'
-                                }]
-                            },
-                            {
-                                x: '2012',
-                                y: 38,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 50,
-                                    strokeColor: '#FF4560'
-                                }]
-                            },
-                            {
-                                x: '2013',
-                                y: 49,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 48,
-                                    strokeColor: '#FF4560'
-                                }]
-                            },
-                            {
-                                x: '2014',
-                                y: 70,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 65,
-                                    strokeColor: '#FF4560'
-                                }]
-                            },
-                            {
-                                x: '2015',
-                                y: 90,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 75,
-                                    strokeColor: '#FF4560'
-                                }]
-                            },
-                            {
-                                x: '2016',
-                                y: 78,
-                                goals: [{
-                                    name: 'Expected',
-                                    value: 80,
-                                    strokeColor: '#FF4560'
-                                }]
-                            }
-                        ]
-                    }],
+                            name: 'Actual',
+                            data: actualSeries2
+                        },
+                        {
+                            name: 'Above Target',
+                            data: aboveTargetSeries2
+                        },
+                        {
+                            name: 'Below Target',
+                            data: belowTargetSeries2
+                        }
+                    ],
                     chart: {
-                        height: 350,
-                        type: 'bar'
+                        type: 'bar',
+                        height: 400,
+                        stacked: true
                     },
                     plotOptions: {
                         bar: {
-                            horizontal: true
+                            horizontal: true,
+                            barHeight: '60%'
                         }
                     },
-                    colors: ['#008FFB'],
-                    legend: {
-                        show: true,
-                        showForSingleSeries: true,
-                        customLegendItems: ['Comparison', 'Expected'],
-                        markers: {
-                            fillColors: ['#008FFB', '#FF4560']
+                    colors: ['#008FFB', '#00E396', '#FF4560'],
+                    xaxis: {
+                        categories: categories2,
+                        labels: {
+                            style: {
+                                fontSize: '12px'
+                            }
                         }
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    tooltip: {
+                        shared: true,
+                        intersect: false
+                    },
+                    legend: {
+                        position: 'top',
+                        horizontalAlign: 'center'
                     }
                 };
 
-                createChart("#column-chart", columnChartOptions);
-                createChart("#bar-chart", barChartOptions);
+                createChart("#column-chart", options);
+                createChart("#bar-chart", barChartOptions1);
                 createChart("#bar-chart-2", barChartOptions2);
+
             });
         </script>

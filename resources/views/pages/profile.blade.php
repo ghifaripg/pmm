@@ -125,7 +125,7 @@ if (isset($_GET['year'])) {
                                     <span>My profile</span>
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a href="#!" class="dropdown-item">
+                                <a href="/logout" class="dropdown-item">
                                     <i class="ni ni-user-run"></i>
                                     <span>Logout</span>
                                 </a>
@@ -250,6 +250,7 @@ if (isset($_GET['year'])) {
                     <div class="card mt-3">
                         <div class="card-header border-0">
                             <div class="row align-items-center">
+
                                 <div class="col">
                                     <livewire:progress-evaluation :selectedYear="$selectedYear" />
                                 </div>

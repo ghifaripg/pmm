@@ -4,10 +4,6 @@
             <div class="row align-items-center">
                 <div class="col">
                     <h6 class="text-uppercase text-muted ls-1 mb-1">Breakdown IKU</h6>
-                    <label for="month-year" class="form-label">Pilih Periode:</label>
-                    <input type="month" id="month-year" class="form-control w-auto d-inline"
-                        wire:model.lazy="selectedPeriod">
-                    <br>
                     <label for="department" class="mt-3 form-label">Departemen:</label>
                     <select id="department" class="form-control w-auto d-inline" wire:model="selectedDepartment">
                         <option value="">Semua Departemen</option>
@@ -15,6 +11,10 @@
                             <option value="{{ $department->department_id }}">{{ $department->department_name }}</option>
                         @endforeach
                     </select>
+                    <br>
+                    <label for="month-year" class="mt-4 form-label">Pilih Periode:</label>
+                    <input type="month" id="month-year" class="form-control w-auto d-inline"
+                        wire:model.lazy="selectedPeriod">
                 </div>
             </div>
         </div>
