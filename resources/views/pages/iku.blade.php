@@ -92,8 +92,7 @@ $departmentName = (string) $department->department_username;
 
         <div class="ml-4 main-content row">
             <div class="col-12 mb-4">
-                <h5>Versi IKU</h5>
-                <div class="card border-0 shadow components-section">
+                <div class="card border-0 shadow components-section" style="max-width: 1420px">
                     <!-- Form to Add New Version -->
                     <form method="POST" action="{{ route('iku.addVersion') }}" class="mt-3 ml-3 mr-3"
                         style="max-width: 45%">
@@ -109,7 +108,7 @@ $departmentName = (string) $department->department_username;
         <!-- Pilih Versi IKU -->
         <div class="ml-4 main-content row">
             <div class="col-12 mb-4">
-                <div class="card border-0 shadow components-section">
+                <div class="card border-0 shadow components-section" style="max-width: 1420px">
                     <div class="card-body">
                         <h5>Pilih Versi IKU</h5>
                         <div id="version-radio-list">
@@ -146,22 +145,14 @@ $departmentName = (string) $department->department_username;
             </div>
         </div>
 
-        <div class="main-content" style="padding-left: 20px;">
-            <div style="display: flex; align-items: center; margin-top: 25px; margin-bottom: 25px;">
+        <div class="ml-4 table-responsive" style="overflow-y: hidden; max-width: 1438px">
+            <div style="display: flex; align-items: center; margin-left: 12px; margin-top: 25px; margin-bottom: 25px;">
                 <img src="{{ asset('assets/img/logo-ksp.png') }}" class="img-kiecs" alt="">
-                <h4 style="text-transform: uppercase; margin-left: auto;">form iku <?php echo $departmentName; ?> <?php echo $selectedYear; ?>
-                </h4>
+                <h4 style="text-transform: uppercase; margin-left: 1030px">FORM IKU <?php echo $departmentName; ?>
+                    <?php echo $selectedYear; ?></h4>
             </div>
-
-            <!-- Search Bar -->
-            <div class="mb-3" style="text-align: right; max-width: 100%;">
-                <input type="text" id="searchInput" class="form-control" placeholder="Search...">
-            </div>
-
-            <!-- Table Container -->
-            <div class="table-container">
-                <table class="table table-bordered table-striped w-100" id="ikuTable">
-                    <thead class="text-white" style="background-color: #2e2abd;">
+            <table class="table table-bordered table-striped w-100" id="ikuTable">
+                <thead class="text-white" style="background-color: #2e2abd;">
                         <tr>
                             <th class="text-center" rowspan="2">#</th>
                             <th class="text-center" rowspan="2">Perspektif</th>
@@ -286,7 +277,6 @@ $departmentName = (string) $department->department_username;
                         @endforeach
                     </tbody>
                 </table>
-            </div>
         </div>
 
 

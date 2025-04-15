@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Exports\KontrakManajemenExport;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -11,43 +12,43 @@ use Illuminate\Support\Facades\Auth;
 class KontrakController extends Controller
 {
     public function index(Request $request)
-{
-    if (Auth::id() !== 1) {
-        return redirect('/kontrak')->with('error', 'Akses tidak diizinkan');
+    {
+        if (Auth::id() !== 1) {
+            return redirect('/kontrak')->with('error', 'Akses tidak diizinkan');
+        }
+
+        $selectedYear = $request->query('year', date('Y'));
+        $kontrak_id = 'KM_' . $selectedYear;
+
+        $sasaranStrategis = DB::table('sasaran_strategis')
+            ->where('kontrak_id', $kontrak_id)
+            ->orderBy('id', 'asc')
+            ->get();
+
+        $kpiData = DB::table('form_kontrak_manajemen')
+            ->join('sasaran_strategis', 'form_kontrak_manajemen.sasaran_id', '=', 'sasaran_strategis.id')
+            ->where('sasaran_strategis.kontrak_id', $kontrak_id)
+            ->select('form_kontrak_manajemen.*', 'sasaran_strategis.name as sasaran_name', 'sasaran_strategis.id as sasaran_id')
+            ->orderBy('sasaran_strategis.id', 'asc')
+            ->get();
+
+        $sasaranGrouped = [];
+        $letter = 'A';
+        foreach ($sasaranStrategis as $sasaran) {
+            $sasaranGrouped[$sasaran->id] = [
+                'letter' => $letter,
+                'name' => $sasaran->name,
+                'kpis' => [],
+            ];
+            $letter++;
+        }
+
+        foreach ($kpiData as $kpi) {
+            $sasaranGrouped[$kpi->sasaran_id]['kpis'][] = $kpi;
+        }
+
+        return view('pages.form-kontrak', compact('sasaranGrouped', 'sasaranStrategis', 'selectedYear'));
     }
-
-    $selectedYear = $request->query('year', date('Y'));
-    $kontrak_id = 'KM_' . $selectedYear;
-
-    $sasaranStrategis = DB::table('sasaran_strategis')
-        ->where('kontrak_id', $kontrak_id)
-        ->orderBy('id', 'asc')
-        ->get();
-
-    $kpiData = DB::table('form_kontrak_manajemen')
-        ->join('sasaran_strategis', 'form_kontrak_manajemen.sasaran_id', '=', 'sasaran_strategis.id')
-        ->where('sasaran_strategis.kontrak_id', $kontrak_id)
-        ->select('form_kontrak_manajemen.*', 'sasaran_strategis.name as sasaran_name', 'sasaran_strategis.id as sasaran_id')
-        ->orderBy('sasaran_strategis.id', 'asc')
-        ->get();
-
-    $sasaranGrouped = [];
-    $letter = 'A';
-    foreach ($sasaranStrategis as $sasaran) {
-        $sasaranGrouped[$sasaran->id] = [
-            'letter' => $letter,
-            'name' => $sasaran->name,
-            'kpis' => [],
-        ];
-        $letter++;
-    }
-
-    foreach ($kpiData as $kpi) {
-        $sasaranGrouped[$kpi->sasaran_id]['kpis'][] = $kpi;
-    }
-
-    return view('pages.form-kontrak', compact('sasaranGrouped', 'sasaranStrategis', 'selectedYear'));
-}
 
 
     public function checkOrCreateKontrak(Request $request)
@@ -119,37 +120,37 @@ class KontrakController extends Controller
     }
 
     public function showKontrak(Request $request)
-{
-    $selectedYear = $request->query('year', date('Y'));
-    $kontrak_id = 'KM_' . $selectedYear;
+    {
+        $selectedYear = $request->query('year', date('Y'));
+        $kontrak_id = 'KM_' . $selectedYear;
 
-    $sasaranStrategis = DB::table('sasaran_strategis')
-    ->where('kontrak_id', $kontrak_id)
-    ->get();
+        $sasaranStrategis = DB::table('sasaran_strategis')
+            ->where('kontrak_id', $kontrak_id)
+            ->get();
 
 
-    $kpiData = DB::table('form_kontrak_manajemen')
-        ->join('sasaran_strategis', 'form_kontrak_manajemen.sasaran_id', '=', 'sasaran_strategis.id')
-        ->where('sasaran_strategis.kontrak_id', $kontrak_id)
-        ->select('form_kontrak_manajemen.*', 'sasaran_strategis.name as sasaran_name', 'sasaran_strategis.id as sasaran_id')
-        ->get();
+        $kpiData = DB::table('form_kontrak_manajemen')
+            ->join('sasaran_strategis', 'form_kontrak_manajemen.sasaran_id', '=', 'sasaran_strategis.id')
+            ->where('sasaran_strategis.kontrak_id', $kontrak_id)
+            ->select('form_kontrak_manajemen.*', 'sasaran_strategis.name as sasaran_name', 'sasaran_strategis.id as sasaran_id')
+            ->get();
 
-    $sasaranGrouped = [];
-    $letter = 'A';
-    foreach ($sasaranStrategis as $sasaran) {
-        $sasaranGrouped[$sasaran->id] = [
-            'letter' => $letter,
-            'name' => $sasaran->name,
-            'kpis' => [],
-        ];
-        $letter++;
-    }
+        $sasaranGrouped = [];
+        $letter = 'A';
+        foreach ($sasaranStrategis as $sasaran) {
+            $sasaranGrouped[$sasaran->id] = [
+                'letter' => $letter,
+                'name' => $sasaran->name,
+                'kpis' => [],
+            ];
+            $letter++;
+        }
 
-    foreach ($kpiData as $kpi) {
-        $sasaranGrouped[$kpi->sasaran_id]['kpis'][] = $kpi;
-    }
+        foreach ($kpiData as $kpi) {
+            $sasaranGrouped[$kpi->sasaran_id]['kpis'][] = $kpi;
+        }
 
-    return view('pages.kontrak', compact('sasaranGrouped', 'selectedYear'));
+        return view('pages.kontrak', compact('sasaranGrouped', 'selectedYear'));
     }
 
     public function editKpi($id)
@@ -208,17 +209,17 @@ class KontrakController extends Controller
 
     public function detail($id)
     {
-    $iku = DB::table('form_iku')
-        ->join('sasaran_strategis', 'form_iku.sasaran_id', '=', 'sasaran_strategis.id')
-        ->where('form_iku.id', $id)
-        ->select('form_iku.*', 'sasaran_strategis.name as sasaran_name')
-        ->first();
+        $iku = DB::table('form_iku')
+            ->join('sasaran_strategis', 'form_iku.sasaran_id', '=', 'sasaran_strategis.id')
+            ->where('form_iku.id', $id)
+            ->select('form_iku.*', 'sasaran_strategis.name as sasaran_name')
+            ->first();
 
-    if (!$iku) {
-        return redirect()->route('progres.index')->with('error', 'IKU not found.');
-    }
+        if (!$iku) {
+            return redirect()->route('progres.index')->with('error', 'IKU not found.');
+        }
 
-    return view('pages.iku.detail', compact('iku'));
+        return view('pages.iku.detail', compact('iku'));
     }
 
     public function exportKontrakManajemen(Request $request)
@@ -229,5 +230,133 @@ class KontrakController extends Controller
         return $export->export($request);
     }
 
+    // Penajabaran
+    public function showPenjabaran(Request $request)
+    {
+        $selectedYear = $request->query('year', date('Y'));
+        $kontrak_id = 'KM_' . $selectedYear;
 
+        $sasaranStrategis = DB::table('sasaran_strategis')
+            ->where('kontrak_id', $kontrak_id)
+            ->get();
+
+
+        $kpiData = DB::table('form_kontrak_manajemen')
+            ->join('sasaran_strategis', 'form_kontrak_manajemen.sasaran_id', '=', 'sasaran_strategis.id')
+            ->where('sasaran_strategis.kontrak_id', $kontrak_id)
+            ->select('form_kontrak_manajemen.*', 'sasaran_strategis.name as sasaran_name', 'sasaran_strategis.id as sasaran_id')
+            ->get();
+
+        $sasaranGrouped = [];
+        $letter = 'A';
+        foreach ($sasaranStrategis as $sasaran) {
+            $sasaranGrouped[$sasaran->id] = [
+                'letter' => $letter,
+                'name' => $sasaran->name,
+                'kpis' => [],
+            ];
+            $letter++;
+        }
+
+        foreach ($kpiData as $kpi) {
+            $sasaranGrouped[$kpi->sasaran_id]['kpis'][] = $kpi;
+        }
+
+        return view('pages.penjabaran', compact('sasaranGrouped', 'selectedYear'));
+    }
+
+    public function checkOrCreatePenjabaran(Request $request)
+    {
+        $selectedYear = $request->input('year', date('Y'));
+        $kontrak_id = 'KM_' . $selectedYear;
+
+        $kontrak = DB::table('kontrak_manajemen')->where('kontrak_id', $kontrak_id)->first();
+
+        if (!$kontrak) {
+            DB::table('kontrak_manajemen')->insert([
+                'kontrak_id' => $kontrak_id,
+                'year' => $selectedYear,
+            ]);
+        }
+
+        return redirect()->route('form-penjabaran', ['year' => $selectedYear]);
+    }
+
+    public function showForm(Request $request)
+    {
+        $user = Auth::user();
+        $departmentId = $user->department_id;
+
+        $selectedYear = (int) $request->query('year', date('Y'));
+        $kontrak_id = 'KM_' . $selectedYear;
+
+        // Fetch Sasaran Strategis for selected Kontrak ID
+        $sasaranStrategis = DB::table('sasaran_strategis')
+            ->where('kontrak_id', $kontrak_id)
+            ->get();
+
+        // Get Form Kontrak Manajemen under that Kontrak ID
+        $formKontrak = DB::table('form_kontrak_manajemen')
+            ->where('kontrak_id', $kontrak_id)
+            ->get()
+            ->keyBy('id');
+
+        // Fetch related Penjabaran Strategis data
+        $penjabaran = DB::table('penjabaran_strategis')
+            ->whereIn('form_id', $formKontrak->keys())
+            ->get()
+            ->groupBy('form_id');
+
+        // Combine everything for the view
+        $combinedData = DB::table('form_kontrak_manajemen')
+            ->where('kontrak_id', 'KM_' . $selectedYear)
+            ->get()
+            ->map(function ($form) {
+                return ['form' => $form];
+            });
+
+
+        foreach ($formKontrak as $form) {
+            $combinedData[] = [
+                'form' => $form,
+                'penjabaran' => $penjabaran->get($form->id, collect()),
+            ];
+        }
+
+        return view('pages.form-penjabaran', compact(
+            'selectedYear',
+            'kontrak_id',
+            'sasaranStrategis',
+            'combinedData'
+        ));
+    }
+
+    public function storePenjabaran(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'form_id' => 'required|exists:form_kontrak_manajemen,id',
+            'sasaran' => 'required|string|max:255',
+            'target' => 'nullable|string|max:255',
+            'satuan' => 'nullable|string|max:50',
+            'proses' => 'nullable|string|max:255',
+            'strategis' => 'nullable|string',
+            'pic' => 'nullable|string|max:250',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Insert data into penjabaran_strategis table
+        DB::table('penjabaran_strategis')->insert([
+            'form_id' => $request->input('form_id'),
+            'proses_bisnis' => $request->input('proses'),
+            'strategis' => $request->input('strategis'),
+            'pic' => $request->input('pic'),
+        ]);
+
+        return redirect()->back()->with('success', 'Penjabaran Strategis berhasil disimpan!');
+    }
 }

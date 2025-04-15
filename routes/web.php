@@ -43,6 +43,10 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/delete-kpi/{id}', [KontrakController::class, 'deleteKpi'])->name('delete-kpi');
     Route::delete('/delete-sasaran/{id}', [KontrakController::class, 'deleteSasaran'])->name('delete-sasaran');
     Route::get('/export-kontrak-manajemen', [KontrakController::class, 'exportKontrakManajemen'])->name('export.kontrak');
+    Route::get('/penjabaran', [KontrakController::class, 'showPenjabaran'])->name('show-penjabaran');
+    Route::get('/check-penjabaran', [KontrakController::class, 'checkOrCreatePenjabaran'])->name('check-penjabaran');
+    Route::get('/isi-penjabaran', [KontrakController::class, 'showForm'])->name('form-penjabaran');
+    Route::post('/isi-penjabaran', [KontrakController::class, 'storePenjabaran'])->name('store-penjabaran');
 
     // IKU Page
     Route::get('/iku', [IkuController::class, 'showIku'])->name('iku.show');
@@ -56,6 +60,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/delete-iku/{id}', [IkuController::class, 'deleteIku'])->name('delete-iku');
     Route::get('/iku/{id}/detail', [IkuController::class, 'showDetail'])->name('iku.detail');
     Route::get('/export-iku', [IkuController::class, 'exportIku'])->name('export.iku');
+
 
     // Progress Page
     Route::get('/progres', [ProgresController::class, 'index'])->name('progres.index');

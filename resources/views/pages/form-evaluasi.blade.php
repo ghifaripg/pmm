@@ -191,7 +191,7 @@ if (isset($_GET['year'])) {
             </div>
         </form>
     </div>
-    <div class="ml-6 main-content table-responsive" style="overflow-y: hidden">
+    <div class="ml-6 table-responsive" style="overflow-y: hidden; max-width: 1440px">
         <table class="table table-bordered table-striped w-100" id="ikuTable">
             <thead class="text-white" style="background-color: #2e2abd;">
                 <tr>

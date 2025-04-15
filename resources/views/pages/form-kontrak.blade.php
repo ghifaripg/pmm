@@ -7,11 +7,14 @@ if (isset($_GET['year'])) {
 }
 ?>
 <style>
-    body{
+    body {
         overflow-x: hidden;
     }
-    .table th, .table td {
-        white-space: normal !important; /* Allows text wrapping */
+
+    .table th,
+    .table td {
+        white-space: normal !important;
+        /* Allows text wrapping */
         word-wrap: break-word !important;
         max-width: 100px;
     }
@@ -175,7 +178,9 @@ if (isset($_GET['year'])) {
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-tertiary" type="submit">Submit</button><br>
+                    <div class="mb-4 d-flex justify-content-center">
+                        <button class="btn btn-primary" type="submit" style="width: 320px">Submit</button>
+                    </div>
                 </div>
             </div>
         </form>

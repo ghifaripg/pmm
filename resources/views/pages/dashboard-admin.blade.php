@@ -37,9 +37,7 @@ $departmentUsername = (string) $department->department_username;
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        /* Makes it a circle */
         margin-left: 8px;
-        /* Space between score and circle */
     }
 </style>
 <!-- Favicon -->
@@ -80,7 +78,6 @@ $departmentUsername = (string) $department->department_username;
                 <div class="col-xl-6">
                     <!-- Column Chart -->
                     <div class="card">
-                        <!-- Include Chart.js CDN in your page -->
                         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
                         <div class="card-header bg-transparent">
@@ -130,13 +127,13 @@ $departmentUsername = (string) $department->department_username;
 
                         <div class="card-body">
                             <div class="row">
-                                {{-- Bar Chart 1 --}}
+                                <!-- Bar Chart 1 -->
                                 <div class="col-md-6">
                                     <h4 class="text-white p-2 mb-4" style="background-color: #0A48B3;">Direktorat</h4>
 
                                     <div id="bar-chart"></div>
                                 </div>
-                                {{-- Bar Chart 2 --}}
+                                <!-- Bar Chart 2 -->
                                 <div class="col-md-6">
                                     <h4 class="text-white p-2 mb-4" style="background-color: #0A48B3;">Departemen</h4>
 

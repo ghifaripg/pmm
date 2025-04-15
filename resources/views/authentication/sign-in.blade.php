@@ -42,16 +42,6 @@
                     <div class="row justify-content-center">
                         <div class="col-xl-5 col-lg-6 col-md-2 px-5">
                             <h1 class="text-white">Welcome!</h1>
-                            @if (session('error'))
-                                <div class="alert alert-danger">
-                                    {{ session('error') }}
-                                </div>
-                            @endif
-                            @if (session('success'))
-                                <div class="alert alert-success">
-                                    {{ session('success') }}
-                                </div>
-                            @endif
                         </div>
                     </div>
                 </div>
@@ -91,6 +81,16 @@
                                             class="form-control" id="password" required>
                                     </div>
                                 </div>
+                                @if (session('error'))
+                                    <div class="alert alert-danger">
+                                        {{ session('error') }}
+                                    </div>
+                                @endif
+                                @if (session('success'))
+                                    <div class="alert alert-success">
+                                        {{ session('success') }}
+                                    </div>
+                                @endif
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-primary">Sign in</button>
                                 </div>

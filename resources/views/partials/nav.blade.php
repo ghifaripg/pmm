@@ -1,5 +1,5 @@
 <!-- Sidenav -->
-<nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main">
+<nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main" style="overflow-x: hidden">
     <div class="scrollbar-inner">
         <!-- Brand -->
         <div class="sidenav-header  d-flex  align-items-center">
@@ -49,30 +49,67 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#navbar-examples" data-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="navbar-examples">
+                        <a class="nav-link" href="#kontrakMenu" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="kontrakMenu">
                             <i class="ni ni-ungroup text-orange"></i>
                             <span class="nav-link-text">Kontrak Manajemen</span>
                         </a>
-                        <div class="collapse" id="navbar-examples">
+                        <div class="collapse" id="kontrakMenu">
                             <ul class="nav nav-sm flex-column">
+
+                                <!-- Form Kontrak Manajemen -->
                                 <li class="nav-item">
-                                    <a href="/kontrak" class="nav-link">
-                                        <span class="sidenav-mini-icon"> P </span>
-                                        <span class="sidenav-normal"> Pilih Tahun </span>
+                                    <a class="nav-link" href="#formKontrakSubmenu" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="formKontrakSubmenu">
+                                        <span class="sidenav-mini-icon">FK</span>
+                                        <span class="sidenav-normal">Kontrak Manajemen</span>
                                     </a>
+                                    <div class="collapse" id="formKontrakSubmenu">
+                                        <ul class="nav nav-sm flex-column ms-3">
+                                            <li class="nav-item">
+                                                <a href="/kontrak" class="nav-link">
+                                                    <span class="sidenav-mini-icon">P</span>
+                                                    <span class="sidenav-normal">Pilih Tahun</span>
+                                                </a>
+                                            </li>
+                                            <?php if ($userId == 1): ?>
+                                            <li class="nav-item">
+                                                <a href="/form-kontrak" class="nav-link">
+                                                    <span class="sidenav-mini-icon">IF</span>
+                                                    <span class="sidenav-normal">Isi Form</span>
+                                                </a>
+                                            </li>
+                                            <?php endif ?>
+                                        </ul>
+                                    </div>
                                 </li>
-                                <?php if ($userId == 1): ?>
+
+                                <!-- Penjabaran Strategi Pencapaian -->
                                 <li class="nav-item">
-                                    <a href="/form-kontrak" class="nav-link">
-                                        <span class="sidenav-mini-icon"> FK </span>
-                                        <span class="sidenav-normal"> Form Kontrak </span>
+                                    <a class="nav-link" href="#penjabaranSubmenu" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="penjabaranSubmenu">
+                                        <span class="sidenav-mini-icon">SP</span>
+                                        <span class="sidenav-normal">Penjabaran Strategi</span>
                                     </a>
+                                    <div class="collapse" id="penjabaranSubmenu">
+                                        <ul class="nav nav-sm flex-column ms-3">
+                                            <li class="nav-item">
+                                                <a href="/penjabaran" class="nav-link">
+                                                    <span class="sidenav-mini-icon">PT</span>
+                                                    <span class="sidenav-normal">Pilih Tahun</span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="/isi-penjabaran" class="nav-link">
+                                                    <span class="sidenav-mini-icon">IP</span>
+                                                    <span class="sidenav-normal">Isi Penjabaran</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </li>
-                                <?php endif ?>
+
                             </ul>
                         </div>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="#navbar-tables" data-toggle="collapse" role="button"
                             aria-expanded="false" aria-controls="navbar-tables">

@@ -15,7 +15,7 @@
 </style>
 @extends('layouts.app')
 
-@section('title', 'Kontrak Manajemen')
+@section('title', 'Penjabaran Strategis')
 @section('content')
 
 
@@ -78,28 +78,21 @@
             <div class="ml-4 main-content" style="max-width: 1440px">
                 <div
                     style="display: flex; justify-content: space-between; align-items: center; margin-left: 12px; margin-top: 25px; margin-bottom: 25px;">
-                    <h3>KONTRAK MANAJEMEN TAHUN <?php echo $selectedYear; ?></h3>
+                    <h3>PENJABARAN STRATEGI PENCAPAIAN
+                        KONTRAK MANAJEMEN <?php echo $selectedYear; ?></h3>
                     <img src="{{ asset('assets/img/Picture1.png') }}" class="img-kiec" alt="">
                 </div>
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped w-100" id="ikuTable">
                         <thead class="text-white" style="background-color: #2e2abd;">
                             <tr>
-                                <th class="text-center" rowspan="2">#</th>
+                                <th class="text-center" rowspan="2"></th>
                                 <th class="text-center" rowspan="2">Sasaran Strategis</th>
-                                <th class="text-center" rowspan="2">Key Performance Indicator</th>
                                 <th class="text-center" rowspan="2">Target</th>
                                 <th class="text-center" rowspan="2">Satuan</th>
-                                <th class="text-center" rowspan="2">Milestone</th>
-                                <th class="text-center" rowspan="2">ESG/C</th>
-                                <th class="text-center" rowspan="2">Polaritas</th>
-                                <th class="text-center" rowspan="2">Bobot</th>
-                                <th class="text-center" colspan="3">Matriks Tanggung Jawab</th>
-                            </tr>
-                            <tr>
-                                <th class="text-center">DU</th>
-                                <th class="text-center">DK</th>
-                                <th class="text-center">DO</th>
+                                <th class="text-center" rowspan="2">Proses Bisnis Terkait</th>
+                                <th class="text-center" rowspan="2">Strategic Inisiatif</th>
+                                <th class="text-center" colspan="3">PIC</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -115,17 +108,11 @@
                                             <td class="fw-normal align-middle text-center" rowspan="{{ $rowCount }}">
                                                 {{ $sasaran['name'] }}</td>
                                         @endif
-                                        <td class="fw-normal text-center">{{ $index + 1 }}. {{ $kpi->kpi_name }}
-                                        </td>
                                         <td class="fw-normal text-center">{{ $kpi->target }}</td>
                                         <td class="fw-normal text-center">{{ $kpi->satuan }}</td>
-                                        <td class="fw-normal text-center">{{ $kpi->milestone ?? '-' }}</td>
-                                        <td class="fw-normal text-center">{{ $kpi->esgc }}</td>
-                                        <td class="fw-normal text-center">{{ ucfirst($kpi->polaritas) }}</td>
-                                        <td class="fw-normal text-center">{{ $kpi->bobot }}</td>
-                                        <td class="fw-normal text-center">{{ $kpi->du }}</td>
-                                        <td class="fw-normal text-center">{{ $kpi->dk }}</td>
-                                        <td class="fw-normal text-center">{{ $kpi->do }}</td>
+                                        <td class="fw-normal text-center"></td>
+                                        <td class="fw-normal text-center"></td>
+                                        <td class="fw-normal text-center"></td>
                                     </tr>
                                 @endforeach
                             @endforeach
@@ -133,13 +120,8 @@
                     </table>
                 </div>
             </div>
-            <h5 style="white-space: pre">
-                O (Overall) : Bertanggung Jawab secara keseluruhan
-                R (Responsible) : Penanggung Jawab, Pemilik Proses
-                S (Support) : Pendukung
-            </h5>
-            <div class="ml-5 mb-6 main-content">
-                <a href="{{ route('check-kontrak', ['year' => $selectedYear]) }}" class="btn btn-primary">
+            <div class="ml-5 mb-3 main-content">
+                <a href="{{ route('check-penjabaran', ['year' => $selectedYear]) }}" class="btn btn-primary">
                     <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
