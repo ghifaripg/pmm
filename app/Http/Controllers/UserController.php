@@ -11,7 +11,12 @@ class UserController extends Controller
 {
     public function showAll()
     {
-        if (Auth::id() !== 1) {
+        $isAdmin = DB::table('re_user_department')
+            ->where('user_id', Auth::id())
+            ->where('department_role', 'admin')
+            ->exists();
+
+        if (!$isAdmin) {
             return redirect('/dashboard')->with('error', 'Unauthorized access.');
         }
 
@@ -20,8 +25,9 @@ class UserController extends Controller
             ->select('users.id', 'users.nama', 'users.username', 'department.department_name')
             ->get();
 
-        return view('pages.user', ['users' => $users]);
+        return view('pages.user', ['users' => $users, 'isAdmin' => $isAdmin]);
     }
+
 
     public function delete($id)
     {

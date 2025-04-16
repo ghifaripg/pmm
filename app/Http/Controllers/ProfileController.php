@@ -16,6 +16,11 @@ class ProfileController extends Controller
         return redirect()->route('login')->with('error', 'Please log in first.');
     }
 
+    $isAdmin = DB::table('re_user_department')
+        ->where('user_id', $user->id)
+        ->where('department_role', 'admin')
+        ->exists();
+
     $department = DB::table('department')
         ->where('department_id', $user->department_id)
         ->value('department_name');
@@ -25,8 +30,10 @@ class ProfileController extends Controller
         'username' => $user->username,
         'created_at' => $user->created_at->format('Y-m-d H:i:s'),
         'department' => $department ?? 'No Department',
+        'isAdmin' => $isAdmin,
     ]);
 }
+
 
 public function updateUsername(Request $request)
 {

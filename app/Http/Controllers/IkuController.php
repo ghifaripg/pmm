@@ -9,13 +9,15 @@ use Illuminate\Support\Facades\Auth;
 
 class IkuController extends Controller
 {
-    // Show Iku Page (Choose a year and show table)
-    // Show Iku Page (Choose a year and show table)
     public function showIku(Request $request)
     {
         $nama = Auth::user()->nama;
+        $isAdmin = DB::table('re_user_department')
+            ->where('user_id', Auth::id())
+            ->where('department_role', 'admin')
+            ->exists();
         $selectedYear = $request->query('year', date('Y'));
-        $selectedVersion = $request->query('version', 1); // Default to version 1
+        $selectedVersion = $request->query('version', 1);
         $kontrak_id = 'KM_' . $selectedYear;
         $department_id = Auth::user()->department_id;
 
@@ -83,15 +85,23 @@ class IkuController extends Controller
             }
         }
 
-        return view('pages.iku', compact('nama', 'sasaranStrategis', 'sasaranGrouped', 'ikuPoints', 'selectedYear', 'iku_ikuIdentifier', 'versions', 'selectedVersion'));
+        return view('pages.iku', compact(
+            'nama',
+            'sasaranStrategis',
+            'sasaranGrouped',
+            'ikuPoints',
+            'selectedYear',
+            'iku_ikuIdentifier',
+            'versions',
+            'selectedVersion',
+            'isAdmin'
+        ));
     }
 
-    // Add a new version
     public function addVersion(Request $request)
     {
         $iku_id = $request->input('iku_id');
 
-        // Get the highest version number for the given iku_id
         $highestVersion = DB::table('form_iku')
             ->where('iku_id', $iku_id)
             ->max('version');
@@ -214,12 +224,15 @@ class IkuController extends Controller
         return redirect()->route('form-iku', ['year' => $selectedYear]);
     }
 
-    // Show Form Iku Page and Table For Edit and Delete
     public function index(Request $request)
     {
         $nama = Auth::user()->nama;
+        $isAdmin = DB::table('re_user_department')
+            ->where('user_id', Auth::id())
+            ->where('department_role', 'admin')
+            ->exists();
         $selectedYear = $request->query('year', date('Y'));
-        $selectedVersion = $request->query('version', 1); // Default to version 1
+        $selectedVersion = $request->query('version', 1);
         $kontrak_id = 'KM_' . $selectedYear;
         $department_id = Auth::user()->department_id;
 
@@ -282,7 +295,14 @@ class IkuController extends Controller
             }
         }
 
-        return view('pages.form-iku', compact('nama', 'sasaranStrategis', 'sasaranGrouped', 'ikuPoints', 'selectedYear', 'selectedVersion'));
+        return view('pages.form-iku', compact('nama',
+        'sasaranStrategis',
+        'sasaranGrouped',
+        'ikuPoints',
+        'selectedYear',
+        'selectedVersion',
+        'isAdmin'
+    ));
     }
 
     public function storeIku(Request $request)

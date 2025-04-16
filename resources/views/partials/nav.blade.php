@@ -163,7 +163,7 @@
                         </div>
                     </li>
                     <hr class="my-3">
-                    <?php if ($userId !== 1): ?>
+                    <?php if (!$isAdmin): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/profile">
                             <i class="ni ni-single-02"></i>
@@ -171,7 +171,7 @@
                         </a>
                     </li>
                     <?php endif; ?>
-                    <?php if ($userId == 1): ?>
+                    <?php if ($isAdmin): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="#navbar-admin" data-toggle="collapse" role="button"
                             aria-expanded="false" aria-controls="navbar-admin">

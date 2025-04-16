@@ -17,6 +17,11 @@ class KontrakController extends Controller
             return redirect('/kontrak')->with('error', 'Akses tidak diizinkan');
         }
 
+        $isAdmin = DB::table('re_user_department')
+            ->where('user_id', Auth::id())
+            ->where('department_role', 'admin')
+            ->exists();
+
         $selectedYear = $request->query('year', date('Y'));
         $kontrak_id = 'KM_' . $selectedYear;
 
@@ -47,7 +52,12 @@ class KontrakController extends Controller
             $sasaranGrouped[$kpi->sasaran_id]['kpis'][] = $kpi;
         }
 
-        return view('pages.form-kontrak', compact('sasaranGrouped', 'sasaranStrategis', 'selectedYear'));
+        return view('pages.form-kontrak', compact(
+            'sasaranGrouped',
+            'sasaranStrategis',
+            'selectedYear',
+            'isAdmin'
+        ));
     }
 
 
@@ -122,6 +132,10 @@ class KontrakController extends Controller
     public function showKontrak(Request $request)
     {
         $selectedYear = $request->query('year', date('Y'));
+        $isAdmin = DB::table('re_user_department')
+            ->where('user_id', Auth::id())
+            ->where('department_role', 'admin')
+            ->exists();
         $kontrak_id = 'KM_' . $selectedYear;
 
         $sasaranStrategis = DB::table('sasaran_strategis')
@@ -150,7 +164,11 @@ class KontrakController extends Controller
             $sasaranGrouped[$kpi->sasaran_id]['kpis'][] = $kpi;
         }
 
-        return view('pages.kontrak', compact('sasaranGrouped', 'selectedYear'));
+        return view('pages.kontrak', compact(
+            'sasaranGrouped',
+            'selectedYear',
+            'isAdmin'
+        ));
     }
 
     public function editKpi($id)
@@ -209,6 +227,10 @@ class KontrakController extends Controller
 
     public function detail($id)
     {
+        $isAdmin = DB::table('re_user_department')
+            ->where('user_id', Auth::id())
+            ->where('department_role', 'admin')
+            ->exists();
         $iku = DB::table('form_iku')
             ->join('sasaran_strategis', 'form_iku.sasaran_id', '=', 'sasaran_strategis.id')
             ->where('form_iku.id', $id)
@@ -219,7 +241,7 @@ class KontrakController extends Controller
             return redirect()->route('progres.index')->with('error', 'IKU not found.');
         }
 
-        return view('pages.iku.detail', compact('iku'));
+        return view('pages.iku.detail', compact('iku', 'isAdmin'));
     }
 
     public function exportKontrakManajemen(Request $request)
@@ -232,49 +254,60 @@ class KontrakController extends Controller
 
     // Penajabaran
     public function showPenjabaran(Request $request)
-    {
-        $selectedYear = $request->query('year', date('Y'));
-        $kontrak_id = 'KM_' . $selectedYear;
+{
+    $isAdmin = DB::table('re_user_department')
+        ->where('user_id', Auth::id())
+        ->where('department_role', 'admin')
+        ->exists();
 
-        $penjabaranData = DB::table('penjabaran_strategis as p')
-            ->join('form_kontrak_manajemen as fkm', 'p.form_id', '=', 'fkm.id')
-            ->join('sasaran_strategis as ss', 'fkm.sasaran_id', '=', 'ss.id')
-            ->where('fkm.kontrak_id', $kontrak_id)
-            ->select(
-                'p.id as penjabaran_id',
-                'ss.name as sasaran_name',
-                'fkm.kpi_name',
-                'fkm.target',
-                'fkm.satuan',
-                'p.proses_bisnis',
-                'p.strategis',
-                'p.pic'
-            )
-            ->get();
+    if (!$isAdmin) {
+        return redirect('/dashboard')->with('error', 'Unauthorized access.');
+    }
 
-        $grouped = [];
-        $letters = range('A', 'Z');
-        $counter = 0;
+    $selectedYear = $request->query('year', date('Y'));
+    $kontrak_id = 'KM_' . $selectedYear;
 
-        foreach ($penjabaranData as $item) {
-            $sasaranName = $item->sasaran_name;
-            if (!isset($grouped[$sasaranName])) {
-                $grouped[$sasaranName] = [
-                    'letter' => $letters[$counter] ?? '-',
-                    'name' => $sasaranName,
-                    'kpis' => [],
-                ];
-                $counter++;
-            }
+    $penjabaranData = DB::table('penjabaran_strategis as p')
+        ->join('form_kontrak_manajemen as fkm', 'p.form_id', '=', 'fkm.id')
+        ->join('sasaran_strategis as ss', 'fkm.sasaran_id', '=', 'ss.id')
+        ->where('fkm.kontrak_id', $kontrak_id)
+        ->select(
+            'p.id as penjabaran_id',
+            'ss.name as sasaran_name',
+            'fkm.kpi_name',
+            'fkm.target',
+            'fkm.satuan',
+            'p.proses_bisnis',
+            'p.strategis',
+            'p.pic'
+        )
+        ->get();
 
-            $grouped[$sasaranName]['kpis'][] = $item;
+    $grouped = [];
+    $letters = range('A', 'Z');
+    $counter = 0;
+
+    foreach ($penjabaranData as $item) {
+        $sasaranName = $item->sasaran_name;
+        if (!isset($grouped[$sasaranName])) {
+            $grouped[$sasaranName] = [
+                'letter' => $letters[$counter] ?? '-',
+                'name' => $sasaranName,
+                'kpis' => [],
+            ];
+            $counter++;
         }
 
-        return view('pages.penjabaran', [
-            'selectedYear' => $selectedYear,
-            'sasaranGrouped' => $grouped,
-        ]);
+        $grouped[$sasaranName]['kpis'][] = $item;
     }
+
+    return view('pages.penjabaran', [
+        'selectedYear' => $selectedYear,
+        'sasaranGrouped' => $grouped,
+        'isAdmin' => $isAdmin,
+    ]);
+}
+
 
     public function checkOrCreatePenjabaran(Request $request)
     {
@@ -294,54 +327,59 @@ class KontrakController extends Controller
     }
 
     public function showForm(Request $request)
-{
-    $user = Auth::user();
-    $departmentId = $user->department_id;
-    $selectedYear = (int) $request->query('year', date('Y'));
-    $kontrak_id = 'KM_' . $selectedYear;
+    {
+        $user = Auth::user();
+        $isAdmin = DB::table('re_user_department')
+            ->where('user_id', Auth::id())
+            ->where('department_role', 'admin')
+            ->exists();
+        $departmentId = $user->department_id;
+        $selectedYear = (int) $request->query('year', date('Y'));
+        $kontrak_id = 'KM_' . $selectedYear;
 
-    // Get all sasaran
-    $sasaranMap = DB::table('sasaran_strategis')
-        ->where('kontrak_id', $kontrak_id)
-        ->pluck('name', 'id');
+        // Get all sasaran
+        $sasaranMap = DB::table('sasaran_strategis')
+            ->where('kontrak_id', $kontrak_id)
+            ->pluck('name', 'id');
 
-    // Get form_kontrak with their related sasaran name
-    $formKontrak = DB::table('form_kontrak_manajemen')
-        ->where('kontrak_id', $kontrak_id)
-        ->get()
-        ->map(function ($form) use ($sasaranMap) {
-            $form->sasaran_name = $sasaranMap[$form->sasaran_id] ?? '-';
-            return $form;
-        });
+        // Get form_kontrak with their related sasaran name
+        $formKontrak = DB::table('form_kontrak_manajemen')
+            ->where('kontrak_id', $kontrak_id)
+            ->get()
+            ->map(function ($form) use ($sasaranMap) {
+                $form->sasaran_name = $sasaranMap[$form->sasaran_id] ?? '-';
+                return $form;
+            });
 
-    // Get penjabaran grouped by form_id
-    $penjabaran = DB::table('penjabaran_strategis')
-        ->whereIn('form_id', $formKontrak->pluck('id'))
-        ->get()
-        ->groupBy('form_id');
+        // Get penjabaran grouped by form_id
+        $penjabaran = DB::table('penjabaran_strategis')
+            ->whereIn('form_id', $formKontrak->pluck('id'))
+            ->get()
+            ->groupBy('form_id');
 
-    // Build combinedData with letter grouping
-    $combinedData = [];
-    $letter = 'A';
+        // Build combinedData with letter grouping
+        $combinedData = [];
+        $letter = 'A';
 
-    foreach ($formKontrak as $form) {
-        $penjabaranItems = $penjabaran->get($form->id, collect());
+        foreach ($formKontrak as $form) {
+            $penjabaranItems = $penjabaran->get($form->id, collect());
 
-        $combinedData[] = [
-            'letter' => $letter,
-            'form' => $form,
-            'penjabaran' => $penjabaranItems,
-        ];
+            $combinedData[] = [
+                'letter' => $letter,
+                'form' => $form,
+                'penjabaran' => $penjabaranItems,
+            ];
 
-        $letter++;
+            $letter++;
+        }
+
+        return view('pages.form-penjabaran', compact(
+            'selectedYear',
+            'kontrak_id',
+            'combinedData',
+            'isAdmin'
+        ));
     }
-
-    return view('pages.form-penjabaran', compact(
-        'selectedYear',
-        'kontrak_id',
-        'combinedData'
-    ));
-}
 
 
 

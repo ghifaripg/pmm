@@ -11,8 +11,20 @@ class DashboardController extends Controller
     public function showDashboard(Request $request)
     {
         $nama = Auth::user()->nama;
-        $department_id = Auth::user()->department_id;
         $user_id = Auth::user()->id;
+        $departmentInfo = DB::table('re_user_department as rud')
+            ->join('department as d', 'rud.department_id', '=', 'd.department_id')
+            ->where('rud.user_id', $user_id)
+            ->select('rud.department_id', 'd.department_username')
+            ->first();
+
+        $department_id = $departmentInfo?->department_id ?? null;
+        $departmentName = $departmentInfo?->department_username ?? 'Unknown';
+
+        $isAdmin = DB::table('re_user_department')
+            ->where('user_id', Auth::id())
+            ->where('department_role', 'admin')
+            ->exists();
 
         $monthYear = $request->query('month-year', date('Y-m'));
 
@@ -102,12 +114,6 @@ class DashboardController extends Controller
             $adjSeries[(int)$data->month - 1] = (float)$data->total;
         }
         $adjSeriesJson = json_encode($adjSeries);
-
-        $department = DB::table('department')
-            ->where('department_id', $department_id)
-            ->select('department_username')
-            ->first();
-        $departmentName = (string) $department->department_username;
 
         $totalIkus = DB::table('form_iku')
             ->where('iku_id', 'LIKE', "IKU{$departmentName}_{$selectedYear}%")
@@ -200,15 +206,28 @@ class DashboardController extends Controller
             'totalPages',
             'totalIku',
             'totalEvaluatedIku',
-            'evaluations'
+            'evaluations',
+            'isAdmin'
         ));
     }
 
     public function showAdmin(Request $request)
     {
         $nama = Auth::user()->nama;
-        $department_id = Auth::user()->department_id;
+        $isAdmin = DB::table('re_user_department')
+            ->where('user_id', Auth::id())
+            ->where('department_role', 'admin')
+            ->exists();
         $user_id = Auth::user()->id;
+        $departmentInfo = DB::table('re_user_department as rud')
+            ->join('department as d', 'rud.department_id', '=', 'd.department_id')
+            ->where('rud.user_id', $user_id)
+            ->select('rud.department_id', 'd.department_username')
+            ->first();
+
+        $department_id = $departmentInfo?->department_id ?? null;
+        $departmentName = $departmentInfo?->department_username ?? 'Unknown';
+
 
         $monthYear = $request->query('month-year', date('Y-m'));
 
@@ -257,6 +276,7 @@ class DashboardController extends Controller
             'selectedMonth',
             'selectedMonthName',
             'months',
+            'isAdmin'
         ));
     }
 }

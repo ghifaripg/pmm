@@ -12,6 +12,11 @@ class ProgresController extends Controller
     {
         $user = Auth::user();
 
+        $isAdmin = DB::table('re_user_department')
+            ->where('user_id', Auth::id())
+            ->where('department_role', 'admin')
+            ->exists();
+
         $department = DB::table('department')
             ->where('department_id', $user->department_id)
             ->first();
@@ -41,7 +46,7 @@ class ProgresController extends Controller
 
         $progresData = $progresData->paginate(5);
 
-        return view('pages.progres', compact('progresData'));
+        return view('pages.progres', compact('progresData', 'isAdmin'));
     }
 
 

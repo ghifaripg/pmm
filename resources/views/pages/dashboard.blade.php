@@ -22,13 +22,9 @@ $departmentUsername = (string) $department->department_username;
     .table th,
     .table td {
         white-space: normal !important;
-        /* Allow text to wrap */
         overflow-wrap: break-word !important;
-        /* Ensure long words wrap properly */
         word-break: normal !important;
-        /* Prevents breaking inside words */
         max-width: 250px;
-        /* Prevents columns from becoming too wide */
     }
 
     th,
@@ -41,9 +37,7 @@ $departmentUsername = (string) $department->department_username;
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        /* Makes it a circle */
         margin-left: 8px;
-        /* Space between score and circle */
     }
 </style>
 <!-- Favicon -->
