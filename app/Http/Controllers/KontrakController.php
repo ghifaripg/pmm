@@ -236,33 +236,44 @@ class KontrakController extends Controller
         $selectedYear = $request->query('year', date('Y'));
         $kontrak_id = 'KM_' . $selectedYear;
 
-        $sasaranStrategis = DB::table('sasaran_strategis')
-            ->where('kontrak_id', $kontrak_id)
+        $penjabaranData = DB::table('penjabaran_strategis as p')
+            ->join('form_kontrak_manajemen as fkm', 'p.form_id', '=', 'fkm.id')
+            ->join('sasaran_strategis as ss', 'fkm.sasaran_id', '=', 'ss.id')
+            ->where('fkm.kontrak_id', $kontrak_id)
+            ->select(
+                'p.id as penjabaran_id',
+                'ss.name as sasaran_name',
+                'fkm.kpi_name',
+                'fkm.target',
+                'fkm.satuan',
+                'p.proses_bisnis',
+                'p.strategis',
+                'p.pic'
+            )
             ->get();
 
+        $grouped = [];
+        $letters = range('A', 'Z');
+        $counter = 0;
 
-        $kpiData = DB::table('form_kontrak_manajemen')
-            ->join('sasaran_strategis', 'form_kontrak_manajemen.sasaran_id', '=', 'sasaran_strategis.id')
-            ->where('sasaran_strategis.kontrak_id', $kontrak_id)
-            ->select('form_kontrak_manajemen.*', 'sasaran_strategis.name as sasaran_name', 'sasaran_strategis.id as sasaran_id')
-            ->get();
+        foreach ($penjabaranData as $item) {
+            $sasaranName = $item->sasaran_name;
+            if (!isset($grouped[$sasaranName])) {
+                $grouped[$sasaranName] = [
+                    'letter' => $letters[$counter] ?? '-',
+                    'name' => $sasaranName,
+                    'kpis' => [],
+                ];
+                $counter++;
+            }
 
-        $sasaranGrouped = [];
-        $letter = 'A';
-        foreach ($sasaranStrategis as $sasaran) {
-            $sasaranGrouped[$sasaran->id] = [
-                'letter' => $letter,
-                'name' => $sasaran->name,
-                'kpis' => [],
-            ];
-            $letter++;
+            $grouped[$sasaranName]['kpis'][] = $item;
         }
 
-        foreach ($kpiData as $kpi) {
-            $sasaranGrouped[$kpi->sasaran_id]['kpis'][] = $kpi;
-        }
-
-        return view('pages.penjabaran', compact('sasaranGrouped', 'selectedYear'));
+        return view('pages.penjabaran', [
+            'selectedYear' => $selectedYear,
+            'sasaranGrouped' => $grouped,
+        ]);
     }
 
     public function checkOrCreatePenjabaran(Request $request)
@@ -283,53 +294,56 @@ class KontrakController extends Controller
     }
 
     public function showForm(Request $request)
-    {
-        $user = Auth::user();
-        $departmentId = $user->department_id;
+{
+    $user = Auth::user();
+    $departmentId = $user->department_id;
+    $selectedYear = (int) $request->query('year', date('Y'));
+    $kontrak_id = 'KM_' . $selectedYear;
 
-        $selectedYear = (int) $request->query('year', date('Y'));
-        $kontrak_id = 'KM_' . $selectedYear;
+    // Get all sasaran
+    $sasaranMap = DB::table('sasaran_strategis')
+        ->where('kontrak_id', $kontrak_id)
+        ->pluck('name', 'id');
 
-        // Fetch Sasaran Strategis for selected Kontrak ID
-        $sasaranStrategis = DB::table('sasaran_strategis')
-            ->where('kontrak_id', $kontrak_id)
-            ->get();
+    // Get form_kontrak with their related sasaran name
+    $formKontrak = DB::table('form_kontrak_manajemen')
+        ->where('kontrak_id', $kontrak_id)
+        ->get()
+        ->map(function ($form) use ($sasaranMap) {
+            $form->sasaran_name = $sasaranMap[$form->sasaran_id] ?? '-';
+            return $form;
+        });
 
-        // Get Form Kontrak Manajemen under that Kontrak ID
-        $formKontrak = DB::table('form_kontrak_manajemen')
-            ->where('kontrak_id', $kontrak_id)
-            ->get()
-            ->keyBy('id');
+    // Get penjabaran grouped by form_id
+    $penjabaran = DB::table('penjabaran_strategis')
+        ->whereIn('form_id', $formKontrak->pluck('id'))
+        ->get()
+        ->groupBy('form_id');
 
-        // Fetch related Penjabaran Strategis data
-        $penjabaran = DB::table('penjabaran_strategis')
-            ->whereIn('form_id', $formKontrak->keys())
-            ->get()
-            ->groupBy('form_id');
+    // Build combinedData with letter grouping
+    $combinedData = [];
+    $letter = 'A';
 
-        // Combine everything for the view
-        $combinedData = DB::table('form_kontrak_manajemen')
-            ->where('kontrak_id', 'KM_' . $selectedYear)
-            ->get()
-            ->map(function ($form) {
-                return ['form' => $form];
-            });
+    foreach ($formKontrak as $form) {
+        $penjabaranItems = $penjabaran->get($form->id, collect());
 
+        $combinedData[] = [
+            'letter' => $letter,
+            'form' => $form,
+            'penjabaran' => $penjabaranItems,
+        ];
 
-        foreach ($formKontrak as $form) {
-            $combinedData[] = [
-                'form' => $form,
-                'penjabaran' => $penjabaran->get($form->id, collect()),
-            ];
-        }
-
-        return view('pages.form-penjabaran', compact(
-            'selectedYear',
-            'kontrak_id',
-            'sasaranStrategis',
-            'combinedData'
-        ));
+        $letter++;
     }
+
+    return view('pages.form-penjabaran', compact(
+        'selectedYear',
+        'kontrak_id',
+        'combinedData'
+    ));
+}
+
+
 
     public function storePenjabaran(Request $request)
     {
@@ -358,5 +372,24 @@ class KontrakController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Penjabaran Strategis berhasil disimpan!');
+    }
+
+    public function updatePenjabaran(Request $request)
+    {
+        DB::table('penjabaran_strategis')
+            ->where('id', $request->input('id'))
+            ->update([
+                'proses_bisnis' => $request->input('proses_bisnis'),
+                'strategis'     => $request->input('strategis'),
+                'pic'           => $request->input('pic'),
+            ]);
+
+        return redirect()->back()->with('success', 'Data updated successfully.');
+    }
+
+    public function deletePenjabaran($id)
+    {
+        DB::table('penjabaran_strategis')->where('id', $id)->delete();
+        return redirect()->back()->with('success', 'Data deleted successfully.');
     }
 }

@@ -47,6 +47,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/check-penjabaran', [KontrakController::class, 'checkOrCreatePenjabaran'])->name('check-penjabaran');
     Route::get('/isi-penjabaran', [KontrakController::class, 'showForm'])->name('form-penjabaran');
     Route::post('/isi-penjabaran', [KontrakController::class, 'storePenjabaran'])->name('store-penjabaran');
+    Route::post('/penjabaran/update', [KontrakController::class, 'updatePenjabaran'])->name('update-penjabaran');
+    Route::delete('/penjabaran/delete/{id}', [KontrakController::class, 'deletePenjabaran'])->name('delete-penjabaran');
+
 
     // IKU Page
     Route::get('/iku', [IkuController::class, 'showIku'])->name('iku.show');

@@ -137,7 +137,7 @@ if (isset($_GET['year'])) {
         </nav>
         <!-- Header -->
         <div class="header pb-6 d-flex align-items-center"
-            style="min-height: 500px; background-size: cover; background-position: center top;">
+            style="min-height: 50px; background-size: cover; background-position: center top;">
             <!-- Mask -->
             <span class="mask bg-gradient-default opacity-8"></span>
             <!-- Header container -->

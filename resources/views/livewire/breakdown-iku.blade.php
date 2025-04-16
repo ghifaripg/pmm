@@ -56,7 +56,7 @@
                                 <td class="fw-normal">
                                     {{ number_format($eval->adj, 2) }}
                                     <span class="status-indicator"
-                                        style="background-color: {{ $eval->percent_target < 95 ? 'red' : ($eval->percent_target > 100 ? 'green' : 'gray') }};"></span>
+                                        style="background-color: {{ (float) $eval->percent_target < 95 ? 'red' : ($eval->percent_target > 100 ? 'green' : 'gray') }};"></span>
                                 </td>
                             </tr>
                         @endforeach

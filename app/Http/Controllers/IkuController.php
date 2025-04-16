@@ -106,7 +106,6 @@ class IkuController extends Controller
 
         // Loop through each form_iku record and duplicate it
         foreach ($latestFormIkuData as $formIku) {
-            // Get the associated isi_iku record
             $isiIku = DB::table('isi_iku')
                 ->where('id', $formIku->isi_iku_id)
                 ->first();

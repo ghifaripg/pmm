@@ -64,16 +64,6 @@
             <form action="{{ route('export.kontrak') }}" class="ml-5 main-content" method="GET"
                 style="width: 200px; height: 10px">
                 <input type="hidden" name="year" value="{{ $selectedYear }}">
-                <button type="button" class="btn btn-outline-success" onclick="getNamesAndExport()">
-                    Export to Excel
-                    <svg style="width: 20px; height: 20px" class="icon icon-xxs ms-2" xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z"
-                            clip-rule="evenodd" />
-                    </svg>
-
-                </button>
             </form>
             <div class="ml-4 main-content" style="max-width: 1440px">
                 <div
@@ -88,6 +78,7 @@
                             <tr>
                                 <th class="text-center" rowspan="2"></th>
                                 <th class="text-center" rowspan="2">Sasaran Strategis</th>
+                                <th class="text-center" rowspan="2">Key Performance Indicator</th>
                                 <th class="text-center" rowspan="2">Target</th>
                                 <th class="text-center" rowspan="2">Satuan</th>
                                 <th class="text-center" rowspan="2">Proses Bisnis Terkait</th>
@@ -97,9 +88,7 @@
                         </thead>
                         <tbody>
                             @foreach ($sasaranGrouped as $sasaran)
-                                @php
-                                    $rowCount = count($sasaran['kpis']);
-                                @endphp
+                                @php $rowCount = count($sasaran['kpis']); @endphp
                                 @foreach ($sasaran['kpis'] as $index => $kpi)
                                     <tr>
                                         @if ($index == 0)
@@ -108,11 +97,12 @@
                                             <td class="fw-normal align-middle text-center" rowspan="{{ $rowCount }}">
                                                 {{ $sasaran['name'] }}</td>
                                         @endif
+                                        <td class="fw-normal text-center">{{ $kpi->kpi_name }}</td>
                                         <td class="fw-normal text-center">{{ $kpi->target }}</td>
                                         <td class="fw-normal text-center">{{ $kpi->satuan }}</td>
-                                        <td class="fw-normal text-center"></td>
-                                        <td class="fw-normal text-center"></td>
-                                        <td class="fw-normal text-center"></td>
+                                        <td class="fw-normal text-center">{{ $kpi->proses_bisnis }}</td>
+                                        <td class="fw-normal text-center">{{ $kpi->strategis }}</td>
+                                        <td class="fw-normal text-center">{{ $kpi->pic }}</td>
                                     </tr>
                                 @endforeach
                             @endforeach
@@ -138,36 +128,6 @@
         <!-- Notyf JS -->
         <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 
-        <script>
-            async function getNamesAndExport() {
-                const {
-                    value: formValues
-                } = await Swal.fire({
-                    title: "Masukkan Nama Pimpinan",
-                    html: `
-                <label for="swal-input1">Direktur Utama</label>
-                <input id="swal-input1" class="swal2-input" placeholder="Nama Direktur Utama">
-                <label for="swal-input2">Plt. Direktur Keuangan & SDM</label>
-                <input id="swal-input2" class="swal2-input" placeholder="Nama Plt. Direktur Keuangan & SDM">
-                <label for="swal-input3">Direktur Operasi</label>
-                <input id="swal-input3" class="swal2-input" placeholder="Nama Direktur Operasi">
-            `,
-                    focusConfirm: false,
-                    preConfirm: () => {
-                        return {
-                            direktur_utama: document.getElementById("swal-input1").value,
-                            plt_keuangan_sdm: document.getElementById("swal-input2").value,
-                            direktur_operasi: document.getElementById("swal-input3").value,
-                        };
-                    }
-                });
-
-                if (formValues) {
-                    const queryString = new URLSearchParams(formValues).toString();
-                    window.location.href = "/export-kontrak-manajemen?" + queryString;
-                }
-            }
-        </script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 const notyf = new Notyf({

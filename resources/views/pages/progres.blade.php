@@ -47,7 +47,6 @@
                             <tr>
                                 <th>No.</th>
                                 <th>Nama Form</th>
-                                <th>Revisi</th>
                                 <th>Status</th>
                                 <th>Need Discussion</th>
                                 <th>Meeting Date</th>

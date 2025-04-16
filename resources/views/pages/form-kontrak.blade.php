@@ -229,6 +229,7 @@ if (isset($_GET['year'])) {
                             <td class="fw-normal">{{ $kpi->do }}</td>
                             <td>
                                 <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+                                    <!-- Edit Button -->
                                     <form action="{{ route('edit-kpi', $kpi->id) }}" method="GET" style="margin: 0;">
                                         @csrf
                                         <button type="submit" class="btn btn-pill btn-outline-tertiary"
@@ -237,7 +238,6 @@ if (isset($_GET['year'])) {
                                                 style="width: 30px; height: 30px; object-fit: contain;">
                                         </button>
                                     </form>
-
                                     <!-- Delete Button -->
                                     <form id="delete-form-{{ $kpi->id }}"
                                         action="{{ route('delete-kpi', $kpi->id) }}" method="POST" style="margin: 0;">
