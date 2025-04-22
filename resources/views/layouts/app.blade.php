@@ -44,8 +44,6 @@
 
     @yield('content')
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <!-- Argon Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Core -->
@@ -58,7 +56,8 @@
     <script src="{{ asset('assets/vendor/chart.js/dist/Chart.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/chart.js/dist/Chart.extension.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <!-- Chart JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Argon JS -->
     <script src="{{ asset('assets/js/dashboard.js?v=1.2.0') }}"></script>
     <!-- ApexCharts -->

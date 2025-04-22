@@ -99,7 +99,7 @@ $departmentUsername = (string) $department->department_username;
                                         <!-- Text inside doughnut -->
                                         <div id="doughnutChartText"
                                             style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); font-weight: 600; font-size: 14px; text-align: center;">
-                                            75.9<br><small>Gap: 2.12</small>
+                                            97.15<br><small>Gap: 2.15</small>
                                         </div>
                                     </div>
 
@@ -154,7 +154,7 @@ $departmentUsername = (string) $department->department_username;
                 data: {
                     labels: ['Total', 'Gap'],
                     datasets: [{
-                        data: [75, 25],
+                        data: [97.85, 2.15],
                         backgroundColor: ['#0A48B3', '#FF4560'],
                         borderWidth: 1
                     }]

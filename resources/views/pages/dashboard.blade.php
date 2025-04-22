@@ -91,6 +91,11 @@ $departmentUsername = (string) $department->department_username;
                                 </div>
                             </div>
                         </div>
+                        @php
+                            $adjSeries = json_decode($adjSeriesJson, true);
+                            $currentMonthIndex = (int) now()->format('n') - 1; // 0-based index
+                            $totalSkorBulanIni = $adjSeries[$currentMonthIndex] ?? 0;
+                        @endphp
                         <div class="col-xl-3 col-md-6">
                             <div class="card card-stats">
                                 <!-- Card body -->
@@ -98,7 +103,8 @@ $departmentUsername = (string) $department->department_username;
                                     <div class="row">
                                         <div class="col">
                                             <h5 class="card-title text-uppercase text-muted mb-0">Form Evaluasi</h5>
-                                            <span class="h2 font-weight-bold mb-0">Bulan </span>
+                                            <span class="h2 font-weight-bold mb-0">Bulan
+                                                {{ $months[date('n')] ?? '-' }}</span>
                                         </div>
                                         <div class="col-auto">
                                             <div
@@ -108,7 +114,7 @@ $departmentUsername = (string) $department->department_username;
                                         </div>
                                     </div>
                                     <p class="mt-3 mb-0 text-sm">
-                                        <span class="text-nowrap">Done</span>
+                                        <span class="text-nowrap">{{ $progressThisMonth }}% - {{ $statusThisMonth }}</span>
                                     </p>
                                 </div>
                             </div>
@@ -120,7 +126,8 @@ $departmentUsername = (string) $department->department_username;
                                     <div class="row">
                                         <div class="col">
                                             <h5 class="card-title text-uppercase text-muted mb-0">Total Skor</h5>
-                                            <span class="h2 font-weight-bold mb-0">Bulan Ini</span>
+                                            <span class="h2 font-weight-bold mb-0">Bulan
+                                                {{ $months[date('n')] ?? '-' }}</span>
                                         </div>
                                         <div class="col-auto">
                                             <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">
@@ -129,19 +136,36 @@ $departmentUsername = (string) $department->department_username;
                                         </div>
                                     </div>
                                     <p class="mt-3 mb-0 text-sm">
-                                        <span class="text-nowrap">13.52</span>
+                                        <span class="text-nowrap">{{ number_format($totalSkorBulanIni, 2) }}</span>
                                     </p>
                                 </div>
                             </div>
                         </div>
+                        @php
+                            $adjSeries = json_decode($adjSeriesJson, true);
+                            $currentMonth = (int) now()->format('n') - 1;
+                            $previousMonth = $currentMonth - 1;
+
+                            $currentValue = $adjSeries[$currentMonth] ?? 0;
+                            $previousValue = $previousMonth >= 0 ? $adjSeries[$previousMonth] ?? 0 : 0;
+
+                            $percentageChange =
+                                $previousValue > 0
+                                    ? round((($currentValue - $previousValue) / $previousValue) * 100, 2)
+                                    : 0;
+
+                            $directionIcon = $percentageChange >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+                            $changeClass = $percentageChange >= 0 ? 'text-success' : 'text-danger';
+                        @endphp
+
                         <div class="col-xl-3 col-md-6">
                             <div class="card card-stats">
-                                <!-- Card body -->
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col">
                                             <h5 class="card-title text-uppercase text-muted mb-0">Performance</h5>
-                                            <span class="h2 font-weight-bold mb-0">49,65%</span>
+                                            <span
+                                                class="h2 font-weight-bold mb-0">{{ number_format($currentValue, 2) }}</span>
                                         </div>
                                         <div class="col-auto">
                                             <div class="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
@@ -150,7 +174,9 @@ $departmentUsername = (string) $department->department_username;
                                         </div>
                                     </div>
                                     <p class="mt-3 mb-0 text-sm">
-                                        <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                                        <span class="{{ $changeClass }} mr-2">
+                                            <i class="fa {{ $directionIcon }}"></i> {{ abs($percentageChange) }}%
+                                        </span>
                                         <span class="text-nowrap">Since last month</span>
                                     </p>
                                 </div>
@@ -252,7 +278,7 @@ $departmentUsername = (string) $department->department_username;
                     name: "Skor IKU",
                     data: {!! $adjSeriesJson !!}
                 }],
-                colors: ['#3333cc'], // Dark blue for better contrast
+                colors: ['#3333cc'],
                 xaxis: {
                     categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agust', 'Sept', 'Okt', 'Nov',
                         'Des'

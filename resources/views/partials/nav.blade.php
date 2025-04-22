@@ -4,7 +4,7 @@
         <!-- Brand -->
         <div class="sidenav-header  d-flex  align-items-center">
             <a class="navbar-brand" href="/dashboard ">
-                <img src="../../assets/img/logo-ksp.png" height="40" class="navbar-brand-img" alt="...">
+                <img src="{{ asset('assets/img/logo.webp') }}" height="40" class="navbar-brand-img" alt="...">
             </a>
             <div class=" ml-auto ">
                 <!-- Sidenav toggler -->
@@ -176,10 +176,16 @@
                         <a class="nav-link" href="#navbar-admin" data-toggle="collapse" role="button"
                             aria-expanded="false" aria-controls="navbar-admin">
                             <i class="ni ni-single-02 text-orange"></i>
-                            <span class="nav-link-text">Admin</span>
+                            <span class="nav-link-text">Profile (Admin)</span>
                         </a>
                         <div class="collapse" id="navbar-admin">
                             <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="/profile" class="nav-link">
+                                        <span class="sidenav-mini-icon"> P </span>
+                                        <span class="sidenav-normal"> Profile </span>
+                                    </a>
+                                </li>
                                 <li class="nav-item">
                                     <a href="/register" class="nav-link">
                                         <span class="sidenav-mini-icon"> RU </span>

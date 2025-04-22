@@ -15,15 +15,6 @@ class RegisterController extends Controller
     {
         $userId = Auth::id();
 
-        $isAdmin = DB::table('re_user_department')
-            ->where('user_id', $userId)
-            ->where('role', 'admin')
-            ->exists();
-
-        if (!$isAdmin) {
-            return redirect('/dashboard')->with('error', 'Unauthorized access.');
-        }
-
         $departments = DB::table('department')->get();
 
         return view('authentication.sign-up', compact('departments'));

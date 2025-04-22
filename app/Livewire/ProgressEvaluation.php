@@ -86,7 +86,7 @@ class ProgressEvaluation extends Component
             ->where('is_multi_point', 1)
             ->count();
 
-        $this->totalIku = $totalIkus + $totalIkuPoints - $totalIkuWithPoints;
+        $this->totalIku = $totalIkus + $totalIkuPoints - $totalIkuWithPoints + 1;
 
         // Evaluated IKUs per month
         $evaluatedIkuPerMonth = DB::table('iku_evaluations')

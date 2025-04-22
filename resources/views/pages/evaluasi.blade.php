@@ -59,7 +59,7 @@ $name = Auth::user()->nama;
         <div class="ml-4 table-responsive" style="overflow-y: hidden; max-width: 1450px">
             <div
                 style="display: flex; align-items: center; margin-left: 12px; margin-top: 25px; margin-bottom: 25px;">
-                <img src="{{ asset('assets/img/logo-ksp.png') }}" class="img-kiecs" alt="">
+                <img src="{{ asset('assets/img/logo.webp') }}" class="img-kiecs" alt="">
                 <h4 style="text-transform: uppercase; margin-left: 650px">EVALUASI PENCAPAIAN INDIKATOR KINERJA UTAMA (IKU) s/d BULAN
                     <?php echo $selectedMonthName; ?></h4>
             </div>

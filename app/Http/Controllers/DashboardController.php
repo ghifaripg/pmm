@@ -115,7 +115,9 @@ class DashboardController extends Controller
         }
         $adjSeriesJson = json_encode($adjSeries);
 
-        $totalIkus = DB::table('form_iku')
+        $user = Auth::user();
+
+        $totalIku = DB::table('form_iku')
             ->where('iku_id', 'LIKE', "IKU{$departmentName}_{$selectedYear}%")
             ->count();
 
@@ -130,7 +132,7 @@ class DashboardController extends Controller
             ->where('is_multi_point', 1)
             ->count();
 
-        $totalIku = $totalIkus + $totalIkuPoints - $totalIkuWithPoints;
+        $totalIkuFinal = $totalIku + $totalIkuPoints - $totalIkuWithPoints;
 
         $evaluatedIkuPerMonth = DB::table('iku_evaluations')
             ->join('form_iku', 'iku_evaluations.iku_id', '=', 'form_iku.id')
@@ -140,56 +142,17 @@ class DashboardController extends Controller
             ->pluck('count', 'month')
             ->toArray();
 
-        $monthlyProgress = [];
-        for ($i = 1; $i <= 12; $i++) {
-            $evaluatedCount = isset($evaluatedIkuPerMonth[$i]) ? $evaluatedIkuPerMonth[$i] : 0;
-            $progress = ($totalIku > 0) ? round(($evaluatedCount / $totalIku) * 100, 2) : 0;
-            $monthlyProgress[$i] = $progress;
-        }
+        $selectedMonth = (int) $selectedMonth;
 
-        $totalEvaluatedIku = array_sum($evaluatedIkuPerMonth);
-        $progressPercentage = ($totalIku > 0) ? round(($totalEvaluatedIku / $totalIku) * 100, 2) : 0;
+        $progressThisMonth = isset($evaluatedIkuPerMonth[$selectedMonth]) && $totalIkuFinal > 0
+            ? round(($evaluatedIkuPerMonth[$selectedMonth] / $totalIkuFinal) * 100, 2)
+            : 0;
 
-        $page = $request->query('page', 1);
-        $months = array_slice($monthlyProgress, ($page - 1) * 4, 4, true);
-        $totalPages = ceil(count($monthlyProgress) / 4);
-
-        $user = Auth::user();
-
-        $evaluations = DB::select("
-    SELECT
-        ie.id,
-        ie.iku_id,
-        ie.point_id,
-        ie.polaritas,
-        ie.bobot,
-        ie.satuan,
-        ie.base,
-        ie.target_bulan_ini,
-        ie.target_sdbulan_ini,
-        ie.realisasi_bulan_ini,
-        ie.realisasi_sdbulan_ini,
-        ie.percent_target,
-        ie.percent_year,
-        ie.ttl,
-        ie.adj,
-        ie.penyebab_tidak_tercapai,
-        ie.program_kerja,
-        isi.iku AS iku_name,
-        ip.point_name AS sub_point_name,
-        ss.name AS sasaran_name
-    FROM iku_evaluations ie
-    LEFT JOIN users u ON ie.user_id = u.id
-    LEFT JOIN department d ON u.department_id = d.department_id
-    LEFT JOIN form_iku fi ON ie.iku_id = fi.id
-    LEFT JOIN isi_iku isi ON fi.isi_iku_id = isi.id
-    LEFT JOIN iku_point ip ON ie.point_id = ip.id
-    LEFT JOIN sasaran_strategis ss ON fi.sasaran_id = ss.id
-    WHERE ie.year = ?
-      AND ie.month = ?
-      AND u.department_id = ?
-    ORDER BY fi.id, ie.id ASC
-", [$selectedYear, $selectedMonth, $user->department_id]);
+        $statusThisMonth = match (true) {
+            $progressThisMonth === 0 => 'Incomplete',
+            $progressThisMonth === 100 => 'Complete',
+            default => 'In Progress',
+        };
 
         return view('pages.dashboard', compact(
             'departments',
@@ -200,14 +163,10 @@ class DashboardController extends Controller
             'selectedMonthName',
             'totalAdjPerSasaran',
             'adjSeriesJson',
-            'progressPercentage',
             'months',
-            'page',
-            'totalPages',
-            'totalIku',
-            'totalEvaluatedIku',
-            'evaluations',
-            'isAdmin'
+            'isAdmin',
+            'progressThisMonth',
+            'statusThisMonth',
         ));
     }
 
