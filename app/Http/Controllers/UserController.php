@@ -11,8 +11,10 @@ class UserController extends Controller
 {
     public function showAll()
     {
+        $currentUserId = Auth::id();
+
         $isAdmin = DB::table('re_user_department')
-            ->where('user_id', Auth::id())
+            ->where('user_id', $currentUserId)
             ->where('department_role', 'admin')
             ->exists();
 
@@ -20,14 +22,23 @@ class UserController extends Controller
             return redirect('/dashboard')->with('error', 'Unauthorized access.');
         }
 
-        $users = DB::table('users')
+        // Get the current user's department
+        $currentDepartmentId = DB::table('users')
+            ->where('id', $currentUserId)
+            ->value('department_id');
+
+        $usersQuery = DB::table('users')
             ->leftJoin('department', 'users.department_id', '=', 'department.department_id')
-            ->select('users.id', 'users.nama', 'users.username', 'department.department_name')
-            ->get();
+            ->select('users.id', 'users.nama', 'users.username', 'department.department_name');
+
+        if ($currentUserId != 1) {
+            $usersQuery->where('users.department_id', $currentDepartmentId);
+        }
+
+        $users = $usersQuery->get();
 
         return view('pages.user', ['users' => $users, 'isAdmin' => $isAdmin]);
     }
-
 
     public function delete($id)
     {
@@ -37,33 +48,66 @@ class UserController extends Controller
 
     public function edit($id)
     {
-        if (Auth::id() !== 1) {
+        $currentUserId = Auth::id();
+
+        $isAdmin = DB::table('re_user_department')
+            ->where('user_id', $currentUserId)
+            ->where('department_role', 'admin')
+            ->exists();
+
+        if (!$isAdmin) {
             return redirect('/dashboard')->with('error', 'Unauthorized access.');
         }
 
         $user = DB::table('users')->find($id);
         $departments = DB::table('department')->select('department_id', 'department_name')->get();
 
-        return view('pages.edit-user', ['user' => $user, 'departments' => $departments]);
+        // Get the current role of the user being edited
+        $currentRole = DB::table('re_user_department')
+            ->where('user_id', $id)
+            ->value('department_role');
+
+        $roles = ['Admin', 'User'];
+
+        return view('pages.edit-user', [
+            'user' => $user,
+            'departments' => $departments,
+            'isAdmin' => $isAdmin,
+            'roles' => $roles,
+            'currentRole' => $currentRole
+        ]);
     }
 
     public function update(Request $request, $id)
-    {
-        $data = $request->validate([
-            'username' => 'nullable|string|max:255',
-            'full_name' => 'nullable|string|max:255',
-            'password' => 'nullable|string|min:6',
-            'department_id' => 'required|integer|exists:department,department_id',
+{
+    $validated = $request->validate([
+        'username' => 'nullable|string|max:255',
+        'nama' => 'nullable|string|max:255',
+        'password' => 'nullable|string|min:6',
+        'department_id' => 'required|integer|exists:department,department_id',
+        'department_role' => 'required|in:Admin,User',
+    ]);
+
+    $userData = [
+        'username' => $validated['username'],
+        'nama' => $validated['nama'],
+        'department_id' => $validated['department_id'],
+    ];
+
+    if (!empty($validated['password'])) {
+        $userData['password'] = Hash::make($validated['password']);
+    }
+
+    DB::table('users')->where('id', $id)->update($userData);
+
+    DB::table('re_user_department')
+        ->where('user_id', $id)
+        ->update([
+            'department_id' => $validated['department_id'],
+            'department_role' => $validated['department_role'],
         ]);
 
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
-        } else {
-            unset($data['password']);
-        }
+    return redirect('/users')->with('success', 'User updated successfully');
+}
 
-        DB::table('users')->where('id', $id)->update($data);
-
-        return redirect('/users')->with('success', 'User updated successfully');
-    }
 }

@@ -82,13 +82,21 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-6 mb-3">
+                                <div class="form-group mb-4">
                                     <label for="department_id">Select Department</label>
                                     <select name="department_id" id="department_id" class="form-control">
                                         <option value="">-- Choose Department --</option>
                                         @foreach ($departments as $department)
                                             <option value="{{ $department->department_id }}">{{ $department->department_name }}</option>
                                         @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="form-group mb-4">
+                                    <label for="department_role">Select Role</label>
+                                    <select name="department_role" id="department_role" class="form-control">
+                                        <option value="User">User</option>
+                                        <option value="Admin">Admin</option>
                                     </select>
                                 </div>
 

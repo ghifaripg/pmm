@@ -405,6 +405,11 @@ class IkuController extends Controller
             return back()->with('error', 'Invalid IKU ID format');
         }
 
+        $isAdmin = DB::table('re_user_department')
+            ->where('user_id', Auth::id())
+            ->where('department_role', 'admin')
+            ->exists();
+
         $ikus = DB::table('form_iku')
             ->join('isi_iku', 'form_iku.isi_iku_id', '=', 'isi_iku.id')
             ->join('sasaran_strategis', 'form_iku.sasaran_id', '=', 'sasaran_strategis.id')
@@ -445,7 +450,7 @@ class IkuController extends Controller
             $sasaranGrouped[$sasaranId]->ikus[] = $iku;
         }
 
-        return view('pages.detail', compact('sasaranGrouped', 'selectedYear'));
+        return view('pages.detail', compact('sasaranGrouped', 'selectedYear', 'isAdmin'));
     }
 
     //Edit IKU
@@ -461,6 +466,7 @@ class IkuController extends Controller
             )
             ->where('form_iku.id', $id)
             ->first();
+
 
         if (!$iku) {
             abort(404, 'IKU not found');

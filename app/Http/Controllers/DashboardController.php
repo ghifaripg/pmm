@@ -226,6 +226,50 @@ class DashboardController extends Controller
             $departmentName = 'Semua Unit Kerja';
         }
 
+        $chartData0 = DB::table('sasaran_strategis as ss')
+        ->join('kontrak_manajemen as km', 'ss.kontrak_id', '=', 'km.kontrak_id')
+        ->where('km.year', $selectedYear)
+        ->orderBy('ss.position')
+        ->select(
+            'ss.name as x',
+            DB::raw('RAND() * 10 as actual'),
+            DB::raw('RAND() * 10 as target')
+        )
+        ->get()
+        ->map(function ($item) {
+            // Ensure only two decimals after fetching
+            return [
+                'x' => $item->x,
+                'actual' => round($item->actual, 2),
+                'target' => round($item->target, 2)
+            ];
+        });
+
+    // Compute doughnut chart values
+    $totalActual = round($chartData0->sum('actual'), 2);
+    $gapTo100 = round(100 - $totalActual, 2);
+
+    // Top 3 gap contributors
+    $topGap = $chartData0
+        ->map(function ($item) {
+            $gap = round($item['target'] - $item['actual'], 2);
+            return [
+                'x' => $item['x'],
+                'gap' => $gap
+            ];
+        })
+        ->sortByDesc(function ($item) {
+            return abs($item['gap']);
+        })
+        ->take(3)
+        ->values();
+
+
+        $chartData1 = DB::table('department')
+            ->select('department_username as x')
+            ->where('department_id', '!=', 1)
+            ->get();
+
         $departments = DB::table('department')->select('department_id', 'department_name')->get();
         return view('pages.dashboard-admin', compact(
             'departments',
@@ -235,7 +279,9 @@ class DashboardController extends Controller
             'selectedMonth',
             'selectedMonthName',
             'months',
-            'isAdmin'
+            'isAdmin',
+            'chartData0',
+            'chartData1', 'totalActual', 'gapTo100', 'topGap'
         ));
     }
 }

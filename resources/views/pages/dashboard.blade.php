@@ -93,9 +93,29 @@ $departmentUsername = (string) $department->department_username;
                         </div>
                         @php
                             $adjSeries = json_decode($adjSeriesJson, true);
-                            $currentMonthIndex = (int) now()->format('n') - 1; // 0-based index
+                            $currentMonthIndex = (int) now()->format('n') - 1;
                             $totalSkorBulanIni = $adjSeries[$currentMonthIndex] ?? 0;
+                            $statusColor = match ($statusThisMonth) {
+                                'Complete' => 'text-success',
+                                'In Progress' => 'text-warning',
+                                'Incomplete' => 'text-danger',
+                            };
+                            $adjSeries = json_decode($adjSeriesJson, true);
+                            $currentMonth = (int) now()->format('n') - 1;
+                            $previousMonth = $currentMonth - 1;
+
+                            $currentValue = $adjSeries[$currentMonth] ?? 0;
+                            $previousValue = $previousMonth >= 0 ? $adjSeries[$previousMonth] ?? 0 : 0;
+
+                            $percentageChange =
+                                $previousValue > 0
+                                    ? round((($currentValue - $previousValue) / $previousValue) * 100, 2)
+                                    : 0;
+
+                            $directionIcon = $percentageChange >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+                            $changeClass = $percentageChange >= 0 ? 'text-success' : 'text-danger';
                         @endphp
+
                         <div class="col-xl-3 col-md-6">
                             <div class="card card-stats">
                                 <!-- Card body -->
@@ -114,11 +134,14 @@ $departmentUsername = (string) $department->department_username;
                                         </div>
                                     </div>
                                     <p class="mt-3 mb-0 text-sm">
-                                        <span class="text-nowrap">{{ $progressThisMonth }}% - {{ $statusThisMonth }}</span>
+                                        <span class="{{ $statusColor }} font-weight-bold">
+                                            {{ $progressThisMonth }}% - {{ $statusThisMonth }}
+                                        </span>
                                     </p>
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-xl-3 col-md-6">
                             <div class="card card-stats">
                                 <!-- Card body -->
@@ -141,23 +164,6 @@ $departmentUsername = (string) $department->department_username;
                                 </div>
                             </div>
                         </div>
-                        @php
-                            $adjSeries = json_decode($adjSeriesJson, true);
-                            $currentMonth = (int) now()->format('n') - 1;
-                            $previousMonth = $currentMonth - 1;
-
-                            $currentValue = $adjSeries[$currentMonth] ?? 0;
-                            $previousValue = $previousMonth >= 0 ? $adjSeries[$previousMonth] ?? 0 : 0;
-
-                            $percentageChange =
-                                $previousValue > 0
-                                    ? round((($currentValue - $previousValue) / $previousValue) * 100, 2)
-                                    : 0;
-
-                            $directionIcon = $percentageChange >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
-                            $changeClass = $percentageChange >= 0 ? 'text-success' : 'text-danger';
-                        @endphp
-
                         <div class="col-xl-3 col-md-6">
                             <div class="card card-stats">
                                 <div class="card-body">
@@ -254,10 +260,8 @@ $departmentUsername = (string) $department->department_username;
                         </div>
                     </div>
                 </div>
-
                 <!-- Breakdown IKU -->
                 <livewire:breakdown-iku :year="$selectedYear" :month="$selectedMonth" :department="$selectedDepartment" />
-
             </div>
         </div>
     </div>

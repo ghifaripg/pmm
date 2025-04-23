@@ -36,7 +36,7 @@
                         <div class="col-12 d-flex align-items-center justify-content-center">
                             <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500">
                                 <div class="text-center text-md-center mb-4">
-                                    <h1 class="h3">Edit User</h1>
+                                    <h1 class="h1">Edit User</h1>
                                 </div>
                                 <form method="POST" action="{{ url('/users/update/' . $user->id) }}">
                                     @csrf
@@ -44,7 +44,7 @@
 
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}" />
 
-                                    <!-- User ID (Hidden) -->
+                                    <!-- User ID (Hidde -->
                                     <input type="hidden" name="id" value="{{ $user->id }}">
 
                                     <!-- Name -->
@@ -61,12 +61,6 @@
                                             value="{{ old('nama', $user->nama) }}" required>
                                     </div>
 
-                                    <!-- Password -->
-                                    <div class="form-group mb-4">
-                                        <label for="password">New Password (leave blank to keep current password)</label>
-                                        <input type="password" name="password" class="form-control" id="password">
-                                    </div>
-
                                     <div class="form-group mb-4">
                                         <label for="department_id">Department</label>
                                         <select name="department_id" id="department_id" class="form-control">
@@ -79,6 +73,23 @@
                                         </select>
                                     </div>
 
+                                    <div class="form-group mb-4">
+                                        <label for="department_role">Role</label>
+                                        <select name="department_role" id="department_role" class="form-control">
+                                            @foreach ($roles as $role)
+                                                <option value="{{ $role }}"
+                                                    {{ isset($currentRole) && $currentRole === $role ? 'selected' : '' }}>
+                                                    {{ $role }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <!-- Password -->
+                                    <div class="form-group mb-4">
+                                        <label for="password">New Password (leave blank to keep current password)</label>
+                                        <input type="password" name="password" class="form-control" id="password">
+                                    </div>
 
                                     <!-- Confirm Password -->
                                     <div class="form-group mb-4">
@@ -98,7 +109,7 @@
                                     @endif
 
                                     <div class="d-grid">
-                                        <button type="submit" class="btn btn-gray-800">Save Changes</button>
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
                                     </div>
                                 </form>
                             </div>

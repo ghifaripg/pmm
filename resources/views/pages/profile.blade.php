@@ -146,7 +146,7 @@ if (isset($_GET['year'])) {
                     <div class="col-lg-7 col-md-10">
                         <h1 class="display-2 text-white">Hello <?php echo $username; ?></h1>
                         <p class="text-white mt-0 mb-5">This is your profile page. You can see the progress you've made
-                            with your work and manage your projects or assigned tasks</p>
+                            with your work and manage your projects</p>
                     </div>
                 </div>
             </div>

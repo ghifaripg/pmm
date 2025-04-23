@@ -60,7 +60,7 @@ if (isset($_GET['year'])) {
                                     <td>{{ $user->department_name ?? 'No Department' }}</td>
                                     <td>
                                         <a href="{{ url('/users/edit/' . $user->id) }}"
-                                            class="btn btn-pill btn-outline-tertiary">Edit</a>
+                                            class="btn btn-pill btn-outline-primary">Edit</a>
                                     </td>
                                     <td>
                                         <a href="{{ url('/users/delete/' . $user->id) }}"

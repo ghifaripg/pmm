@@ -79,7 +79,6 @@ $departmentUsername = (string) $department->department_username;
                     <!-- Column Chart -->
                     <div class="card">
                         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
                         <div class="card-header bg-transparent">
                             <div class="row align-items-center">
                                 <div class="col">
@@ -99,7 +98,7 @@ $departmentUsername = (string) $department->department_username;
                                         <!-- Text inside doughnut -->
                                         <div id="doughnutChartText"
                                             style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); font-weight: 600; font-size: 14px; text-align: center;">
-                                            97.15<br><small>Gap: 2.15</small>
+                                            {{ $totalActual }}<br><small>Gap: {{ $gapTo100 }}</small>
                                         </div>
                                     </div>
 
@@ -107,18 +106,19 @@ $departmentUsername = (string) $department->department_username;
                                     <div class="mt-3 text-center" style="width: 100%;">
                                         <h3 class="fw-bold mb-2">Top 3 Gap:</h3>
                                         <ul class="list-unstyled small mb-0 px-2">
-                                            <li class="mb-1 d-flex justify-content-between">
-                                                <span>Business Innovation Development</span>
-                                                <span class="text-danger fw-bold">-10</span>
-                                            </li>
-                                            <li class="mb-1 d-flex justify-content-between">
-                                                <span>Investment Expansion</span>
-                                                <span class="text-danger fw-bold">-12</span>
-                                            </li>
-                                            <li class="d-flex justify-content-between">
-                                                <span>Talent Development</span>
-                                                <span class="text-danger fw-bold">-9</span>
-                                            </li>
+                                            @foreach ($topGap as $gapItem)
+                                                @php
+                                                    $isBelow = $gapItem['gap'] < 0;
+                                                    $gapValue = abs($gapItem['gap']);
+                                                    $sign = $isBelow ? '-' : '+';
+                                                    $color = $isBelow ? 'text-danger' : 'text-success';
+                                                @endphp
+                                                <li class="mb-1 d-flex justify-content-between">
+                                                    <span>{{ $gapItem['x'] }}</span>
+                                                    <span
+                                                        class="{{ $color }} fw-bold">{{ $sign }}{{ $gapValue }}</span>
+                                                </li>
+                                            @endforeach
                                         </ul>
                                     </div>
                                 </div>
@@ -136,7 +136,6 @@ $departmentUsername = (string) $department->department_username;
                                 <!-- Bar Chart 2 -->
                                 <div class="col-md-6">
                                     <h4 class="text-white p-2 mb-4" style="background-color: #0A48B3;">Departemen</h4>
-
                                     <div id="bar-chart-2"></div>
                                 </div>
                             </div>
@@ -148,72 +147,51 @@ $departmentUsername = (string) $department->department_username;
         </div>
 
         <script>
-            const ctx = document.getElementById('doughnutChart').getContext('2d');
-            const doughnutChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Total', 'Gap'],
-                    datasets: [{
-                        data: [97.85, 2.15],
-                        backgroundColor: ['#0A48B3', '#FF4560'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    cutout: '70%',
-                    plugins: {
-                        legend: {
-                            display: false
+            document.addEventListener("DOMContentLoaded", function() {
+                // Doughnut Chart (Chart.js)
+                const ctx = document.getElementById('doughnutChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Total', 'Gap'],
+                        datasets: [{
+                            data: [{{ $totalActual }}, {{ $gapTo100 }}],
+                            backgroundColor: ['#0A48B3', '#FF4560'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
                         }
                     }
-                }
-            });
-            document.addEventListener("DOMContentLoaded", function() {
+                });
+
+                // Helper for rendering ApexCharts
                 function createChart(selector, options) {
                     var chart = new ApexCharts(document.querySelector(selector), options);
                     chart.render();
                 }
 
-                const data = [{
-                        x: 'Nilai Ekonomi dan Sosial Untuk Indonesia',
-                        actual: 67,
-                        target: 69
-                    },
-                    {
-                        x: 'Inovasi Model Bisnis',
-                        actual: 71,
-                        target: 81
-                    },
-                    {
-                        x: 'Kepemimpinan Teknologi',
-                        actual: 81,
-                        target: 75
-                    },
-                    {
-                        x: 'Peningkatan Investasi',
-                        actual: 90,
-                        target: 85
-                    },
-                    {
-                        x: 'Pengembangan Talenta',
-                        actual: 85,
-                        target: 73
-                    }
-                ];
+                // Chart Data from backend
+                const chartData = @json($chartData0);
 
-                const categories = data.map(d => d.x);
-
-                const actualSeries = data.map(d => d.actual);
-
-                const aboveTargetSeries = data.map(d => {
-                    return d.target > d.actual ? d.target - d.actual : 0;
+                const categories = chartData.map(d => d.x);
+                const actualSeries = chartData.map(d => parseFloat(parseFloat(d.actual).toFixed(2)));
+                const aboveTargetSeries = chartData.map(d => {
+                    const gap = d.target > d.actual ? d.target - d.actual : 0;
+                    return parseFloat(gap.toFixed(2));
+                });
+                const belowTargetSeries = chartData.map(d => {
+                    const gap = d.actual > d.target ? d.actual - d.target : 0;
+                    return parseFloat(gap.toFixed(2));
                 });
 
-                const belowTargetSeries = data.map(d => {
-                    return d.target < d.actual ? d.actual - d.target : 0;
-                });
-
-                const options = {
+                // Column Chart (Vertical)
+                const columnChartOptions = {
                     series: [{
                             name: 'Actual',
                             data: actualSeries
@@ -261,6 +239,7 @@ $departmentUsername = (string) $department->department_username;
                     }
                 };
 
+                // Bar Chart 1 (Static Demo Data)
                 const barChartData1 = [{
                         x: '2011',
                         y: 10,
@@ -292,11 +271,10 @@ $departmentUsername = (string) $department->department_username;
                         expected: 80
                     }
                 ];
-
                 const categories1 = barChartData1.map(d => d.x);
                 const actualSeries1 = barChartData1.map(d => d.y);
                 const aboveTargetSeries1 = barChartData1.map(d => d.expected > d.y ? d.expected - d.y : 0);
-                const belowTargetSeries1 = barChartData1.map(d => d.expected < d.y ? d.y - d.expected : 0);
+                const belowTargetSeries1 = barChartData1.map(d => d.y > d.expected ? d.y - d.expected : 0);
 
                 const barChartOptions1 = {
                     series: [{
@@ -345,57 +323,12 @@ $departmentUsername = (string) $department->department_username;
                     }
                 };
 
-                const barChartData2 = [{
-                        x: '2011',
-                        y: 10,
-                        expected: 15
-                    },
-                    {
-                        x: '2012',
-                        y: 38,
-                        expected: 50
-                    },
-                    {
-                        x: '2013',
-                        y: 49,
-                        expected: 48
-                    },
-                    {
-                        x: '2014',
-                        y: 70,
-                        expected: 65
-                    },
-                    {
-                        x: '2015',
-                        y: 90,
-                        expected: 75
-                    },
-                    {
-                        x: '2016',
-                        y: 78,
-                        expected: 80
-                    }
-                ];
-
+                // Bar Chart 2
+                const barChartData2 = @json($chartData1);
                 const categories2 = barChartData2.map(d => d.x);
-                const actualSeries2 = barChartData2.map(d => d.y);
-                const aboveTargetSeries2 = barChartData2.map(d => d.expected > d.y ? d.expected - d.y : 0);
-                const belowTargetSeries2 = barChartData2.map(d => d.expected < d.y ? d.y - d.expected : 0);
 
                 const barChartOptions2 = {
-                    series: [{
-                            name: 'Actual',
-                            data: actualSeries2
-                        },
-                        {
-                            name: 'Above Target',
-                            data: aboveTargetSeries2
-                        },
-                        {
-                            name: 'Below Target',
-                            data: belowTargetSeries2
-                        }
-                    ],
+                    series: [],
                     chart: {
                         type: 'bar',
                         height: 400,
@@ -413,7 +346,15 @@ $departmentUsername = (string) $department->department_username;
                         labels: {
                             style: {
                                 fontSize: '12px'
-                            }
+                            },
+                        }
+                    },
+                    yaxis: {
+                        categories: categories2,
+                        labels: {
+                            style: {
+                                fontSize: '12px'
+                            },
                         }
                     },
                     dataLabels: {
@@ -429,9 +370,9 @@ $departmentUsername = (string) $department->department_username;
                     }
                 };
 
-                createChart("#column-chart", options);
+                // Render Charts
+                createChart("#column-chart", columnChartOptions);
                 createChart("#bar-chart", barChartOptions1);
                 createChart("#bar-chart-2", barChartOptions2);
-
             });
         </script>
