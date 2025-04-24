@@ -232,8 +232,8 @@ class DashboardController extends Controller
         ->orderBy('ss.position')
         ->select(
             'ss.name as x',
-            DB::raw('RAND() * 10 as actual'),
-            DB::raw('RAND() * 10 as target')
+            DB::raw('RAND() * 30 as actual'),
+            DB::raw('RAND() * 30 as target')
         )
         ->get()
         ->map(function ($item) {
@@ -281,7 +281,10 @@ class DashboardController extends Controller
             'months',
             'isAdmin',
             'chartData0',
-            'chartData1', 'totalActual', 'gapTo100', 'topGap'
+            'chartData1',
+            'totalActual',
+            'gapTo100',
+            'topGap'
         ));
     }
 }

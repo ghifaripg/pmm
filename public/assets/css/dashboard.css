@@ -26482,6 +26482,12 @@ input.datetimepicker[data-color="yellow"] + .bootstrap-datetimepicker-widget tab
     max-width: 200px; /* Prevents columns from stretching too much */
 }
 
+#sub-points-list li {
+    list-style-type: none;
+    margin-left: 0; /* optional, removes extra indent */
+    padding-left: 0; /* optional */
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     #ikuTable th, #ikuTable td {

@@ -6,19 +6,10 @@ if (isset($_GET['year'])) {
     $selectedYear = htmlspecialchars($_GET['year']);
 }
 ?>
-<!-- Favicon -->
-<link rel="apple-touch-icon" sizes="120x120" href="{{ asset('assets/img/apple-touch-icon.png') }}">
-<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/img/favicon-32x32.png') }}">
-<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/img/favicon-16x16.png') }}">
-<link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}">
 
 @extends('layouts.app')
-
-
 @section('title', 'List of User')
-
 @section('content')
-
     <div class="ml-5 main-content" id="panel" style="overflow-x: hidden">
         <!-- Topnav -->
         @include('partials.top')
@@ -43,7 +34,7 @@ if (isset($_GET['year'])) {
                     <table id="ListUserTable" class="table table-centered table-nowrap mb-0 rounded">
                         <thead class="thead-light">
                             <tr>
-                                <th class="border-0 rounded-start">ID</th>
+                                <th class="border-0 rounded-start">No</th>
                                 <th class="border-0">Name</th>
                                 <th class="border-0">Username</th>
                                 <th class="border-0">Department Name</th>
@@ -54,7 +45,7 @@ if (isset($_GET['year'])) {
                         <tbody>
                             @foreach ($users as $user)
                                 <tr>
-                                    <td>{{ $user->id }}</td>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $user->nama }}</td>
                                     <td>{{ $user->username }}</td>
                                     <td>{{ $user->department_name ?? 'No Department' }}</td>

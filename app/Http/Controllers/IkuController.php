@@ -256,7 +256,7 @@ class IkuController extends Controller
         $ikus = DB::table('form_iku')
             ->join('isi_iku', 'form_iku.isi_iku_id', '=', 'isi_iku.id')
             ->where('form_iku.iku_id', $iku_ikuIdentifier)
-            ->where('form_iku.version', $selectedVersion) // Filter by version
+            ->where('form_iku.version', $selectedVersion)
             ->select(
                 'form_iku.*',
                 'isi_iku.iku',
