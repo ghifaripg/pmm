@@ -1,66 +1,84 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📊 Performance Management System – PT. Krakatau Sarana Properti
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This project is a custom-built **Performance Management Website** developed for **PT. Krakatau Sarana Properti**, designed to streamline internal evaluation processes and drive data-informed decision-making. Built with the **Laravel** framework, the platform offers robust tools for managing contracts, tracking KPIs, and visualizing performance metrics across the organization.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 💡 Project Overview
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+In collaboration with PT. Krakatau Sarana Properti, this web application was created to address the growing need for a centralized and intelligent **performance management solution**. The system is designed to empower managers and employees with tools to monitor, evaluate, and improve work performance in real-time.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🚀 Key Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 📁 Contract Management
+- Create, view, and manage employee or vendor contracts
+- Organize contract terms and status for seamless performance alignment
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 📌 KPI Tracking
+- Set and monitor **Key Performance Indicators** per department or role
+- Ensure strategic goals are being measured and met
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🧾 Performance Evaluation
+- Submit and review performance evaluations through structured forms
+- Real-time tracking of evaluation progress
 
-## Laravel Sponsors
+### 📊 Data Visualization
+- Interactive graphs and charts for better performance insights
+- Helps identify trends, bottlenecks, and opportunities for growth
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🧠 My Contributions
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- 🔧 **Developed** the web application using Laravel with clean, scalable architecture  
+- 🖥️ **Designed and implemented** key pages for:
+  - Form submissions  
+  - Evaluation workflows  
+  - Dynamic data visualization  
+- 🤝 **Collaborated with cross-functional teams** to align technical solutions with business goals and end-user requirements  
+- 📈 Focused on **user experience and system performance**, ensuring the platform remains intuitive and responsive
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🔧 Technologies Used
 
-## Code of Conduct
+- **Framework**: Laravel (PHP)
+- **Frontend**: Blade Templates, Bootstrap, JavaScript
+- **Database**: MySQL
+- **Charting**: Chart.js or Laravel Charts
+- **Version Control**: Git & GitHub
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 🌟 Project Values
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### ✨ Creativity & Expression  
+The platform was thoughtfully designed to enhance usability while delivering critical insights through clear and interactive dashboards.
 
-## License
+### 🔗 Interdisciplinary Collaboration  
+This project connected **software engineering**, **HR processes**, and **business intelligence**—demonstrating how cross-domain knowledge can produce impactful solutions.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 🛠️ Work Ethic & Excellence  
+Focused on delivering a professional-grade system with:
+- Maintainable and modular codebase  
+- Scalable features to accommodate future needs  
+- Secure access and data handling
+
+---
+
+## 📈 Future Enhancements
+
+- User authentication and role-based access controls
+- Automated performance alerts or reports
+- Integration with payroll or HR systems
+- Mobile-responsive dashboard
+
+---
+
+## 🏢 About the Client
+
+PT. Krakatau Sarana Properti (KSP) provides integrated solutions to support and simplify business operations. As a leading company specializing in industrial estate management, KSP’s core competency lies in offering fully equipped and strategically developed industrial areas.
+
+In addition to industrial properties, KSP also develops and manages a range of commercial properties designed to support investor needs. These include a four-star hotel, golf course, water park, and a modern sport center—positioning KSP as a true “One Stop Business” in Cilegon City.
