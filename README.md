@@ -12,33 +12,33 @@ In collaboration with PT. Krakatau Sarana Properti, this web application was cre
 
 ## 🚀 Key Features
 
-### 📁 Contract Management
+### Contract Management
 - Create, view, and manage employee or vendor contracts
 - Organize contract terms and status for seamless performance alignment
 
-### 📌 KPI Tracking
+### KPI Tracking
 - Set and monitor **Key Performance Indicators** per department or role
 - Ensure strategic goals are being measured and met
 
-### 🧾 Performance Evaluation
+### Performance Evaluation
 - Submit and review performance evaluations through structured forms
 - Real-time tracking of evaluation progress
 
-### 📊 Data Visualization
+### Data Visualization
 - Interactive graphs and charts for better performance insights
 - Helps identify trends, bottlenecks, and opportunities for growth
 
 ---
 
-## 🧠 My Contributions
+## My Contributions
 
-- 🔧 **Developed** the web application using Laravel with clean, scalable architecture  
-- 🖥️ **Designed and implemented** key pages for:
+- **Developed** the web application using Laravel with clean, scalable architecture  
+- **Designed and implemented** key pages for:
   - Form submissions  
   - Evaluation workflows  
   - Dynamic data visualization  
-- 🤝 **Collaborated with cross-functional teams** to align technical solutions with business goals and end-user requirements  
-- 📈 Focused on **user experience and system performance**, ensuring the platform remains intuitive and responsive
+- **Collaborated with cross-functional teams** to align technical solutions with business goals and end-user requirements  
+- Focused on **user experience and system performance**, ensuring the platform remains intuitive and responsive
 
 ---
 
