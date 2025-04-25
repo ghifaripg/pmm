@@ -1,6 +1,6 @@
 # 📊 Performance Management System – PT. Krakatau Sarana Properti
 
-This project is a custom-built **Performance Management Website** developed for **PT. Krakatau Sarana Properti**, designed to streamline internal evaluation processes and drive data-informed decision-making. Built with the **Laravel** framework, the platform offers robust tools for managing contracts, tracking KPIs, and visualizing performance metrics across the organization.
+This project is a **Performance Management Website** developed for **PT. Krakatau Sarana Properti**, designed to streamline internal evaluation processes and drive data-informed decision-making. Built with the **Laravel** framework, the platform offers robust tools for managing contracts, tracking KPIs, and visualizing performance metrics across the organization.
 
 ---
 
