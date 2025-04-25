@@ -83,10 +83,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
     Route::post('/profile/update-username', [ProfileController::class, 'updateUsername'])->name('profile.updateUsername');
 
-    // Signature Page
-    Route::get('/signature', function () {
-        return view('pages.signature');
-    })->name('signature');
 
     // Evaluasi Page
     Route::get('/evaluasi', [EvaluasiController::class, 'showEvaluasi'])->name('show-evaluasi');

@@ -174,6 +174,7 @@ class EvaluasiController extends Controller
         $ikus = DB::table('form_iku')
             ->join('isi_iku', 'form_iku.isi_iku_id', '=', 'isi_iku.id')
             ->where('form_iku.iku_id', $iku_ikuIdentifier)
+            ->whereRaw('form_iku.version = (SELECT MAX(version) FROM form_iku WHERE iku_id = form_iku.iku_id)')
             ->select(
                 'form_iku.*',
                 'isi_iku.iku',

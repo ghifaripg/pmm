@@ -71,19 +71,22 @@ class ProgressEvaluation extends Component
 
         // Total IKUs calculations
         $departmentName = $this->departmentName;
-        $totalIkus = DB::table('form_iku')
-            ->where('iku_id', 'LIKE', "IKU{$departmentName}_{$this->selectedYear}%")
+        $totalIkus = DB::table('form_iku as fi')
+            ->where('fi.iku_id', 'LIKE', "IKU{$departmentName}_{$this->selectedYear}%")
+            ->whereRaw('fi.version = (SELECT MAX(version) FROM form_iku WHERE iku_id = fi.iku_id)')
             ->count();
 
-        $totalIkuPoints = DB::table('form_iku')
-            ->join('iku_point', 'iku_point.form_iku_id', '=', 'form_iku.id')
-            ->where('form_iku.iku_id', 'LIKE', "IKU{$departmentName}_{$this->selectedYear}%")
-            ->where('form_iku.is_multi_point', 1)
+        $totalIkuPoints = DB::table('form_iku as fi')
+            ->join('iku_point', 'iku_point.form_iku_id', '=', 'fi.id')
+            ->where('fi.iku_id', 'LIKE', "IKU{$departmentName}_{$this->selectedYear}%")
+            ->where('fi.is_multi_point', 1)
+            ->whereRaw('fi.version = (SELECT MAX(version) FROM form_iku WHERE iku_id = fi.iku_id)')
             ->count();
 
-        $totalIkuWithPoints = DB::table('form_iku')
-            ->where('iku_id', 'LIKE', "IKU{$departmentName}_{$this->selectedYear}%")
-            ->where('is_multi_point', 1)
+        $totalIkuWithPoints = DB::table('form_iku as fi')
+            ->where('fi.iku_id', 'LIKE', "IKU{$departmentName}_{$this->selectedYear}%")
+            ->where('fi.is_multi_point', 1)
+            ->whereRaw('fi.version = (SELECT MAX(version) FROM form_iku WHERE iku_id = fi.iku_id)')
             ->count();
 
         $this->totalIku = $totalIkus + $totalIkuPoints - $totalIkuWithPoints + 1;

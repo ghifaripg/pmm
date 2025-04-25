@@ -82,11 +82,11 @@ if (isset($_GET['year'])) {
             <div class="col-12 mb-4">
                 <div class="card border-0 shadow components-section">
                     <div class="card-body">
-                        <h5>Kontrak Manajemen: <span id="selected-iku-heading">-</span></h5>
+                        <h5>Kontrak Terpilih: <span id="selected-iku-heading">-</span></h5>
                         <div class="row mb-4">
                             <div class="col-lg-4 col-sm-6">
                                 <div class="mb-3">
-                                    <label for="sasaran">Sasaran Strategis</label>
+                                    <label for="sasaran">Kontrak Manajemen</label>
                                     <input name="sasaran" class="form-control" id="sasaran" required>
                                 </div>
                                 <div class="mb-3">

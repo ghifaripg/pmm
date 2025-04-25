@@ -410,10 +410,16 @@ class IkuController extends Controller
             ->where('department_role', 'admin')
             ->exists();
 
+        // Get the latest version for the given IKU ID
+        $latestVersion = DB::table('form_iku')
+            ->where('iku_id', $ikuId)
+            ->max('version');
+
         $ikus = DB::table('form_iku')
             ->join('isi_iku', 'form_iku.isi_iku_id', '=', 'isi_iku.id')
             ->join('sasaran_strategis', 'form_iku.sasaran_id', '=', 'sasaran_strategis.id')
             ->where('form_iku.iku_id', $ikuId)
+            ->where('form_iku.version', $latestVersion)
             ->select(
                 'form_iku.id as form_iku_id',
                 'form_iku.*',
@@ -467,6 +473,10 @@ class IkuController extends Controller
             ->where('form_iku.id', $id)
             ->first();
 
+            $isAdmin = DB::table('re_user_department')
+            ->where('user_id', Auth::id())
+            ->where('department_role', 'admin')
+            ->exists();
 
         if (!$iku) {
             abort(404, 'IKU not found');
@@ -476,7 +486,7 @@ class IkuController extends Controller
             ->where('form_iku_id', $iku->id)
             ->get();
 
-        return view('pages.edit-iku', compact('iku', 'ikuPoints'));
+        return view('pages.edit-iku', compact('iku', 'ikuPoints', 'isAdmin'));
     }
 
     // Update IKU

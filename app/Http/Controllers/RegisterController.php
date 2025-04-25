@@ -8,6 +8,7 @@ use App\Models\Department;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
 {
@@ -29,7 +30,9 @@ class RegisterController extends Controller
 
         $departments = Department::all();
 
-        return view('authentication.register-department', compact('departments'));
+        $bisnisTerkait = DB::table('bisnis_terkait')->get();
+
+        return view('authentication.register-department', compact('departments', 'bisnisTerkait'));
     }
 
     public function register(Request $request)
@@ -62,19 +65,54 @@ class RegisterController extends Controller
         return redirect()->back()->with('success', 'Registration successful!');
     }
 
-
     public function registerDepartment(Request $request)
     {
+        // Validate the incoming request data
         $validated = $request->validate([
             'department_name' => 'required|string|max:255|unique:department,department_name',
             'department_username' => 'required|string|max:255',
+            'bisnis_terkait' => 'array|nullable', // Bisnis terkait can be an array
+            'bisnis_terkait.*' => 'exists:bisnis_terkait,id', // Make sure each selected bisnis_terkait exists
         ]);
 
-        Department::create([
-            'department_name' => $validated['department_name'],
-            'department_username' => $validated['department_username'],
-        ]);
+        // Start a transaction to ensure data consistency
+        DB::beginTransaction();
 
-        return redirect()->back()->with('success', 'Department registration successful!');
+        try {
+            // Insert the department data into the 'department' table
+            $departmentId = DB::table('department')->insertGetId([
+                'department_name' => $validated['department_name'],
+                'department_username' => $validated['department_username'],
+            ]);
+
+            // If there are 'bisnis_terkait' to associate, insert them into the pivot table
+            if (!empty($validated['bisnis_terkait'])) {
+                $pivotData = [];
+                foreach ($validated['bisnis_terkait'] as $bisnisId) {
+                    $pivotData[] = [
+                        'department_id' => $departmentId,
+                        'bisnis_terkait_id' => $bisnisId,
+                    ];
+                }
+
+                // Insert data into 're_bisnis_department' pivot table
+                DB::table('re_bisnis_department')->insert($pivotData);
+            }
+
+            // Commit the transaction
+            DB::commit();
+
+            // Redirect back with success message
+            return redirect()->back()->with('success', 'Department registration successful!');
+        } catch (\Exception $e) {
+            // Rollback the transaction if something goes wrong
+            DB::rollBack();
+
+            // Log the error for debugging (optional)
+            Log::error('Department registration failed: ' . $e->getMessage());
+
+            // Redirect back with error message
+            return redirect()->back()->with('error', 'Failed to register department. Please try again.');
+        }
     }
 }

@@ -237,7 +237,6 @@ class DashboardController extends Controller
         )
         ->get()
         ->map(function ($item) {
-            // Ensure only two decimals after fetching
             return [
                 'x' => $item->x,
                 'actual' => round($item->actual, 2),
@@ -263,7 +262,6 @@ class DashboardController extends Controller
         })
         ->take(3)
         ->values();
-
 
         $chartData1 = DB::table('department')
             ->select('department_username as x')
