@@ -76,7 +76,7 @@ In collaboration with PT. Krakatau Sarana Properti, this web application was cre
 - **Framework**: Laravel (PHP)  
 - **Frontend**: Blade Templates, Bootstrap, JavaScript  
 - **Database**: MySQL  
-- **Charting**: Chart.js / Laravel Charts  
+- **Charting**: Chart.js, Apex Charts  
 - **Version Control**: Git & GitHub  
 
 ---

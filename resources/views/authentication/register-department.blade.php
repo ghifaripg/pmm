@@ -78,7 +78,8 @@
                                         <label for="bisnis-selector">Bisnis Terkait</label>
 
                                         <div id="bisnis-select-wrapper" class="input-group mb-3">
-                                            <select id="bisnis-selector" class="form-control">
+                                            <select id="bisnis-selector" name="bisnis_terkait[]" class="form-control">
+
                                                 <option value="" disabled selected>Pilih Bisnis Terkait...
                                                 </option>
 
@@ -141,6 +142,7 @@
                 isAddingNew = !isAddingNew;
                 document.getElementById('bisnis-select-wrapper').style.display = isAddingNew ? 'none' : 'flex';
                 document.getElementById('bisnis-input-wrapper').style.display = isAddingNew ? 'flex' : 'none';
+
                 if (!isAddingNew) {
                     document.getElementById('new-bisnis-input').value = '';
                 }
@@ -152,12 +154,29 @@
                 if (isAddingNew) {
                     value = document.getElementById('new-bisnis-input').value.trim();
                     label = value;
-                    if (!value) return;
+
+                    if (!value) {
+                        alert('Masukkan nama bisnis terkait baru.');
+                        return;
+                    }
                 } else {
                     const selector = document.getElementById('bisnis-selector');
                     value = selector.value;
-                    label = selector.options[selector.selectedIndex].text;
-                    if (!value) return;
+                    label = selector.options[selector.selectedIndex]?.text;
+
+                    if (!value) {
+                        alert('Pilih bisnis terkait dari daftar.');
+                        return;
+                    }
+                }
+
+                // Check for duplicates
+                const existingInputs = document.getElementsByName('bisnis_terkait[]');
+                for (const input of existingInputs) {
+                    if (input.value === value) {
+                        alert('Bisnis terkait ini sudah ditambahkan.');
+                        return;
+                    }
                 }
 
                 const id = 'bisnis_' + Date.now();
@@ -190,7 +209,6 @@
                 document.getElementById('display_' + id)?.remove();
             }
         </script>
-
     </body>
 
     </html>
