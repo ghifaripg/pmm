@@ -29,7 +29,10 @@
     <!-- Page plugins -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/fullcalendar/dist/fullcalendar.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/sweetalert2/dist/sweetalert2.min.css') }}">
-    <!-- Argon CSS -->
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 </head>
 
@@ -40,7 +43,7 @@
     @include('partials.nav')
 
     @yield('content')
-
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <!-- Argon Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Core -->
@@ -59,6 +62,10 @@
     <script src="{{ asset('assets/js/dashboard.js?v=1.2.0') }}"></script>
     <!-- ApexCharts -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
+    @stack('scripts')
+
 </body>
 
 </html>

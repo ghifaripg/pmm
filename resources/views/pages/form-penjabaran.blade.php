@@ -15,12 +15,6 @@ if (isset($_GET['year'])) {
         max-width: 250px;
     }
 </style>
-
-<!-- Favicon -->
-<link rel="apple-touch-icon" sizes="120x120" href="{{ asset('assets/img/apple-touch-icon.png') }}">
-<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/img/favicon-32x32.png') }}">
-<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/img/favicon-16x16.png') }}">
-<link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}">
 @extends('layouts.app')
 
 @section('title', 'Form Penjabaran')

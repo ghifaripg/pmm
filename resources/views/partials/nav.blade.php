@@ -198,10 +198,16 @@
                                         <span class="sidenav-normal"> Register Departemen </span>
                                     </a>
                                 </li>
+                                    <li class="nav-item">
+                                        <a href="/users" class="nav-link">
+                                            <span class="sidenav-mini-icon"> LU </span>
+                                            <span class="sidenav-normal"> List User </span>
+                                        </a>
+                                    </li>
                                 <li class="nav-item">
-                                    <a href="/users" class="nav-link">
-                                        <span class="sidenav-mini-icon"> L </span>
-                                        <span class="sidenav-normal"> List User </span>
+                                    <a href="/department" class="nav-link">
+                                        <span class="sidenav-mini-icon"> LD </span>
+                                        <span class="sidenav-normal"> List Departemen </span>
                                     </a>
                                 </li>
                             </ul>

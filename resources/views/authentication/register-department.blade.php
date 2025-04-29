@@ -1,214 +1,228 @@
-    <!DOCTYPE html>
-    <html>
+<!DOCTYPE html>
+<html>
 
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
-        <meta name="author" content="Creative Tim">
-        <title>Register Departemen</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
+    <meta name="author" content="Creative Tim">
+    <title>Register Departemen</title>
 
-        <!-- Canonical SEO -->
-        <link rel="canonical" href="https://www.creative-tim.com/product/impact-design-system" />
-        <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}" type="text/css">
+    <link rel="canonical" href="https://www.creative-tim.com/product/impact-design-system" />
+    <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}" type="text/css">
 
-        <!-- Favicon -->
-        <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('assets/img/apple-touch-icon.png') }}">
-        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/img/favicon-32x32.png') }}">
-        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/img/favicon-16x16.png') }}">
-        <link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('assets/img/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/img/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/img/favicon-16x16.png') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}">
 
-        <!-- Fonts -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
-        <!-- Icons -->
-        <link rel="stylesheet" href="{{ asset('assets/vendor/nucleo/css/nucleo.css') }}" type="text/css">
-        <link rel="stylesheet" href="{{ asset('assets/vendor/@fortawesome/fontawesome-free/css/all.min.css') }}"
-            type="text/css">
-        <!-- Page plugins -->
-        <link rel="stylesheet" href="{{ asset('assets/vendor/fullcalendar/dist/fullcalendar.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('assets/vendor/sweetalert2/dist/sweetalert2.min.css') }}">
-        <!-- Argon CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/nucleo/css/nucleo.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/@fortawesome/fontawesome-free/css/all.min.css') }}"
+        type="text/css">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/fullcalendar/dist/fullcalendar.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/sweetalert2/dist/sweetalert2.min.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 
-    </head>
+<body>
 
-    <body>
+    <main>
+        <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
+            <div class="container">
+                <p class="text-center">
+                    <a href="/dashboard" class="d-flex align-items-center justify-content-center"
+                        style="margin-top: 30px; margin-bottom: 30px">
+                        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        Back to Dashboard
+                    </a>
+                </p>
 
-        <main>
-
-            <!-- Section -->
-            <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
-                <div class="container">
-                    <p class="text-center">
-                        <a href="/dashboard" class="d-flex align-items-center justify-content-center"
-                            style="margin-top: 30px; margin-bottom: 30px">
-                            <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                            Back to Dashboard
-                        </a>
-                    </p>
-                    <div class="row justify-content-center form-bg-image" style="margin-top: 10px"
-                        data-background-lg="../../assets/img/illustrations/signin.svg">
-                        <div class="col-12 d-flex align-items-center justify-content-center">
-                            <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500">
-                                <div class="text-center text-md-center mb-4 mt-md-0">
-                                    <h1 class="mb-0 h3">Create Department </h1>
-                                </div>
-                                <form method="POST" action="/register-department" class="mt-4">
-                                    @csrf
-                                    <!-- Department Name -->
-                                    <div class="form-group mb-4">
-                                        <label for="department_name">Department Name</label>
-                                        <input type="text" name="department_name" class="form-control"
-                                            placeholder="Enter Department Name" id="department_name" required>
-                                    </div>
-
-                                    <!-- Department Username -->
-                                    <div class="form-group mb-4">
-                                        <label for="department_username">Department Username</label>
-                                        <input type="text" name="department_username" class="form-control"
-                                            placeholder="Enter Department Username" id="department_username" required>
-                                    </div>
-
-                                    <!-- Bisnis Terkait -->
-                                    <div class="form-group mb-4">
-                                        <label for="bisnis-selector">Bisnis Terkait</label>
-
-                                        <div id="bisnis-select-wrapper" class="input-group mb-3">
-                                            <select id="bisnis-selector" name="bisnis_terkait[]" class="form-control">
-
-                                                <option value="" disabled selected>Pilih Bisnis Terkait...
-                                                </option>
-
-                                                <!-- Loop through the bisnis_terkait data from the controller -->
-                                                @foreach ($bisnisTerkait as $bisnis)
-                                                    <option value="{{ $bisnis->id }}">{{ $bisnis->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <button type="button" class="btn btn-outline-secondary ml-3"
-                                                onclick="toggleBisnisInput()">+ Tambah Baru</button>
-                                        </div>
-
-                                        <div id="bisnis-input-wrapper" class="input-group mb-3" style="display: none;">
-                                            <input type="text" id="new-bisnis-input" class="form-control"
-                                                placeholder="Enter new bisnis terkait">
-                                            <button type="button" class="btn btn-outline-secondary ms-2"
-                                                onclick="toggleBisnisInput()">Cancel</button>
-                                        </div>
-
-                                        <button type="button" class="btn btn-outline-primary mb-3"
-                                            onclick="addBisnis()">Tambah</button>
-
-                                        <div id="bisnis-terkait-list" class="mb-2"></div>
-                                        <div id="bisnis-terkait-inputs"></div>
-                                    </div>
-
-
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-primary">Create Department</button>
-                                    </div>
-                                </form>
+                <!-- Main Form -->
+                <div class="row justify-content-center form-bg-image" style="margin-top: 10px"
+                    data-background-lg="../../assets/img/illustrations/signin.svg">
+                    <div class="col-12 d-flex align-items-center justify-content-center">
+                        <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500">
+                            <div class="text-center text-md-center mb-4 mt-md-0">
+                                <h1 class="mb-0 h3">Create Department</h1>
                             </div>
+
+                            <form method="POST" action="/register-department" class="mt-4">
+                                @csrf
+
+                                <div class="form-group mb-4">
+                                    <label for="department_name">Department Name</label>
+                                    <input type="text" name="department_name" class="form-control"
+                                        placeholder="Enter Department Name" id="department_name" required>
+                                </div>
+
+                                <div class="form-group mb-4">
+                                    <label for="department_username">Department Username</label>
+                                    <input type="text" name="department_username" class="form-control"
+                                        placeholder="Enter Department Username" id="department_username" required>
+                                </div>
+
+                                <div class="form-group mb-4">
+                                    <label for="bisnis-selector">Bisnis Terkait</label>
+                                    <div class="input-group mb-3">
+                                        <select id="bisnis-selector" class="form-control" multiple>
+                                            @foreach ($bisnisTerkait as $bisnis)
+                                                <option value="{{ $bisnis->id }}">{{ $bisnis->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button type="button" class="btn btn-secondary mt-2 ms-2"
+                                            id="tambah-bisnis-btn">
+                                            Tambah
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary mt-2 ms-2"
+                                            data-bs-toggle="modal" data-bs-target="#bisnisModal">
+                                            + Tambah Baru
+                                        </button>
+                                    </div>
+
+                                    <div id="bisnis-terkait-list" class="mb-2"></div>
+                                    <div id="bisnis-terkait-inputs"></div>
+                                </div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Create Department</button>
+                                </div>
+                            </form>
+
                         </div>
                     </div>
                 </div>
-            </section>
-        </main>
 
-        <!-- Argon Scripts -->
-        <!-- Core -->
-        <script src="{{ asset('assets/vendor/jquery/dist/jquery.min.js') }}"></script>
-        <script src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
-        <script src="{{ asset('assets/vendor/js-cookie/js.cookie.js') }}"></script>
-        <script src="{{ asset('assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js') }}"></script>
-        <script src="{{ asset('assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js') }}"></script>
-        <!-- Optional JS -->
-        <script src="{{ asset('assets/vendor/chart.js/dist/Chart.min.js') }}"></script>
-        <script src="{{ asset('assets/vendor/chart.js/dist/Chart.extension.js') }}"></script>
-        <!-- Argon JS -->
-        <script src="{{ asset('assets/js/dashboard.js?v=1.2.0') }}"></script>
-        <!-- Demo JS - remove this in your project -->
-        <script src="{{ asset('assets/js/demo.min.js') }}"></script>
-        <!-- ApexCharts -->
-        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+                <!-- Modal -->
+                <div id="bisnisModal" class="modal fade" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <form id="add-bisnis-form">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Tambah Bisnis Terkait Baru</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="new-bisnis-name">Nama Bisnis Terkait</label>
+                                        <input type="text" id="new-bisnis-name" class="form-control"
+                                            placeholder="Masukkan nama bisnis terkait baru" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-primary">Tambah</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
-        <script>
-            let isAddingNew = false;
+            </div>
+        </section>
+    </main>
 
-            function toggleBisnisInput() {
-                isAddingNew = !isAddingNew;
-                document.getElementById('bisnis-select-wrapper').style.display = isAddingNew ? 'none' : 'flex';
-                document.getElementById('bisnis-input-wrapper').style.display = isAddingNew ? 'flex' : 'none';
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('assets/vendor/js-cookie/js.cookie.js') }}"></script>
+    <script src="{{ asset('assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-                if (!isAddingNew) {
-                    document.getElementById('new-bisnis-input').value = '';
-                }
+    <script>
+        $(document).ready(function() {
+            $('#bisnis-selector').select2({
+                placeholder: "Pilih Bisnis Terkait...",
+                allowClear: true,
+                width: '100%'
+            });
+
+            const selectedBisnis = [];
+
+            function renderSelectedBisnis() {
+                const list = $('#bisnis-terkait-list');
+                const inputs = $('#bisnis-terkait-inputs');
+                list.empty();
+                inputs.empty();
+
+                selectedBisnis.forEach((item, index) => {
+                    list.append(`
+                        <div class="d-flex justify-content-between align-items-center border p-2 mb-2 rounded">
+                            <span>${item.text}</span>
+                            <button type="button" class="btn btn-sm btn-danger remove-bisnis" data-index="${index}">&times;</button>
+                        </div>
+                    `);
+
+                    inputs.append(`<input type="hidden" name="bisnis_terkait[]" value="${item.id}">`);
+
+                    if (item.id.startsWith('new_')) {
+                        inputs.append(
+                            `<input type="hidden" name="new_bisnis_names[${item.id}]" value="${item.text}">`
+                            );
+                    }
+
+                });
             }
 
-            function addBisnis() {
-                let value, label;
+            $('#tambah-bisnis-btn').click(function() {
+                const selectedOptions = $('#bisnis-selector').select2('data');
 
-                if (isAddingNew) {
-                    value = document.getElementById('new-bisnis-input').value.trim();
-                    label = value;
-
-                    if (!value) {
-                        alert('Masukkan nama bisnis terkait baru.');
-                        return;
-                    }
-                } else {
-                    const selector = document.getElementById('bisnis-selector');
-                    value = selector.value;
-                    label = selector.options[selector.selectedIndex]?.text;
-
-                    if (!value) {
-                        alert('Pilih bisnis terkait dari daftar.');
-                        return;
-                    }
+                if (selectedOptions.length === 0) {
+                    alert('Silakan pilih bisnis terkait terlebih dahulu');
+                    return;
                 }
 
-                // Check for duplicates
-                const existingInputs = document.getElementsByName('bisnis_terkait[]');
-                for (const input of existingInputs) {
-                    if (input.value === value) {
-                        alert('Bisnis terkait ini sudah ditambahkan.');
-                        return;
+                selectedOptions.forEach(opt => {
+                    if (!selectedBisnis.find(b => b.id === opt.id)) {
+                        selectedBisnis.push({
+                            id: opt.id,
+                            text: opt.text
+                        });
                     }
+                });
+
+                renderSelectedBisnis();
+
+                $('#bisnis-selector').val(null).trigger('change');
+            });
+
+            $(document).on('click', '.remove-bisnis', function() {
+                const index = $(this).data('index');
+                selectedBisnis.splice(index, 1);
+                renderSelectedBisnis();
+            });
+
+            $('#add-bisnis-form').on('submit', function(e) {
+                e.preventDefault();
+
+                const newBisnisName = $('#new-bisnis-name').val().trim();
+                if (!newBisnisName) {
+                    alert('Masukkan nama bisnis terkait baru.');
+                    return;
                 }
 
-                const id = 'bisnis_' + Date.now();
+                const newId = 'new_' + Date.now();
+                selectedBisnis.push({
+                    id: newId,
+                    text: newBisnisName
+                });
+                renderSelectedBisnis();
 
-                const tag = document.createElement('div');
-                tag.className = 'badge bg-info text-dark me-2 mb-2';
-                tag.id = 'display_' + id;
-                tag.innerHTML = `
-                    ${label}
-                    <button type="button" class="btn-close btn-close-white btn-sm ms-2" onclick="removeBisnis('${id}')"></button>
-                `;
-                document.getElementById('bisnis-terkait-list').appendChild(tag);
+                $('#new-bisnis-name').val('');
+                var modal = bootstrap.Modal.getInstance(document.getElementById('bisnisModal'));
+                modal.hide();
+            });
+        });
+    </script>
+</body>
 
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'bisnis_terkait[]';
-                hiddenInput.value = value;
-                hiddenInput.id = id;
-                document.getElementById('bisnis-terkait-inputs').appendChild(hiddenInput);
-
-                if (isAddingNew) {
-                    document.getElementById('new-bisnis-input').value = '';
-                } else {
-                    document.getElementById('bisnis-selector').selectedIndex = 0;
-                }
-            }
-
-            function removeBisnis(id) {
-                document.getElementById(id)?.remove();
-                document.getElementById('display_' + id)?.remove();
-            }
-        </script>
-    </body>
-
-    </html>
+</html>

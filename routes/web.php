@@ -11,6 +11,7 @@ use App\Http\Controllers\ProgresController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EvaluasiController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\IkuEvaluationExportController;
 
 // Public Routes (No Authentication Required)
@@ -22,7 +23,7 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Protected Routes (Require Authentication)
 Route::middleware(['auth'])->group(function () {
-
+    // Registration
     Route::get('/register', [RegisterController::class, 'showForm'])->name('register.form');
     Route::post('/register', [RegisterController::class, 'register'])->name('register.submit');
     Route::get('/register-department', [RegisterController::class, 'showRegis'])->name('department.form');
@@ -31,6 +32,7 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'showDashboard'])->name('dashboard');
     Route::get('/dashboard-admin', [DashboardController::class, 'showAdmin'])->name('dashboards');
+
 
     // Kontrak Page
     Route::get('/kontrak', [KontrakController::class, 'showKontrak'])->name('show-kontrak');
@@ -73,15 +75,24 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/progres/{id}', [ProgresController::class, 'update'])->name('progres.update');
     Route::delete('/progres/{id}', [ProgresController::class, 'destroy'])->name('progres.destroy');
 
+
     // Users
     Route::get('/users', [UserController::class, 'showAll'])->name('users');
     Route::get('/users/delete/{id}', [UserController::class, 'delete'])->name('users.delete');
     Route::get('/users/edit/{id}', [UserController::class, 'edit']);
     Route::post('/users/update/{id}', [UserController::class, 'update']);
 
+
     // Profile
     Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
     Route::post('/profile/update-username', [ProfileController::class, 'updateUsername'])->name('profile.updateUsername');
+
+    // Department
+    Route::get('/department', [DepartmentController::class, 'showDepartment'])->name('showDepartment');
+    Route::get('/departments/edit/{id}', [DepartmentController::class, 'edit'])->name('departments.edit');
+    Route::post('/departments/update/{id}', [DepartmentController::class, 'update'])->name('departments.update');
+    Route::get('/departments/delete/{id}', [DepartmentController::class, 'destroy'])->name('departments.delete');
+
 
 
     // Evaluasi Page
@@ -91,6 +102,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/form-evaluasi/edit/{id}', [EvaluasiController::class, 'edit'])->name('evaluasi.edit');
     Route::put('/form-evaluasi/update/{id}', [EvaluasiController::class, 'update'])->name('evaluasi.update');
     Route::delete('/form-evaluasi/delete/{id}', [EvaluasiController::class, 'destroy'])->name('evaluasi.destroy');
+
 
     // Export Routes
     Route::get('/export-iku-evaluations', [IkuEvaluationExportController::class, 'export'])->name('export.iku.evaluations');

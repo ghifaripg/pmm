@@ -67,51 +67,62 @@ class RegisterController extends Controller
 
     public function registerDepartment(Request $request)
     {
-        // Validate the incoming request data
+        // Validate basic department fields
         $validated = $request->validate([
             'department_name' => 'required|string|max:255|unique:department,department_name',
             'department_username' => 'required|string|max:255',
-            'bisnis_terkait' => 'array|nullable', // Bisnis terkait can be an array
-            'bisnis_terkait.*' => 'exists:bisnis_terkait,id', // Make sure each selected bisnis_terkait exists
+            'bisnis_terkait' => 'array|nullable',
+            'bisnis_terkait.*' => 'string|required', // accept both existing IDs and new_ IDs
         ]);
 
-        // Start a transaction to ensure data consistency
         DB::beginTransaction();
 
         try {
-            // Insert the department data into the 'department' table
+            // Insert department
             $departmentId = DB::table('department')->insertGetId([
                 'department_name' => $validated['department_name'],
                 'department_username' => $validated['department_username'],
             ]);
 
-            // If there are 'bisnis_terkait' to associate, insert them into the pivot table
+            $pivotData = [];
+
             if (!empty($validated['bisnis_terkait'])) {
-                $pivotData = [];
-                foreach ($validated['bisnis_terkait'] as $bisnisId) {
-                    $pivotData[] = [
-                        'department_id' => $departmentId,
-                        'bisnis_terkait_id' => $bisnisId,
-                    ];
+                foreach ($validated['bisnis_terkait'] as $bisnisItem) {
+                    if (str_starts_with($bisnisItem, 'new_')) {
+                        // It's a new bisnis created by user
+                        $newBisnisName = $request->input('new_bisnis_names.' . $bisnisItem);
+
+                        if (!$newBisnisName) {
+                            throw new \Exception("Invalid new bisnis name.");
+                        }
+
+                        // Insert new bisnis_terkait
+                        $newBisnisId = DB::table('bisnis_terkait')->insertGetId([
+                            'name' => $newBisnisName,
+                        ]);
+
+                        $pivotData[] = [
+                            'department_id' => $departmentId,
+                            'bisnis_terkait_id' => $newBisnisId,
+                        ];
+                    } else {
+                        // It's an existing bisnis ID
+                        $pivotData[] = [
+                            'department_id' => $departmentId,
+                            'bisnis_terkait_id' => $bisnisItem,
+                        ];
+                    }
                 }
 
-                // Insert data into 're_bisnis_department' pivot table
+                // Insert into pivot table
                 DB::table('re_bisnis_department')->insert($pivotData);
             }
 
-            // Commit the transaction
             DB::commit();
-
-            // Redirect back with success message
             return redirect()->back()->with('success', 'Department registration successful!');
         } catch (\Exception $e) {
-            // Rollback the transaction if something goes wrong
             DB::rollBack();
-
-            // Log the error for debugging (optional)
             Log::error('Department registration failed: ' . $e->getMessage());
-
-            // Redirect back with error message
             return redirect()->back()->with('error', 'Failed to register department. Please try again.');
         }
     }

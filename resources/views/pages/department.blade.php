@@ -21,7 +21,7 @@ if (isset($_GET['year'])) {
                         <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                             <ol class="breadcrumb breadcrumb-links">
                                 <li class="breadcrumb-item"><a href="/dashboard"><i class="fas fa-home"></i></a></li>
-                                <li class="breadcrumb-item active" aria-current="page">List User</li>
+                                <li class="breadcrumb-item active" aria-current="page">List Departement</li>
                             </ol>
                         </nav>
                     </div>
@@ -37,25 +37,25 @@ if (isset($_GET['year'])) {
                                 <th class="border-0 rounded-start">No</th>
                                 <th class="border-0">Name</th>
                                 <th class="border-0">Username</th>
-                                <th class="border-0">Department Name</th>
+                                <th class="border-0">Bisnis Terkait</th>
                                 <th class="border-0">Edit</th>
                                 <th class="border-0 rounded-end">Delete</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($users as $user)
+                            @foreach ($departments as $department)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $user->nama }}</td>
-                                    <td>{{ $user->username }}</td>
-                                    <td>{{ $user->department_name ?? 'No Department' }}</td>
+                                    <td>{{ $department->department_name }}</td>
+                                    <td>{{ $department->department_username }}</td>
+                                    <td>{{ $department->bisnis_names ?? 'No Bisnis Terkait' }}</td>
                                     <td>
-                                        <a href="{{ url('/users/edit/' . $user->id) }}"
+                                        <a href="{{ url('/departments/edit/' . $department->department_id) }}"
                                             class="btn btn-pill btn-outline-primary">Edit</a>
                                     </td>
                                     <td>
-                                        <a href="{{ url('/users/delete/' . $user->id) }}"
-                                            onclick="return confirm('Are you sure you want to delete this user?')"
+                                        <a href="{{ url('/departments/delete/' . $department->department_id) }}"
+                                            onclick="return confirm('Are you sure you want to delete this department?')"
                                             class="btn btn-pill btn-outline-danger">Delete</a>
                                     </td>
                                 </tr>
@@ -66,6 +66,8 @@ if (isset($_GET['year'])) {
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#ListUserTable').DataTable({
