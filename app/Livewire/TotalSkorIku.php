@@ -12,6 +12,8 @@ class TotalSkorIku extends Component
     public $selectedDepartment;
     public $selectedPeriod;
     public $totalAdjPerSasaran = [];
+    public $selectedPerspektif = null;
+    public $underperformingIku = [];
 
     public function mount($year, $month, $department)
     {
@@ -21,6 +23,41 @@ class TotalSkorIku extends Component
         $this->selectedPeriod = sprintf('%04d-%02d', $year, $month); // Ensure default format
 
         $this->loadData();
+    }
+
+    public function showUnderperformingIku($perspektif)
+    {
+        // Toggle off if same perspektif clicked
+        if ($this->selectedPerspektif === $perspektif) {
+            $this->selectedPerspektif = null;
+            $this->underperformingIku = [];
+            return;
+        }
+
+        $queryParams = [$this->selectedYear, $this->selectedMonth, $perspektif];
+        $whereDepartment = "";
+
+        if (!empty($this->selectedDepartment)) {
+            $whereDepartment = "AND u.department_id = ?";
+            $queryParams[] = $this->selectedDepartment;
+        }
+
+        $this->underperformingIku = DB::select("
+            SELECT isi.iku AS iku_name, ip.point_name AS sub_point_name, ie.percent_target
+            FROM form_iku fi
+            LEFT JOIN sasaran_strategis ss ON fi.sasaran_id = ss.id
+            LEFT JOIN iku_evaluations ie ON fi.id = ie.iku_id
+            LEFT JOIN isi_iku isi ON fi.isi_iku_id = isi.id
+            LEFT JOIN iku_point ip ON ie.point_id = ip.id
+            LEFT JOIN users u ON ie.user_id = u.id
+            WHERE ie.year = ? AND ie.month = ?
+              AND ss.name = ?
+              AND ie.percent_target < 100
+              $whereDepartment
+            ORDER BY fi.id ASC
+        ", $queryParams);
+
+        $this->selectedPerspektif = $perspektif;
     }
 
     public function updatedSelectedPeriod($value)

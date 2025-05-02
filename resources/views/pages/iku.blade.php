@@ -89,7 +89,6 @@ $departmentName = (string) $department->department_username;
             </div>
         </div>
 
-
         <div class="ml-4 main-content row">
             <div class="col-12 mb-4">
                 <div class="card border-0 shadow components-section" style="max-width: 1420px">

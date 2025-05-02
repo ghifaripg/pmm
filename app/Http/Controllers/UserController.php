@@ -79,35 +79,34 @@ class UserController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    $validated = $request->validate([
-        'username' => 'nullable|string|max:255',
-        'nama' => 'nullable|string|max:255',
-        'password' => 'nullable|string|min:6',
-        'department_id' => 'required|integer|exists:department,department_id',
-        'department_role' => 'required|in:Admin,User',
-    ]);
-
-    $userData = [
-        'username' => $validated['username'],
-        'nama' => $validated['nama'],
-        'department_id' => $validated['department_id'],
-    ];
-
-    if (!empty($validated['password'])) {
-        $userData['password'] = Hash::make($validated['password']);
-    }
-
-    DB::table('users')->where('id', $id)->update($userData);
-
-    DB::table('re_user_department')
-        ->where('user_id', $id)
-        ->update([
-            'department_id' => $validated['department_id'],
-            'department_role' => $validated['department_role'],
+    {
+        $validated = $request->validate([
+            'username' => 'nullable|string|max:255',
+            'nama' => 'nullable|string|max:255',
+            'password' => 'nullable|string|min:6',
+            'department_id' => 'required|integer|exists:department,department_id',
+            'department_role' => 'required|in:Admin,User',
         ]);
 
-    return redirect('/users')->with('success', 'User updated successfully');
-}
+        $userData = [
+            'username' => $validated['username'],
+            'nama' => $validated['nama'],
+            'department_id' => $validated['department_id'],
+        ];
 
+        if (!empty($validated['password'])) {
+            $userData['password'] = Hash::make($validated['password']);
+        }
+
+        DB::table('users')->where('id', $id)->update($userData);
+
+        DB::table('re_user_department')
+            ->where('user_id', $id)
+            ->update([
+                'department_id' => $validated['department_id'],
+                'department_role' => $validated['department_role'],
+            ]);
+
+        return redirect('/users')->with('success', 'User updated successfully');
+    }
 }

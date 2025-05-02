@@ -51,12 +51,15 @@ if (isset($_GET['year'])) {
                             <label for="kpi-selector"><strong>Pilih Kontrak Manajemen</strong></label>
                             <select id="kpi-selector" class="form-control">
                                 <option value="">-- Pilih Kontrak Manajemen --</option>
-                                @foreach ($combinedData as $entry)
-                                    <option value="{{ $entry['form']->id }}" data-sasaran="{{ $entry['form']->kpi_name }}"
-                                        data-target="{{ $entry['form']->target }}"
-                                        data-satuan="{{ $entry['form']->satuan }}">
-                                        {{ $entry['form']->kpi_name }}
-                                    </option>
+                                @foreach ($groupedFormKontrak as $sasaranName => $forms)
+                                    <optgroup label="{{ $sasaranName }}">
+                                        @foreach ($forms as $form)
+                                            <option value="{{ $form->id }}" data-sasaran="{{ $form->kpi_name }}"
+                                                data-target="{{ $form->target }}" data-satuan="{{ $form->satuan }}">
+                                                {{ $form->kpi_name }}
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
                                 @endforeach
                             </select>
                         </div>
@@ -138,61 +141,78 @@ if (isset($_GET['year'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        @php $letter = 'A'; @endphp
-                        @foreach ($combinedData as $data)
+                        @php
+                            $currentLetter = '';
+                            $currentSasaran = '';
+                        @endphp
+
+                        @foreach ($combinedData as $index => $data)
                             @php
-                                $rowCount = max(1, $data['penjabaran']->count());
+                                $isNewSasaran = $currentSasaran !== $data['sasaran_name'];
+                                $rowCount = count(
+                                    array_filter($combinedData, function ($item) use ($data) {
+                                        return $item['sasaran_name'] === $data['sasaran_name'];
+                                    }),
+                                );
                             @endphp
-                            @foreach ($data['penjabaran'] as $index => $penjabaran)
-                                <tr>
-                                    @if ($index == 0)
-                                        <td class="fw-bold align-middle text-center" rowspan="{{ $rowCount }}">
-                                            {{ $data['letter'] }}
-                                        </td>
-                                        <td class="fw-normal align-middle text-center" rowspan="{{ $rowCount }}">
-                                            {{ $data['form']->sasaran_name }}
-                                        </td>
-                                        <td class="fw-normal align-middle text-center" rowspan="{{ $rowCount }}">
-                                            {{ $data['form']->kpi_name }}
-                                        </td>
-                                        <td class="fw-normal align-middle text-center" rowspan="{{ $rowCount }}">
-                                            {{ $data['form']->target }}
-                                        </td>
-                                        <td class="fw-normal align-middle text-center" rowspan="{{ $rowCount }}">
-                                            {{ $data['form']->satuan }}
-                                        </td>
-                                    @endif
-                                    <td class="fw-normal text-center">{{ $penjabaran->proses_bisnis ?? '-' }}</td>
-                                    <td class="fw-normal text-center">{{ $penjabaran->strategis ?? '-' }}</td>
-                                    <td class="fw-normal text-center">{{ $penjabaran->pic ?? '-' }}</td>
-                                    <td class="text-center">
-                                        <div
-                                            style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-                                            <form action="{{ route('edit-kpi', $penjabaran->id) }}" method="GET"
-                                                style="margin: 0;">
-                                                @csrf
-                                                <button type="submit" class="btn btn-pill btn-outline-tertiary"
-                                                    style="padding: 0; border: none; background: none;">
-                                                    <img src="{{ asset('assets/img/edit.png') }}" alt="Edit"
-                                                        style="width: 30px; height: 30px; object-fit: contain;">
-                                                </button>
-                                            </form>
-                                            <form id="delete-form-{{ $penjabaran->id }}"
-                                                action="{{ route('delete-penjabaran', $penjabaran->id) }}" method="POST"
-                                                style="margin: 0;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="btn btn-pill btn-outline-danger delete-btn"
-                                                    data-id="{{ $penjabaran->id }}"
-                                                    style="padding: 0; border: none; background: none;">
-                                                    <img src="{{ asset('assets/img/trash.png') }}" alt="Delete"
-                                                        style="width: 30px; height: 30px; object-fit: contain;">
-                                                </button>
-                                            </form>
-                                        </div>
+
+                            <tr>
+                                @if ($isNewSasaran)
+                                    <td class="fw-bold align-middle text-center" rowspan="{{ $rowCount }}">
+                                        {{ $data['letter'] }}
                                     </td>
-                                </tr>
-                            @endforeach
+                                    <td class="fw-normal align-middle text-center" rowspan="{{ $rowCount }}">
+                                        {{ $data['sasaran_name'] }}
+                                    </td>
+                                @endif
+
+                                <td class="fw-normal align-middle text-center">
+                                    {{ $data['form']->kpi_name }}
+                                </td>
+                                <td class="fw-normal align-middle text-center">
+                                    {{ $data['form']->target }}
+                                </td>
+                                <td class="fw-normal align-middle text-center">
+                                    {{ $data['form']->satuan }}
+                                </td>
+
+                                @php
+                                    $penjabaranItem = $data['penjabaran']->first();
+                                @endphp
+
+                                <td class="fw-normal text-center">{{ $penjabaranItem->proses_bisnis ?? '-' }}</td>
+                                <td class="fw-normal text-center">{{ $penjabaranItem->strategis ?? '-' }}</td>
+                                <td class="fw-normal text-center">{{ $penjabaranItem->pic ?? '-' }}</td>
+                                <td class="text-center">
+                                    <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+                                        <form action="{{ route('edit-kpi', $penjabaranItem->id ?? 0) }}" method="GET"
+                                            style="margin: 0;">
+                                            @csrf
+                                            <button type="submit" class="btn btn-pill btn-outline-tertiary"
+                                                style="padding: 0; border: none; background: none;">
+                                                <img src="{{ asset('assets/img/edit.png') }}" alt="Edit"
+                                                    style="width: 30px; height: 30px; object-fit: contain;">
+                                            </button>
+                                        </form>
+                                        <form id="delete-form-{{ $penjabaranItem->id ?? 0 }}"
+                                            action="{{ route('delete-penjabaran', $penjabaranItem->id ?? 0) }}"
+                                            method="POST" style="margin: 0;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-pill btn-outline-danger"
+                                                style="padding: 0; border: none; background: none;">
+                                                <img src="{{ asset('assets/img/trash.png') }}" alt="Delete"
+                                                    style="width: 30px; height: 30px; object-fit: contain;">
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            @php
+                                $currentLetter = $data['letter'];
+                                $currentSasaran = $data['sasaran_name'];
+                            @endphp
                         @endforeach
                     </tbody>
                 </table>
@@ -210,9 +230,7 @@ if (isset($_GET['year'])) {
             document.getElementById('target').value = option.getAttribute('data-target') || '';
             document.getElementById('satuan').value = option.getAttribute('data-satuan') || '';
         });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
+
         function confirmDelete(id) {
             Swal.fire({
                 title: 'Are you sure?',
@@ -229,5 +247,4 @@ if (isset($_GET['year'])) {
             });
         }
     </script>
-
 @endsection

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
     <meta name="author" content="Creative Tim">
-    <title>Impact Dashboard</title>
+    <title>Register User</title>
 
     <!-- Canonical SEO -->
     <link rel="canonical" href="https://www.creative-tim.com/product/impact-design-system" />
@@ -81,12 +81,20 @@
 
                                 <div class="form-group mb-4">
                                     <label for="department_id">Select Department</label>
-                                    <select name="department_id" id="department_id" class="form-control">
+                                    <select name="department_id" id="department_id" class="form-control"
+                                        @if ($userId != 1) disabled @endif>
                                         <option value="">-- Choose Department --</option>
                                         @foreach ($departments as $department)
-                                            <option value="{{ $department->department_id }}">{{ $department->department_name }}</option>
+                                            <option value="{{ $department->department_id }}"
+                                                @if ($userId != 1 && $user->department_id == $department->department_id) selected @endif>
+                                                {{ $department->department_name }}
+                                            </option>
                                         @endforeach
                                     </select>
+
+                                    @if ($userId != 1)
+                                        <input type="hidden" name="department_id" value="{{ $user->department_id }}">
+                                    @endif
                                 </div>
 
                                 <div class="form-group mb-4">

@@ -8,6 +8,11 @@ if (isset($_GET['year'])) {
     $selectedYear = htmlspecialchars($_GET['year']);
 }
 ?>
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="120x120" href="{{ asset('assets/img/apple-touch-icon.png') }}">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/img/favicon-32x32.png') }}">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/img/favicon-16x16.png') }}">
+<link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}">
 @extends('layouts.app')
 @section('title', 'Profile')
 @section('content')
@@ -15,7 +20,7 @@ if (isset($_GET['year'])) {
     <!-- Main content -->
     <div class="ml-5 main-content" id="panel">
         <!-- Topnav -->
-        <nav class="navbar navbar-top navbar-expand navbar-dark bg-default border-bottom">
+        <nav class="navbar navbar-top navbar-expand navbar-dark bg-primary border-bottom">
             <div class="container-fluid">
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Search form -->
@@ -58,41 +63,41 @@ if (isset($_GET['year'])) {
                             </a>
                             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-dark bg-default  dropdown-menu-right ">
                                 <div class="row shortcuts px-4">
-                                    <a href="#!" class="col-4 shortcut-item">
+                                    <a href="/kontrak" class="col-4 shortcut-item">
                                         <span class="shortcut-media avatar rounded-circle bg-gradient-red">
                                             <i class="ni ni-calendar-grid-58"></i>
                                         </span>
-                                        <small>Calendar</small>
+                                        <small>Kontrak Manajemen</small>
                                     </a>
-                                    <a href="#!" class="col-4 shortcut-item">
+                                    <a href="/iku" class="col-4 shortcut-item">
                                         <span class="shortcut-media avatar rounded-circle bg-gradient-orange">
                                             <i class="ni ni-email-83"></i>
                                         </span>
-                                        <small>Email</small>
+                                        <small>IKU</small>
                                     </a>
-                                    <a href="#!" class="col-4 shortcut-item">
+                                    <a href="/evaluasi" class="col-4 shortcut-item">
                                         <span class="shortcut-media avatar rounded-circle bg-gradient-info">
                                             <i class="ni ni-credit-card"></i>
                                         </span>
-                                        <small>Payments</small>
+                                        <small>Evaluasi</small>
                                     </a>
-                                    <a href="#!" class="col-4 shortcut-item">
+                                    <a href="/progres" class="col-4 shortcut-item">
                                         <span class="shortcut-media avatar rounded-circle bg-gradient-green">
                                             <i class="ni ni-books"></i>
                                         </span>
-                                        <small>Reports</small>
+                                        <small>Progres</small>
                                     </a>
-                                    <a href="#!" class="col-4 shortcut-item">
+                                    <a href="/profile" class="col-4 shortcut-item">
                                         <span class="shortcut-media avatar rounded-circle bg-gradient-purple">
                                             <i class="ni ni-pin-3"></i>
                                         </span>
-                                        <small>Maps</small>
+                                        <small>Profile</small>
                                     </a>
-                                    <a href="#!" class="col-4 shortcut-item">
+                                    <a href="/dashboard" class="col-4 shortcut-item">
                                         <span class="shortcut-media avatar rounded-circle bg-gradient-yellow">
                                             <i class="ni ni-basket"></i>
                                         </span>
-                                        <small>Shop</small>
+                                        <small>Dashboard</small>
                                     </a>
                                 </div>
                             </div>
@@ -134,17 +139,7 @@ if (isset($_GET['year'])) {
         <div class="header pb-6 d-flex align-items-center"
             style="min-height: 50px; background-size: cover; background-position: center top;">
             <!-- Mask -->
-            <span class="mask bg-gradient-default opacity-8"></span>
-            <!-- Header container -->
-            <div class="container-fluid d-flex align-items-center">
-                <div class="row">
-                    <div class="col-lg-7 col-md-10">
-                        <h1 class="display-2 text-white">Hello <?php echo $username; ?></h1>
-                        <p class="text-white mt-0 mb-5">This is your profile page. You can see the progress you've made
-                            with your work and manage your projects</p>
-                    </div>
-                </div>
-            </div>
+            <span class="mask bg-primary opacity-8"></span>
         </div>
         <!-- Page content -->
         <div class="container-fluid mt--6">
@@ -225,6 +220,19 @@ if (isset($_GET['year'])) {
                                                     for="input-first-name">Departement</label>
                                                 <input class="form-control" id="department" type="text"
                                                     placeholder="{{ $department }}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="bisnis-terkait">Bisnis
+                                                    Terkait</label>
+                                                @forelse ($bisnisTerkait as $bisnis)
+                                                    <input class="form-control mb-2" type="text"
+                                                        value="{{ $bisnis }}" disabled>
+                                                @empty
+                                                    <input class="form-control" type="text" value="No Bisnis Terkait"
+                                                        disabled>
+                                                @endforelse
                                             </div>
                                         </div>
                                         <div class="col-lg-6">

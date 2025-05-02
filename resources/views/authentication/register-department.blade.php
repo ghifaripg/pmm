@@ -55,7 +55,6 @@
 
                             <form method="POST" action="/register-department" class="mt-4">
                                 @csrf
-
                                 <div class="form-group mb-4">
                                     <label for="department_name">Department Name</label>
                                     <input type="text" name="department_name" class="form-control"
@@ -125,7 +124,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </section>
     </main>

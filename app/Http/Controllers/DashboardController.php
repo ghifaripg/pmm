@@ -230,6 +230,7 @@ class DashboardController extends Controller
         ->join('kontrak_manajemen as km', 'ss.kontrak_id', '=', 'km.kontrak_id')
         ->where('km.year', $selectedYear)
         ->orderBy('ss.position')
+        // Random Data for demonstration purposes
         ->select(
             'ss.name as x',
             DB::raw('RAND() * 30 as actual'),
@@ -248,7 +249,7 @@ class DashboardController extends Controller
     $totalActual = round($chartData0->sum('actual'), 2);
     $gapTo100 = round(100 - $totalActual, 2);
 
-    // Top 3 gap contributors
+    // Top 3 gaps
     $topGap = $chartData0
         ->map(function ($item) {
             $gap = round($item['target'] - $item['actual'], 2);

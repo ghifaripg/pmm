@@ -49,7 +49,6 @@ class ProgresController extends Controller
         return view('pages.progres', compact('progresData', 'isAdmin'));
     }
 
-
     public function store(Request $request)
     {
         $request->validate([

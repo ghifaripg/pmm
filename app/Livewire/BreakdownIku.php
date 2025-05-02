@@ -17,20 +17,18 @@ class BreakdownIku extends Component
     public $evaluations = [];
 
     public function mount($year = null, $month = null, $department = null)
-{
-    $currentDate = Carbon::now();
+    {
+        $currentDate = Carbon::now();
 
-    // Ensure month is always two digits
-    $selectedMonth = str_pad($month ?? $currentDate->month, 2, '0', STR_PAD_LEFT);
-    $this->selectedPeriod = ($year ?? $currentDate->year) . '-' . $selectedMonth;
+        // Ensure month is always two digits
+        $selectedMonth = str_pad($month ?? $currentDate->month, 2, '0', STR_PAD_LEFT);
+        $this->selectedPeriod = ($year ?? $currentDate->year) . '-' . $selectedMonth;
 
-    $this->selectedDepartment = $department ?? (Auth::user()->id == 1 ? null : Auth::user()->department_id);
+        $this->selectedDepartment = $department ?? (Auth::user()->id == 1 ? null : Auth::user()->department_id);
 
-    $this->fetchDepartments();
-    $this->fetchEvaluations();
-}
-
-
+        $this->fetchDepartments();
+        $this->fetchEvaluations();
+    }
 
     public function updated($propertyName)
     {
@@ -45,6 +43,7 @@ class BreakdownIku extends Component
             ->select('department_id', 'department_name')
             ->get();
     }
+
     public function updatedSelectedPeriod()
     {
         $date = Carbon::parse($this->selectedPeriod);
@@ -52,7 +51,6 @@ class BreakdownIku extends Component
         $this->selectedMonth = str_pad($date->month, 2, '0', STR_PAD_LEFT);
         $this->fetchEvaluations();
     }
-
 
     public function fetchEvaluations()
     {
@@ -81,9 +79,8 @@ class BreakdownIku extends Component
               AND ie.month = ?
               AND u.department_id = ?
             ORDER BY fi.id, ie.id ASC
-        ", [$selectedYear, $selectedMonth, $selectedDepartment]);  // Ensure 3 parameters match the placeholders
+        ", [$selectedYear, $selectedMonth, $selectedDepartment]);
     }
-
 
     public function render()
     {

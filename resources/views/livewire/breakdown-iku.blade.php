@@ -8,7 +8,6 @@
                     <label for="month-year" class="mt-3 mb-3 form-label">Pilih Periode:</label>
                     <input type="month" id="month-year" class="form-control w-auto d-inline"
                         wire:model.lazy="selectedPeriod">
-
                 </div>
             </div>
         </div>

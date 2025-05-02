@@ -15,10 +15,10 @@ class RegisterController extends Controller
     public function showForm()
     {
         $userId = Auth::id();
-
+        $user = Auth::user();
         $departments = DB::table('department')->get();
 
-        return view('authentication.sign-up', compact('departments'));
+        return view('authentication.sign-up', compact('departments', 'userId', 'user'));
     }
 
 
