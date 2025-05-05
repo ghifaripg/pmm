@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `bisnis_terkait` (
   `id` bigint UNSIGNED NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 CREATE TABLE `cache` (
@@ -100,7 +100,7 @@ CREATE TABLE `form_kontrak_manajemen` (
   `du` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `dk` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `do` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 CREATE TABLE `iku` (
@@ -212,7 +212,7 @@ CREATE TABLE `penjabaran_strategis` (
   `proses_bisnis` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `strategis` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `pic` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `progres` (
   `id` bigint NOT NULL,
@@ -229,13 +229,13 @@ CREATE TABLE `progres` (
 CREATE TABLE `re_bisnis_department` (
   `department_id` bigint UNSIGNED NOT NULL,
   `bisnis_terkait_id` bigint UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `re_user_department` (
   `user_id` bigint UNSIGNED NOT NULL,
   `department_id` bigint UNSIGNED NOT NULL,
-  `department_role` enum('Admin','User') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'User'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `department_role` enum('Admin','User') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'User'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 CREATE TABLE `sasaran_strategis` (
