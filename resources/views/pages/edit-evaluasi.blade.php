@@ -1,6 +1,7 @@
 <?php
 $userId = Auth::user()->id;
 $name = Auth::user()->nama;
+$role = Auth::user()->role;
 $selectedYear = date('Y');
 if (isset($_GET['year'])) {
     $selectedYear = htmlspecialchars($_GET['year']);
@@ -53,7 +54,7 @@ if (isset($_GET['year'])) {
                         <div class="mb-3">
                             <label for="satuan" class="form-label">Satuan</label>
                             <input type="text" class="form-control" id="satuan" name="satuan"
-                                value="{{ $eval->satuan }}">    m 
+                                value="{{ $eval->satuan }}">    m
                         </div>
                         <div class="mb-3">
                             <label for="base" class="form-label">Base</label>

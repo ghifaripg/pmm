@@ -13,7 +13,7 @@ class KontrakController extends Controller
 {
     public function index(Request $request)
     {
-        if (Auth::role() !== 1) {
+        if (Auth::user()->role !== 'admin') {
             return redirect('/kontrak')->with('error', 'Akses tidak diizinkan');
         }
 
@@ -327,6 +327,9 @@ class KontrakController extends Controller
 
     public function showForm(Request $request)
     {
+        if (Auth::user()->role !== 'admin') {
+            return redirect('/penjabaran')->with('error', 'Akses tidak diizinkan');
+        }
         $user = Auth::user();
         $isAdmin = DB::table('re_user_department')
             ->where('user_id', Auth::id())

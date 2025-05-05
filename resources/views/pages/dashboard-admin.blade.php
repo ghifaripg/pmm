@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 $userId = Auth::user()->id;
 $name = Auth::user()->nama;
+$role = Auth::user()->role;
 $selectedYear = date('Y');
 if (isset($_GET['year'])) {
     $selectedYear = htmlspecialchars($_GET['year']);

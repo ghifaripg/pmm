@@ -1,6 +1,7 @@
 <?php
 $userId = Auth::user()->id;
 $name = Auth::user()->nama;
+$role = Auth::user()->role;
 ?>
 <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}" type="text/css">
 <style>

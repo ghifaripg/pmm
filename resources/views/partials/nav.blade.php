@@ -36,7 +36,7 @@
                                         <span class="sidenav-normal"> Dashboard </span>
                                     </a>
                                 </li>
-                                <?php if ($userId == 1): ?>
+                                <?php if ($role == 'admin'): ?>
 
                                 <li class="nav-item">
                                     <a href="/dashboard-admin" class="nav-link">
@@ -70,7 +70,7 @@
                                                     <span class="sidenav-normal">Pilih Tahun</span>
                                                 </a>
                                             </li>
-                                            <?php if ($userId == 1): ?>
+                                            <?php if ($role == 'admin'): ?>
                                             <li class="nav-item">
                                                 <a href="/form-kontrak" class="nav-link">
                                                     <span class="sidenav-mini-icon">IF</span>
