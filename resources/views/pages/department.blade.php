@@ -37,7 +37,7 @@ if (isset($_GET['year'])) {
                                 <th class="border-0 rounded-start">No</th>
                                 <th class="border-0">Name</th>
                                 <th class="border-0">Username</th>
-                                <th class="border-0">Bisnis Terkait</th>
+                                <th class="border-0">PIC</th>
                                 <th class="border-0">Edit</th>
                                 <th class="border-0 rounded-end">Delete</th>
                             </tr>
@@ -48,7 +48,7 @@ if (isset($_GET['year'])) {
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $department->department_name }}</td>
                                     <td>{{ $department->department_username }}</td>
-                                    <td>{{ $department->bisnis_names ?? 'No Bisnis Terkait' }}</td>
+                                    <td>{{ $department->bisnis_names ?? '-' }}</td>
                                     <td>
                                         <a href="{{ url('/departments/edit/' . $department->department_id) }}"
                                             class="btn btn-pill btn-outline-primary">Edit</a>
@@ -76,7 +76,7 @@ if (isset($_GET['year'])) {
                 "ordering": true,
                 "info": true,
                 "lengthMenu": [5, 10, 25, 50, 100],
-                "pageLength": 10,
+                "pageLength": 5,
                 "language": {
                     "search": "Search Data:",
                     "lengthMenu": "Show _MENU_ entries",

@@ -14,4 +14,11 @@ class Department extends Model
     public $timestamps = false;
 
     protected $fillable = ['department_name', 'department_username'];
+
+    public function users()
+{
+    return $this->belongsToMany(User::class, 're_user_department', 'department_id', 'user_id')
+        ->withPivot('department_role');
+}
+
 }

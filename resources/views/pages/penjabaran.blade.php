@@ -96,7 +96,7 @@
                                         <td class="fw-normal text-center">{{ $kpi->target }}</td>
                                         <td class="fw-normal text-center">{{ $kpi->satuan }}</td>
                                         <td class="fw-normal text-center">{{ $kpi->proses_bisnis }}</td>
-                                        <td class="fw-normal text-center">{{ $kpi->strategis }}</td>
+                                        <td class="fw-normal text-center">{!! nl2br(e($kpi->strategis)) !!}</td>
                                         <td class="fw-normal text-center">{{ $kpi->pic }}</td>
                                     </tr>
                                 @endforeach

@@ -222,7 +222,7 @@ if (isset($_GET['year'])) {
                                                     placeholder="{{ $department }}" disabled>
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
+                                        {{-- <div class="col-lg-6">
                                             <div class="form-group">
                                                 <label class="form-control-label" for="bisnis-terkait">Bisnis
                                                     Terkait</label>
@@ -234,7 +234,7 @@ if (isset($_GET['year'])) {
                                                         disabled>
                                                 @endforelse
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <div class="col-lg-6">
                                             <div class="form-group">
                                                 <label class="form-control-label" for="input-last-name">Created At</label>

@@ -32,8 +32,8 @@
         <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
             <div class="container">
                 <p class="text-center">
-                    <a href="/dashboard" class="d-flex align-items-center justify-content-center"
-                        style="margin-top: 30px; margin-bottom: 30px">
+                    <a href="/dashboard" class="d-flex btn btn-outline-secondary align-items-center justify-content-center"
+                        style="margin-top: 30px; margin-left: 450px; max-width: 400px">
                         <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
                             xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd"
@@ -68,7 +68,7 @@
                                 </div>
 
                                 <div class="form-group mb-4">
-                                    <label for="bisnis-selector">Bisnis Terkait</label>
+                                    <label for="bisnis-selector">PIC</label>
                                     <div class="input-group mb-3">
                                         <select id="bisnis-selector" class="form-control" multiple>
                                             @foreach ($bisnisTerkait as $bisnis)

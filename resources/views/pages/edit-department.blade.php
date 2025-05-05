@@ -15,7 +15,7 @@ if (isset($_GET['year'])) {
 
 @extends('layouts.app')
 
-@section('title', 'Edit User')
+@section('title', 'Edit Department')
 
 @section('content')
     <main>
@@ -36,7 +36,7 @@ if (isset($_GET['year'])) {
                     <div class="col-12 d-flex align-items-center justify-content-center">
                         <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500">
                             <div class="text-center text-md-center mb-4">
-                                <h1 class="h1">Edit User</h1>
+                                <h1 class="h1">Edit Department</h1>
                             </div>
                             <form method="POST" action="{{ route('departments.update', $department->department_id) }}">
                                 @csrf
@@ -55,7 +55,7 @@ if (isset($_GET['year'])) {
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="bisnis_terkait">Bisnis Terkait</label>
+                                    <label for="bisnis_terkait">PIC</label>
                                     <select name="bisnis_terkait[]" id="bisnis_terkait" class="form-control" multiple>
                                         @foreach ($allBisnis as $bisnis)
                                             <option value="{{ $bisnis->id }}"

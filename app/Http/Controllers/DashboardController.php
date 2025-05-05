@@ -187,7 +187,6 @@ class DashboardController extends Controller
         $department_id = $departmentInfo?->department_id ?? null;
         $departmentName = $departmentInfo?->department_username ?? 'Unknown';
 
-
         $monthYear = $request->query('month-year', date('Y-m'));
 
         if (preg_match('/^\d{4}-\d{2}$/', $monthYear)) {
@@ -227,42 +226,42 @@ class DashboardController extends Controller
         }
 
         $chartData0 = DB::table('sasaran_strategis as ss')
-        ->join('kontrak_manajemen as km', 'ss.kontrak_id', '=', 'km.kontrak_id')
-        ->where('km.year', $selectedYear)
-        ->orderBy('ss.position')
-        // Random Data for demonstration purposes
-        ->select(
-            'ss.name as x',
-            DB::raw('RAND() * 30 as actual'),
-            DB::raw('RAND() * 30 as target')
-        )
-        ->get()
-        ->map(function ($item) {
-            return [
-                'x' => $item->x,
-                'actual' => round($item->actual, 2),
-                'target' => round($item->target, 2)
-            ];
-        });
+            ->join('kontrak_manajemen as km', 'ss.kontrak_id', '=', 'km.kontrak_id')
+            ->where('km.year', $selectedYear)
+            ->orderBy('ss.position')
+            // Random Data for demonstration purposes
+            ->select(
+                'ss.name as x',
+                DB::raw('RAND() * 30 as actual'),
+                DB::raw('RAND() * 30 as target')
+            )
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'x' => $item->x,
+                    'actual' => round($item->actual, 2),
+                    'target' => round($item->target, 2)
+                ];
+            });
 
-    // Compute doughnut chart values
-    $totalActual = round($chartData0->sum('actual'), 2);
-    $gapTo100 = round(100 - $totalActual, 2);
+        // Compute doughnut chart values
+        $totalActual = round($chartData0->sum('actual'), 2);
+        $gapTo100 = round(100 - $totalActual, 2);
 
-    // Top 3 gaps
-    $topGap = $chartData0
-        ->map(function ($item) {
-            $gap = round($item['target'] - $item['actual'], 2);
-            return [
-                'x' => $item['x'],
-                'gap' => $gap
-            ];
-        })
-        ->sortByDesc(function ($item) {
-            return abs($item['gap']);
-        })
-        ->take(3)
-        ->values();
+        // Top 3 gaps
+        $topGap = $chartData0
+            ->map(function ($item) {
+                $gap = round($item['target'] - $item['actual'], 2);
+                return [
+                    'x' => $item['x'],
+                    'gap' => $gap
+                ];
+            })
+            ->sortByDesc(function ($item) {
+                return abs($item['gap']);
+            })
+            ->take(3)
+            ->values();
 
         $chartData1 = DB::table('department')
             ->select('department_username as x')

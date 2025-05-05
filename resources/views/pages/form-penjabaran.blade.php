@@ -185,7 +185,7 @@ if (isset($_GET['year'])) {
                                 <td class="fw-normal text-center">{{ $penjabaranItem->pic ?? '-' }}</td>
                                 <td class="text-center">
                                     <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-                                        <form action="{{ route('edit-kpi', $penjabaranItem->id ?? 0) }}" method="GET"
+                                        <form action="{{ route('edit-penjabaran', $penjabaranItem->id ?? 0) }}" method="GET"
                                             style="margin: 0;">
                                             @csrf
                                             <button type="submit" class="btn btn-pill btn-outline-tertiary"

@@ -66,6 +66,8 @@ if (isset($_GET['year'])) {
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#ListUserTable').DataTable({
@@ -74,7 +76,7 @@ if (isset($_GET['year'])) {
                 "ordering": true,
                 "info": true,
                 "lengthMenu": [5, 10, 25, 50, 100],
-                "pageLength": 10,
+                "pageLength": 5,
                 "language": {
                     "search": "Search Data:",
                     "lengthMenu": "Show _MENU_ entries",

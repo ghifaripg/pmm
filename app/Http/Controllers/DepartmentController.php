@@ -97,10 +97,8 @@ class DepartmentController extends Controller
             ]);
 
         // Update bisnis terkait (pivot table)
-        // 1. Delete old links
         DB::table('re_bisnis_department')->where('department_id', $id)->delete();
 
-        // 2. Insert new links if any bisnis selected
         if ($request->has('bisnis_terkait')) {
             $data = [];
             foreach ($request->bisnis_terkait as $bisnisId) {

@@ -13,7 +13,7 @@ class KontrakController extends Controller
 {
     public function index(Request $request)
     {
-        if (Auth::id() !== 1) {
+        if (Auth::role() !== 1) {
             return redirect('/kontrak')->with('error', 'Akses tidak diizinkan');
         }
 
@@ -413,10 +413,26 @@ class KontrakController extends Controller
         return redirect()->back()->with('success', 'Penjabaran Strategis berhasil disimpan!');
     }
 
-    public function updatePenjabaran(Request $request)
+    public function editPenjabaran($id)
+    {
+        $user = Auth::user();
+        $isAdmin = DB::table('re_user_department')
+            ->where('user_id', Auth::id())
+            ->where('department_role', 'admin')
+            ->exists();
+        $penjabaran = DB::table('penjabaran_strategis')->where('id', $id)->first();
+
+        $kpi = DB::table('form_kontrak_manajemen')
+            ->where('id', $penjabaran->form_id)
+            ->first(['kpi_name', 'target', 'satuan']);
+
+        return view('pages.edit-penjabaran', compact('penjabaran', 'kpi','isAdmin'));
+    }
+
+    public function updatePenjabaran(Request $request, $id)
     {
         DB::table('penjabaran_strategis')
-            ->where('id', $request->input('id'))
+            ->where('id', $id)
             ->update([
                 'proses_bisnis' => $request->input('proses_bisnis'),
                 'strategis'     => $request->input('strategis'),
