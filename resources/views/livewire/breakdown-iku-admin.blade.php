@@ -23,7 +23,7 @@
                 <table class="table table-bordered table-striped w-100">
                     <thead class="text-white" style="background-color: #2e2abd;">
                         <tr>
-                            <th>Pilar</th>
+                            <th>Sasaran Strategis</th>
                             <th>KPI</th>
                             <th>Bobot</th>
                             <th>Satuan</th>

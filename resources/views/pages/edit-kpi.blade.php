@@ -116,8 +116,9 @@ if (isset($_GET['year'])) {
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-primary" type="submit" style="max-width: 30%; margin-left: 355px">Update
-                            KPI</button>
+                        <div class="text-center mb-3">
+                            <button class="btn btn-primary" type="submit">Update KPI</button>
+                        </div>
                     </div>
                 </form>
                 </div>

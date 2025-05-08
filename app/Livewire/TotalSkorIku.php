@@ -20,7 +20,7 @@ class TotalSkorIku extends Component
         $this->selectedYear = $year;
         $this->selectedMonth = $month;
         $this->selectedDepartment = $department;
-        $this->selectedPeriod = sprintf('%04d-%02d', $year, $month); // Ensure default format
+        $this->selectedPeriod = sprintf('%04d-%02d', $year, $month);
 
         $this->loadData();
     }

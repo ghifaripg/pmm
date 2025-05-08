@@ -165,16 +165,22 @@ class EvaluasiController extends Controller
         ORDER BY fi.id, ie.id ASC
     ", [$selectedYear, $selectedMonth, $user->department_id]);
 
-        $iku_ikuIdentifier = 'IKU' . str_replace(' ', '_', $departmentName) . '_' .  $selectedYear;
-
         $sasaranStrategis = DB::table('sasaran_strategis')
             ->where('kontrak_id', $kontrak_id)
             ->get();
 
+        $iku_ikuIdentifier = 'IKU' . str_replace(' ', '_', $departmentName) . '_' . $selectedYear;
+
+        // First get max version for this specific department
+        $maxVersion = DB::table('form_iku')
+            ->where('iku_id', $iku_ikuIdentifier)
+            ->max('version');
+
+        // Then use that in your main query
         $ikus = DB::table('form_iku')
             ->join('isi_iku', 'form_iku.isi_iku_id', '=', 'isi_iku.id')
             ->where('form_iku.iku_id', $iku_ikuIdentifier)
-            ->whereRaw('form_iku.version = (SELECT MAX(version) FROM form_iku WHERE iku_id = form_iku.iku_id)')
+            ->where('form_iku.version', $maxVersion)
             ->select(
                 'form_iku.*',
                 'isi_iku.iku',
@@ -227,7 +233,6 @@ class EvaluasiController extends Controller
             'isAdmin'
         ));
     }
-
 
     public function store(Request $request)
     {
@@ -285,6 +290,12 @@ class EvaluasiController extends Controller
 
     public function edit($id)
     {
+        $user = Auth::user();
+
+        $isAdmin = DB::table('re_user_department')
+            ->where('user_id', Auth::id())
+            ->where('department_role', 'admin')
+            ->exists();
         $selectedYear = request()->query('year', date('Y'));
         $selectedMonth = request()->query('month', date('n'));
 
@@ -298,7 +309,7 @@ class EvaluasiController extends Controller
             ->where('iku_evaluations.id', $id)
             ->first();
 
-        return view('pages.edit-evaluasi', compact('eval', 'selectedYear', 'selectedMonth'));
+        return view('pages.edit-evaluasi', compact('eval', 'selectedYear', 'selectedMonth', 'isAdmin'));
     }
 
 

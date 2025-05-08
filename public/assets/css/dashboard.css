@@ -26451,15 +26451,15 @@ input.datetimepicker[data-color="yellow"] + .bootstrap-datetimepicker-widget tab
 }
 
 #ikuTable {
-    max-width: 100%;
-    table-layout: auto; /* Allows column width to adjust dynamically */
-    border-collapse: collapse; /* Ensures borders merge for a solid look */
+    max-width: 98%;
+    table-layout: auto;
+    border-collapse: collapse;
     word-wrap: break-word;
-    white-space: normal; /* Enables text wrapping */
+    white-space: normal;
 }
 
 #ikuTable th, #ikuTable td {
-    border: 1px solid #333; /* Dark gray solid border */
+    border: 1px solid #333;
     padding: 8px;
     text-align: center;
     vertical-align: middle;
@@ -26489,7 +26489,7 @@ input.datetimepicker[data-color="yellow"] + .bootstrap-datetimepicker-widget tab
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 98%) {
     #ikuTable th, #ikuTable td {
         padding: 6px;
     }

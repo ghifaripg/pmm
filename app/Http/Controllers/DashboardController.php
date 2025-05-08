@@ -225,24 +225,27 @@ class DashboardController extends Controller
             $departmentName = 'Semua Unit Kerja';
         }
 
-        $chartData0 = DB::table('sasaran_strategis as ss')
-            ->join('kontrak_manajemen as km', 'ss.kontrak_id', '=', 'km.kontrak_id')
-            ->where('km.year', $selectedYear)
-            ->orderBy('ss.position')
-            // Random Data for demonstration purposes
-            ->select(
-                'ss.name as x',
-                DB::raw('RAND() * 30 as actual'),
-                DB::raw('RAND() * 30 as target')
-            )
-            ->get()
-            ->map(function ($item) {
-                return [
-                    'x' => $item->x,
-                    'actual' => round($item->actual, 2),
-                    'target' => round($item->target, 2)
-                ];
-            });
+        $chartData0 = DB::table('iku_evaluations as ie')
+        ->join('form_iku as fi', 'ie.iku_id', '=', 'fi.id')
+        ->join('sasaran_strategis as ss', 'fi.sasaran_id', '=', 'ss.id')
+        ->join('kontrak_manajemen as km', 'ss.kontrak_id', '=', 'km.kontrak_id')
+        ->where('ie.year', $selectedYear)
+        ->where('ie.month', $selectedMonth)
+        ->groupBy('ss.name', 'ss.position')
+        ->orderBy('ss.position')
+        ->select(
+            'ss.name as x',
+            DB::raw('SUM(ie.ttl) as actual'),
+            DB::raw('SUM(ie.adj) as target')
+        )
+        ->get()
+        ->map(function ($item) {
+            return [
+                'x' => $item->x,
+                'actual' => round($item->actual, 2),
+                'target' => round($item->target, 2)
+            ];
+        });
 
         // Compute doughnut chart values
         $totalActual = round($chartData0->sum('actual'), 2);
@@ -267,6 +270,7 @@ class DashboardController extends Controller
             ->select('department_username as x')
             ->where('department_id', '!=', 1)
             ->get();
+            dd($chartData0);
 
         $departments = DB::table('department')->select('department_id', 'department_name')->get();
         return view('pages.dashboard-admin', compact(

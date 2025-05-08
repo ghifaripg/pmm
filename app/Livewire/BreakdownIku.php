@@ -56,12 +56,10 @@ class BreakdownIku extends Component
     {
         $user = Auth::user();
 
-        // Ensure selectedYear and selectedMonth are set properly
         $selectedYear = $this->selectedYear ?? Carbon::now()->year;
         $selectedMonth = $this->selectedMonth ?? Carbon::now()->month;
         $selectedDepartment = $this->selectedDepartment ?? $user->department_id;
 
-        // Make sure all parameters are passed in the correct order
         $this->evaluations = DB::select("
             SELECT
                 ie.id, ie.iku_id, ie.point_id, ie.polaritas, ie.bobot, ie.satuan, ie.base,

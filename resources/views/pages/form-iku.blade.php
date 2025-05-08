@@ -13,6 +13,14 @@ if (isset($_GET['version'])) {
 ?>
 
 <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}" type="text/css">
+<style>
+    .table th,
+    .table td {
+        white-space: normal !important;
+        overflow-wrap: break-word !important;
+        word-break: normal !important;
+    }
+</style>
 @extends('layouts.app')
 @section('title', 'Form IKU')
 @section('content')
@@ -172,8 +180,8 @@ if (isset($_GET['version'])) {
                 </div>
             </form>
         </div>
-        <div class="ml-5 main-content table-responsive" style="width: 1420px">
-            <table id="ikuTable">
+        <div class="ml-3 main-content table-responsive">
+            <table class="table table-bordered table-striped ikuTable" id="ikuTable">
                 <thead>
                     <tr>
                         <th class="border-0 text-center" rowspan="2">#</th>

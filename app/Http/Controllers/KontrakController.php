@@ -173,8 +173,12 @@ class KontrakController extends Controller
 
     public function editKpi($id)
     {
+        $isAdmin = DB::table('re_user_department')
+            ->where('user_id', Auth::id())
+            ->where('department_role', 'admin')
+            ->exists();
         $kpi = DB::table('form_kontrak_manajemen')->where('id', $id)->first();
-        return view('pages.edit-kpi', compact('kpi'));
+        return view('pages.edit-kpi', compact('kpi','isAdmin'));
     }
 
     public function updateKpi(Request $request, $id)

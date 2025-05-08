@@ -134,6 +134,11 @@ $departmentUsername = (string) $department->department_username;
 
                                     <div id="bar-chart"></div>
                                 </div>
+                                <div class="col-md-6">
+                                    <h4 class="text-white p-2 mb-4" style="background-color: #0A48B3;">Direktorat</h4>
+
+                                    <div id="bar-chart3"></div>
+                                </div>
                                 <!-- Bar Chart 2 -->
                                 <div class="col-md-6">
                                     <h4 class="text-white p-2 mb-4" style="background-color: #0A48B3;">Departemen</h4>
@@ -179,31 +184,27 @@ $departmentUsername = (string) $department->department_username;
 
                 // Chart Data from backend
                 const chartData = @json($chartData0);
-
                 const categories = chartData.map(d => d.x);
-                const actualSeries = chartData.map(d => parseFloat(parseFloat(d.actual).toFixed(2)));
-                const aboveTargetSeries = chartData.map(d => {
-                    const gap = d.target > d.actual ? d.target - d.actual : 0;
-                    return parseFloat(gap.toFixed(2));
-                });
-                const belowTargetSeries = chartData.map(d => {
-                    const gap = d.actual > d.target ? d.actual - d.target : 0;
-                    return parseFloat(gap.toFixed(2));
-                });
+                const targetSeries = chartData.map(d => parseFloat(d.target));
+                const actualSeries = chartData.map(d => parseFloat(d.actual));
+                const greenOverlay = chartData.map(d => d.actual > d.target ? parseFloat((d.actual - d.target).toFixed(
+                    2)) : 0);
+                const redOverlay = chartData.map(d => d.actual < d.target ? parseFloat((d.target - d.actual).toFixed(
+                    2)) : 0);
 
                 // Column Chart (Vertical)
                 const columnChartOptions = {
                     series: [{
-                            name: 'Actual',
-                            data: actualSeries
+                            name: 'Target',
+                            data: targetSeries
                         },
                         {
                             name: 'Above Target',
-                            data: aboveTargetSeries
+                            data: greenOverlay
                         },
                         {
                             name: 'Below Target',
-                            data: belowTargetSeries
+                            data: redOverlay
                         }
                     ],
                     chart: {
@@ -216,7 +217,7 @@ $departmentUsername = (string) $department->department_username;
                             columnWidth: '40%'
                         }
                     },
-                    colors: ['#008FFB', '#00E396', '#FF4560'],
+                    colors: ['#0A48B3', '#00E396', '#FF4560'],
                     xaxis: {
                         categories: categories,
                         labels: {
@@ -239,6 +240,9 @@ $departmentUsername = (string) $department->department_username;
                         horizontalAlign: 'center'
                     }
                 };
+
+                createChart("#column-chart", columnChartOptions);
+
 
                 // Bar Chart 1 (Static Demo Data)
                 const barChartData1 = [{
@@ -324,6 +328,90 @@ $departmentUsername = (string) $department->department_username;
                     }
                 };
 
+                // Bar Chart 3
+                const barChartData3 = [{
+                        x: '2011',
+                        y: 10,
+                        expected: 15
+                    },
+                    {
+                        x: '2012',
+                        y: 38,
+                        expected: 50
+                    },
+                    {
+                        x: '2013',
+                        y: 49,
+                        expected: 48
+                    },
+                    {
+                        x: '2014',
+                        y: 70,
+                        expected: 65
+                    },
+                    {
+                        x: '2015',
+                        y: 90,
+                        expected: 75
+                    },
+                    {
+                        x: '2016',
+                        y: 78,
+                        expected: 80
+                    }
+                ];
+                const categories3 = barChartData3.map(d => d.x);
+                const actualSeries3 = barChartData3.map(d => d.y);
+                const aboveTargetSeries3 = barChartData3.map(d => d.expected > d.y ? d.expected - d.y : 0);
+                const belowTargetSeries3 = barChartData3.map(d => d.y > d.expected ? d.y - d.expected : 0);
+
+                const barChartOptions3 = {
+                    series: [{
+                            name: 'Actual',
+                            data: actualSeries3
+                        },
+                        {
+                            name: 'Above Target',
+                            data: aboveTargetSeries3
+                        },
+                        {
+                            name: 'Below Target',
+                            data: belowTargetSeries3
+                        }
+                    ],
+                    chart: {
+                        type: 'bar',
+                        height: 400,
+                        stacked: true
+                    },
+                    plotOptions: {
+                        bar: {
+                            horizontal: true,
+                            barHeight: '60%'
+                        }
+                    },
+                    colors: ['#008FFB', '#00E396', '#FF4560'],
+                    xaxis: {
+                        categories: categories3,
+                        labels: {
+                            style: {
+                                fontSize: '12px'
+                            }
+                        }
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    tooltip: {
+                        shared: true,
+                        intersect: false
+                    },
+                    legend: {
+                        position: 'top',
+                        horizontalAlign: 'center'
+                    }
+                };
+
                 // Bar Chart 2
                 const barChartData2 = @json($chartData1);
                 const categories2 = barChartData2.map(d => d.x);
@@ -372,8 +460,8 @@ $departmentUsername = (string) $department->department_username;
                 };
 
                 // Render Charts
-                createChart("#column-chart", columnChartOptions);
                 createChart("#bar-chart", barChartOptions1);
                 createChart("#bar-chart-2", barChartOptions2);
+                createChart("#bar-chart3", barChartOptions3);
             });
         </script>

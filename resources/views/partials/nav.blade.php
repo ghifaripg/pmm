@@ -194,8 +194,8 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="/register-department" class="nav-link">
-                                        <span class="sidenav-mini-icon"> RD </span>
-                                        <span class="sidenav-normal"> Register Departemen </span>
+                                        <span class="sidenav-mini-icon"> RK </span>
+                                        <span class="sidenav-normal"> Register Unit Kerja </span>
                                     </a>
                                 </li>
                                     <li class="nav-item">
