@@ -13,7 +13,6 @@
 @section('title', 'Kontrak Manajemen')
 @section('content')
 
-
     <body>
         <?php
         $userId = Auth::user()->id;
@@ -145,7 +144,6 @@
                 </a>
             </div>
         </div>
-
         <!-- Notyf CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 

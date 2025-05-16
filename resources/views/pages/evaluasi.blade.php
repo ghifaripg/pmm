@@ -48,7 +48,7 @@ $role = Auth::user()->role;
                 <div class="mb-3 mb-lg-0">
                     <h2>Form Evaluasi Iku {{ $departmentName }} Bulan {{ $selectedMonthName }}</h2>
                     <form method="GET" class="mb-3">
-                        <label for="month-year" class="form-label">Pilih Periode:</label>
+                        <label for="month-year" class="form-label">Pnilih Periode:</label>
                         <input type="month" id="month-year" name="month-year" class="form-control w-auto d-inline"
                             value="{{ date('Y-m', strtotime("$selectedYear-$selectedMonth-01")) }}">
                         <button type="submit" class="btn btn-primary">Pilih</button>
@@ -141,26 +141,4 @@ $role = Auth::user()->role;
             </a>
         </div>
     </div>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            let zoomLevel = 1;
-            const zoomContainer = document.getElementById("zoomContainer");
-
-            document.querySelectorAll(".zoom-btn").forEach(button => {
-                button.addEventListener("click", function() {
-                    const zoomType = this.getAttribute("data-zoom");
-
-                    if (zoomType === "in" && zoomLevel < 1.5) {
-                        zoomLevel += 0.1;
-                    } else if (zoomType === "out" && zoomLevel > 0.7) {
-                        zoomLevel -= 0.1;
-                    }
-
-                    zoomContainer.style.transform = `scale(${zoomLevel})`;
-                    zoomContainer.style.transformOrigin = "top center";
-                });
-            });
-        });
-    </script>
 @endsection
