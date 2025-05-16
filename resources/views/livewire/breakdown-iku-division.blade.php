@@ -1,11 +1,18 @@
-<div class="col-xl-6 col-lg-6 col-md-12">
+<div class="col-xl-6">
     <div class="card">
         <div class="card-header bg-transparent">
             <div class="row align-items-center">
                 <div class="col">
                     <h6 class="text-uppercase text-muted ls-1 mb-1">Breakdown IKU</h6>
-                    <label for="month-year" class="form-label">Pilih Periode:</label>
-                    <label for="month-year" class="mt-3 mb-3 form-label">Pilih Periode:</label>
+                    <label for="department" class="mt-3 form-label">Departemen:</label>
+                    <select id="department" class="form-control w-auto d-inline" wire:model="selectedDepartment">
+                        <option value="">Semua Departemen</option>
+                        @foreach ($departments as $department)
+                            <option value="{{ $department->department_id }}">{{ $department->department_name }}</option>
+                        @endforeach
+                    </select>
+                    <br>
+                    <label for="month-year" class="mt-4 form-label">Pilih Periode:</label>
                     <input type="month" id="month-year" class="form-control w-auto d-inline"
                         wire:model.lazy="selectedPeriod">
                 </div>
@@ -30,29 +37,27 @@
                         @php
                             $printedSasaran = collect();
                         @endphp
-
                         @foreach ($evaluations as $eval)
                             <tr>
                                 @if (!$printedSasaran->has($eval->sasaran_name))
-                                    <td class="fw-normal"
+                                    <td
                                         rowspan="{{ collect($evaluations)->where('sasaran_name', $eval->sasaran_name)->count() }}">
                                         {{ $eval->sasaran_name }}
                                     </td>
                                     @php $printedSasaran[$eval->sasaran_name] = true; @endphp
                                 @endif
-                                <td class="fw-normal">
-                                    {{ $eval->iku_name }}
+                                <td>{{ $eval->iku_name }}
                                     @if ($eval->sub_point_name)
                                         <br> <span
                                             style="font-size: 0.9em; color: gray;">{{ $eval->sub_point_name }}</span>
                                     @endif
                                 </td>
-                                <td class="fw-normal">{{ number_format($eval->bobot) }}</td>
-                                <td class="fw-normal">{{ $eval->satuan }}</td>
-                                <td class="fw-normal">{{ number_format($eval->target_bulan_ini) }}</td>
-                                <td class="fw-normal">{{ number_format($eval->realisasi_bulan_ini) }}</td>
-                                <td class="fw-normal">{{ number_format((float) $eval->percent_target) }}%</td>
-                                <td class="fw-normal">
+                                <td>{{ number_format($eval->bobot) }}</td>
+                                <td>{{ $eval->satuan }}</td>
+                                <td>{{ number_format($eval->target_bulan_ini) }}</td>
+                                <td>{{ number_format($eval->realisasi_bulan_ini) }}</td>
+                                <td>{{ number_format((float) $eval->percent_target) }}%</td>
+                                <td>
                                     {{ number_format($eval->adj, 2) }}
                                     <span class="status-indicator"
                                         style="background-color: {{ (float) $eval->percent_target < 95 ? 'red' : ($eval->percent_target > 100 ? 'green' : 'gray') }};"></span>

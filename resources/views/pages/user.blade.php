@@ -36,11 +36,11 @@ if (isset($_GET['year'])) {
                         <thead class="thead-light">
                             <tr>
                                 <th class="border-0 rounded-start">No</th>
-                                <th class="border-0">Name</th>
+                                <th class="border-0">Nama</th>
                                 <th class="border-0">Username</th>
-                                <th class="border-0">Department Name</th>
-                                <th class="border-0">Edit</th>
-                                <th class="border-0 rounded-end">Delete</th>
+                                <th class="border-0">Nama Unit Kerja</th>
+                                <th class="border-0">Ubah</th>
+                                <th class="border-0 rounded-end">Hapus</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -49,15 +49,17 @@ if (isset($_GET['year'])) {
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $user->nama }}</td>
                                     <td>{{ $user->username }}</td>
-                                    <td>{{ $user->department_name ?? 'No Department' }}</td>
+                                    <td>{{ $user->unit_kerja_name ?? 'No Unit Kerja' }}</td>
+
                                     <td>
                                         <a href="{{ url('/users/edit/' . $user->id) }}"
-                                            class="btn btn-pill btn-outline-primary">Edit</a>
+                                            class="btn btn-pill btn-outline-primary">Ubah</a>
                                     </td>
                                     <td>
-                                        <a href="{{ url('/users/delete/' . $user->id) }}"
-                                            onclick="return confirm('Are you sure you want to delete this user?')"
-                                            class="btn btn-pill btn-outline-danger">Delete</a>
+                                        <button class="btn btn-pill btn-outline-danger delete-user-btn"
+                                            data-id="{{ $user->id }}" data-name="{{ $user->nama }}">
+                                            Hapus
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -69,27 +71,51 @@ if (isset($_GET['year'])) {
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script>
         $(document).ready(function() {
             $('#ListUserTable').DataTable({
-                "paging": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "lengthMenu": [5, 10, 25, 50, 100],
-                "pageLength": 5,
-                "language": {
-                    "search": "Search Data:",
-                    "lengthMenu": "Show _MENU_ entries",
-                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
-                    "paginate": {
-                        "first": "First",
-                        "last": "Last",
-                        "next": "Next",
-                        "previous": "Previous"
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                lengthMenu: [5, 10, 25, 50, 100],
+                pageLength: 5,
+                language: {
+                    search: "Search Data:",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
                     }
                 }
             });
+
+            $('.delete-user-btn').click(function() {
+                let userId = $(this).data('id');
+                let userName = $(this).data('name');
+
+                Swal.fire({
+                    title: 'Hapus User?',
+                    text: `Apakah Anda yakin ingin menghapus user "${userName}"?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `/users/delete/${userId}`;
+                    }
+                });
+            });
         });
     </script>
+
 @endsection

@@ -187,7 +187,8 @@ if (isset($_GET['year'])) {
         </form>
     </div>
     <div class="ml-6" style="background-color: white">
-        <table class="table table-hover">
+            <table class="table table-bordered table-striped ikuTable" id="ikuTable">
+
             <thead>
                 <tr>
                     <th class="border-gray-200">#</th>

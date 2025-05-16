@@ -8,7 +8,8 @@ use App\Models\Department;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use App\Models\Director;
+use App\Models\Division;
 
 class RegisterController extends Controller
 {
@@ -16,23 +17,10 @@ class RegisterController extends Controller
     {
         $userId = Auth::id();
         $user = Auth::user();
-        $departments = DB::table('department')->get();
 
-        return view('authentication.sign-up', compact('departments', 'userId', 'user'));
-    }
+        $directors = Director::with(['divisions.departments', 'departments'])->get();
 
-
-    public function showRegis()
-    {
-        if (Auth::id() !== 1) {
-            return redirect('/dashboard')->with('error', 'Unauthorized access.');
-        }
-
-        $departments = Department::all();
-
-        $bisnisTerkait = DB::table('bisnis_terkait')->get();
-
-        return view('authentication.register-department', compact('departments', 'bisnisTerkait'));
+        return view('authentication.sign-up', compact('userId', 'user', 'directors'));
     }
 
     public function register(Request $request)
@@ -41,23 +29,40 @@ class RegisterController extends Controller
             'username' => 'required|string|max:255|unique:users,username',
             'nama' => 'required|string|max:255|unique:users,nama',
             'password' => 'required|string|confirmed',
-            'department_id' => 'nullable|exists:department,department_id',
-            'department_role' => 'required|in:Admin,User',
+            'unit_kerja' => 'required|string',
+            'department_role' => 'in:Admin,User',
         ]);
 
-        // Create user
-        $user = User::create([
+        // Extract unit kerja type and id
+        [$type, $id] = explode('_', $validated['unit_kerja']);
+
+        // Prepare data
+        $data = [
             'username' => $validated['username'],
             'nama' => $validated['nama'],
             'password' => Hash::make($validated['password']),
-            'department_id' => $validated['department_id'] ?? null,
-        ]);
+            'department_id' => null,
+            'division_id' => null,
+            'director_id' => null,
+            'role' => strtolower($type),
+        ];
 
-        // Insert department role
-        if ($validated['department_id']) {
+        if ($type === 'department') {
+            $data['department_id'] = $id;
+        } elseif ($type === 'division') {
+            $data['division_id'] = $id;
+        } elseif ($type === 'director') {
+            $data['director_id'] = $id;
+        }
+
+        // Create user
+        $user = User::create($data);
+
+        // If department, insert into re_user_department
+        if ($type === 'department') {
             DB::table('re_user_department')->insert([
                 'user_id' => $user->id,
-                'department_id' => $validated['department_id'],
+                'department_id' => $id,
                 'department_role' => $validated['department_role'],
             ]);
         }
@@ -65,65 +70,87 @@ class RegisterController extends Controller
         return redirect()->back()->with('success', 'Registration successful!');
     }
 
+    public function showRegis()
+    {
+        if (Auth::id() !== 1) {
+            return redirect('/dashboard')->with('error', 'Unauthorized access.');
+        }
+
+        $departments = Department::all();
+        $directors = Director::all();
+        $divisions = Division::all();
+
+        return view('authentication.register-department', compact('departments', 'directors', 'divisions'));
+    }
+
     public function registerDepartment(Request $request)
     {
-        // Validate basic department fields
-        $validated = $request->validate([
-            'department_name' => 'required|string|max:255|unique:department,department_name',
-            'department_username' => 'required|string|max:255',
-            'bisnis_terkait' => 'array|nullable',
-            'bisnis_terkait.*' => 'string|required', // accept both existing IDs and new_ IDs
+        $request->validate([
+            'role_type' => 'required|in:director,division,department',
+            'username' => 'required|string|max:255',
         ]);
 
-        DB::beginTransaction();
+        $role = $request->role_type;
 
-        try {
-            // Insert department
-            $departmentId = DB::table('department')->insertGetId([
-                'department_name' => $validated['department_name'],
-                'department_username' => $validated['department_username'],
+        if ($role === 'director') {
+            $request->validate([
+                'director_name' => 'required|string|max:255|unique:director,director_name',
             ]);
 
-            $pivotData = [];
+            Director::create([
+                'director_name' => $request->director_name,
+                'director_username' => $request->username,
+            ]);
 
-            if (!empty($validated['bisnis_terkait'])) {
-                foreach ($validated['bisnis_terkait'] as $bisnisItem) {
-                    if (str_starts_with($bisnisItem, 'new_')) {
-                        // It's a new bisnis created by user
-                        $newBisnisName = $request->input('new_bisnis_names.' . $bisnisItem);
+            return redirect()->back()->with('success', 'Director registration successful!');
+        }
 
-                        if (!$newBisnisName) {
-                            throw new \Exception("Invalid new bisnis name.");
-                        }
+        if ($role === 'division') {
+            $request->validate([
+                'director_select' => 'required|exists:director,director_id',
+                'division_name' => 'required|string|max:255|unique:division,division_name',
+            ]);
 
-                        // Insert new bisnis_terkait
-                        $newBisnisId = DB::table('bisnis_terkait')->insertGetId([
-                            'name' => $newBisnisName,
-                        ]);
+            $director = Director::find($request->director_select);
 
-                        $pivotData[] = [
-                            'department_id' => $departmentId,
-                            'bisnis_terkait_id' => $newBisnisId,
-                        ];
-                    } else {
-                        // It's an existing bisnis ID
-                        $pivotData[] = [
-                            'department_id' => $departmentId,
-                            'bisnis_terkait_id' => $bisnisItem,
-                        ];
-                    }
+            Division::create([
+                'division_name' => $request->division_name,
+                'division_username' => $request->username,
+                'director_id' => $director->director_id,
+            ]);
+
+            return redirect()->back()->with('success', 'Division registration successful!');
+        }
+
+        if ($role === 'department') {
+            $request->validate([
+                'director_select' => 'required|exists:director,director_id',
+                'division_select' => 'required',
+                'department_name' => 'required|string|max:500|unique:department,department_name',
+            ]);
+
+            $director = Director::find($request->director_select);
+
+            $departmentData = [
+                'department_name' => $request->department_name,
+                'department_username' => $request->username,
+                'director_id' => $director->director_id,
+            ];
+
+            // If selected division is not "-", set division_id
+            if ($request->division_select !== '-') {
+                $division = Division::find($request->division_select);
+                if (!$division) {
+                    return redirect()->back()->with('error', 'Selected division not found.');
                 }
-
-                // Insert into pivot table
-                DB::table('re_bisnis_department')->insert($pivotData);
+                $departmentData['division_id'] = $division->division_id;
             }
 
-            DB::commit();
+            Department::create($departmentData);
+
             return redirect()->back()->with('success', 'Department registration successful!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Department registration failed: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to register department. Please try again.');
         }
+
+        return redirect()->back()->with('error', 'Invalid role selected.');
     }
 }

@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Department;
+use App\Models\Division;
+use App\Models\Director;
+
 
 class DepartmentController extends Controller
 {
@@ -21,25 +25,73 @@ class DepartmentController extends Controller
             ->where('department_role', 'admin')
             ->exists();
 
-        // Get departments WITH their related bisnis_terkait
-        $departments = DB::table('department')
-            ->leftJoin('re_bisnis_department', 'department.department_id', '=', 're_bisnis_department.department_id')
-            ->leftJoin('bisnis_terkait', 're_bisnis_department.bisnis_terkait_id', '=', 'bisnis_terkait.id')
-            ->select(
-                'department.department_id',
-                'department.department_name',
-                'department.department_username',
-                DB::raw('GROUP_CONCAT(bisnis_terkait.name SEPARATOR ", ") as bisnis_names')
-            )
-            ->groupBy('department.department_id', 'department.department_name', 'department.department_username')
-            ->get();
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
+            ->exists();
+
+        // Fetch each unit kerja type separately
+        $directors = Director::all()->map(function ($item) {
+            return (object)[
+                'id' => $item->director_id,
+                'name' => $item->director_name,
+                'username' => $item->director_username,
+                'type' => 'Director',
+                'atasan' => '-'
+            ];
+        });
+
+        $divisions = Division::with('director')->get()->map(function ($item) {
+            return (object)[
+                'id' => $item->division_id,
+                'name' => $item->division_name,
+                'username' => $item->division_username,
+                'type' => 'Division',
+                'atasan' => optional($item->director)->director_name ?? '-'
+            ];
+        });
+
+        $departments = Department::with(['division', 'director'])->get()->map(function ($item) {
+            $atasan = [];
+
+            if (!empty($item->division)) {
+                $atasan[] = $item->division->division_name;
+            }
+            if (!empty($item->director)) {
+                $atasan[] = $item->director->director_name;
+            }
+
+            return (object)[
+                'id' => $item->department_id,
+                'name' => $item->department_name,
+                'username' => $item->department_username,
+                'type' => 'Department',
+                'atasan' => $atasan ? implode(' & ', $atasan) : '-'
+            ];
+        });
+
+        // Merge all into one list and sort by type order
+        $unitKerja = collect()
+            ->merge($directors)
+            ->merge($divisions)
+            ->merge($departments)
+            ->sortBy(function ($item) {
+                return ['Director' => 0, 'Division' => 1, 'Department' => 2][$item->type] ?? 3;
+            });
 
         return view('pages.department', [
             'name' => $user->nama,
             'username' => $user->username,
             'created_at' => $user->created_at->format('Y-m-d H:i:s'),
-            'departments' => $departments,
+            'departments' => $unitKerja,
             'isAdmin' => $isAdmin,
+            'isDirector' => $isDirector,
+            'isDivision' => $isDivision,
         ]);
     }
 
@@ -54,6 +106,16 @@ class DepartmentController extends Controller
         $isAdmin = DB::table('re_user_department')
             ->where('user_id', $user->id)
             ->where('department_role', 'admin')
+            ->exists();
+
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
             ->exists();
         // Get the department
         $department = DB::table('department')->where('department_id', $id)->first();
@@ -75,7 +137,9 @@ class DepartmentController extends Controller
             'department' => $department,
             'allBisnis' => $allBisnis,
             'selectedBisnisIds' => $selectedBisnisIds,
-            'isAdmin' => $isAdmin
+            'isAdmin' => $isAdmin,
+            'isDirector' => $isDirector,
+            'isDivision' => $isDivision,
         ]);
     }
 

@@ -1,5 +1,6 @@
 <!-- Sidenav -->
-<nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main" style="overflow-x: hidden">
+<nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main"
+    style="overflow-x: hidden">
     <div class="scrollbar-inner">
         <!-- Brand -->
         <div class="sidenav-header  d-flex  align-items-center">
@@ -49,7 +50,8 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#kontrakMenu" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="kontrakMenu">
+                        <a class="nav-link" href="#kontrakMenu" data-toggle="collapse" role="button"
+                            aria-expanded="false" aria-controls="kontrakMenu">
                             <i class="ni ni-ungroup text-orange"></i>
                             <span class="nav-link-text">Kontrak Manajemen</span>
                         </a>
@@ -58,7 +60,8 @@
 
                                 <!-- Form Kontrak Manajemen -->
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#formKontrakSubmenu" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="formKontrakSubmenu">
+                                    <a class="nav-link" href="#formKontrakSubmenu" data-toggle="collapse" role="button"
+                                        aria-expanded="false" aria-controls="formKontrakSubmenu">
                                         <span class="sidenav-mini-icon">FK</span>
                                         <span class="sidenav-normal">Kontrak Manajemen</span>
                                     </a>
@@ -84,7 +87,8 @@
 
                                 <!-- Penjabaran Strategi Pencapaian -->
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#penjabaranSubmenu" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="penjabaranSubmenu">
+                                    <a class="nav-link" href="#penjabaranSubmenu" data-toggle="collapse" role="button"
+                                        aria-expanded="false" aria-controls="penjabaranSubmenu">
                                         <span class="sidenav-mini-icon">SP</span>
                                         <span class="sidenav-normal">Penjabaran Strategi</span>
                                     </a>
@@ -163,7 +167,7 @@
                         </div>
                     </li>
                     <hr class="my-3">
-                    <?php if (!$isAdmin): ?>
+                    <?php if (!$isAdmin && !$isDirector && !$isDivision): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/profile">
                             <i class="ni ni-single-02"></i>
@@ -198,16 +202,78 @@
                                         <span class="sidenav-normal"> Register Unit Kerja </span>
                                     </a>
                                 </li>
-                                    <li class="nav-item">
-                                        <a href="/users" class="nav-link">
-                                            <span class="sidenav-mini-icon"> LU </span>
-                                            <span class="sidenav-normal"> List User </span>
-                                        </a>
-                                    </li>
+                                <li class="nav-item">
+                                    <a href="/users" class="nav-link">
+                                        <span class="sidenav-mini-icon"> LU </span>
+                                        <span class="sidenav-normal"> List User </span>
+                                    </a>
+                                </li>
                                 <li class="nav-item">
                                     <a href="/department" class="nav-link">
                                         <span class="sidenav-mini-icon"> LD </span>
-                                        <span class="sidenav-normal"> List Departemen </span>
+                                        <span class="sidenav-normal"> List Unit Kerja </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <?php endif; ?>
+                    <?php if ($isDirector): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#navbar-admin" data-toggle="collapse" role="button"
+                            aria-expanded="false" aria-controls="navbar-admin">
+                            <i class="ni ni-single-02 text-orange"></i>
+                            <span class="nav-link-text">Profile (Director)</span>
+                        </a>
+                        <div class="collapse" id="navbar-admin">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="/profile" class="nav-link">
+                                        <span class="sidenav-mini-icon"> P </span>
+                                        <span class="sidenav-normal"> Profile </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/users" class="nav-link">
+                                        <span class="sidenav-mini-icon"> LU </span>
+                                        <span class="sidenav-normal"> List User </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/department" class="nav-link">
+                                        <span class="sidenav-mini-icon"> LD </span>
+                                        <span class="sidenav-normal"> List Unit Kerja </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <?php endif; ?>
+                    <?php if ($isDivision): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#navbar-admin" data-toggle="collapse" role="button"
+                            aria-expanded="false" aria-controls="navbar-admin">
+                            <i class="ni ni-single-02 text-orange"></i>
+                            <span class="nav-link-text">Profile (Division)</span>
+                        </a>
+                        <div class="collapse" id="navbar-admin">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="/profile" class="nav-link">
+                                        <span class="sidenav-mini-icon"> P </span>
+                                        <span class="sidenav-normal"> Profile </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/users" class="nav-link">
+                                        <span class="sidenav-mini-icon"> LU </span>
+                                        <span class="sidenav-normal"> List User </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/department" class="nav-link">
+                                        <span class="sidenav-mini-icon"> LD </span>
+                                        <span class="sidenav-normal"> List Unit Kerja </span>
                                     </a>
                                 </li>
                             </ul>

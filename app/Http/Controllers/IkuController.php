@@ -16,6 +16,15 @@ class IkuController extends Controller
             ->where('user_id', Auth::id())
             ->where('department_role', 'admin')
             ->exists();
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
+            ->exists();
         $selectedYear = $request->query('year', date('Y'));
         $selectedVersion = $request->query('version', 1);
         $kontrak_id = 'KM_' . $selectedYear;
@@ -94,7 +103,9 @@ class IkuController extends Controller
             'iku_ikuIdentifier',
             'versions',
             'selectedVersion',
-            'isAdmin'
+            'isAdmin',
+            'isDirector',
+            'isDivision'
         ));
     }
 
@@ -195,6 +206,7 @@ class IkuController extends Controller
         }
 
         $selectedYear = $request->input('year', date('Y'));
+        $selectedVersion = $request->input('version', 1); // <-- Get version from request
         $createdBy = Auth::user()->nama;
         $department_id = Auth::user()->department_id;
 
@@ -221,8 +233,12 @@ class IkuController extends Controller
             ]);
         }
 
-        return redirect()->route('form-iku', ['year' => $selectedYear]);
+        return redirect()->route('form-iku', [
+            'year' => $selectedYear,
+            'version' => $selectedVersion, // <-- Add it here
+        ]);
     }
+
 
     public function index(Request $request)
     {
@@ -230,6 +246,15 @@ class IkuController extends Controller
         $isAdmin = DB::table('re_user_department')
             ->where('user_id', Auth::id())
             ->where('department_role', 'admin')
+            ->exists();
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
             ->exists();
         $selectedYear = $request->query('year', date('Y'));
         $selectedVersion = $request->query('version', 1);
@@ -295,14 +320,17 @@ class IkuController extends Controller
             }
         }
 
-        return view('pages.form-iku', compact('nama',
-        'sasaranStrategis',
-        'sasaranGrouped',
-        'ikuPoints',
-        'selectedYear',
-        'selectedVersion',
-        'isAdmin'
-    ));
+        return view('pages.form-iku', compact(
+            'nama',
+            'sasaranStrategis',
+            'sasaranGrouped',
+            'ikuPoints',
+            'selectedYear',
+            'selectedVersion',
+            'isAdmin',
+            'isDirector',
+            'isDivision',
+        ));
     }
 
     public function storeIku(Request $request)
@@ -409,6 +437,15 @@ class IkuController extends Controller
             ->where('user_id', Auth::id())
             ->where('department_role', 'admin')
             ->exists();
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
+            ->exists();
 
         // Get the latest version for the given IKU ID
         $latestVersion = DB::table('form_iku')
@@ -456,7 +493,7 @@ class IkuController extends Controller
             $sasaranGrouped[$sasaranId]->ikus[] = $iku;
         }
 
-        return view('pages.detail', compact('sasaranGrouped', 'selectedYear', 'isAdmin'));
+        return view('pages.detail', compact('sasaranGrouped', 'selectedYear', 'isAdmin', 'isDirector', 'isDivision'));
     }
 
     //Edit IKU
@@ -473,9 +510,18 @@ class IkuController extends Controller
             ->where('form_iku.id', $id)
             ->first();
 
-            $isAdmin = DB::table('re_user_department')
+        $isAdmin = DB::table('re_user_department')
             ->where('user_id', Auth::id())
             ->where('department_role', 'admin')
+            ->exists();
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
             ->exists();
 
         if (!$iku) {
@@ -486,7 +532,7 @@ class IkuController extends Controller
             ->where('form_iku_id', $iku->id)
             ->get();
 
-        return view('pages.edit-iku', compact('iku', 'ikuPoints', 'isAdmin'));
+        return view('pages.edit-iku', compact('iku', 'ikuPoints', 'isAdmin', 'isDirector', 'isDivision'));
     }
 
     // Update IKU

@@ -2,23 +2,28 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Department extends Model
 {
-    use HasFactory;
-
     protected $table = 'department';
     protected $primaryKey = 'department_id';
     public $timestamps = false;
 
-    protected $fillable = ['department_name', 'department_username'];
+    protected $fillable = [
+        'department_name',
+        'department_username',
+        'division_id',
+        'director_id',
+    ];
 
-    public function users()
-{
-    return $this->belongsToMany(User::class, 're_user_department', 'department_id', 'user_id')
-        ->withPivot('department_role');
-}
+    public function division()
+    {
+        return $this->belongsTo(Division::class, 'division_id');
+    }
 
+    public function director()
+    {
+        return $this->belongsTo(Director::class, 'director_id');
+    }
 }

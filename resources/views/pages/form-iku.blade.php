@@ -157,7 +157,7 @@ if (isset($_GET['version'])) {
                                                 <label>Satuan</label>
                                                 <input type="text" class="form-control" name="points[0][satuan]">
                                                 <label>Polaritas</label>
-                                                <select name="points[0][polaritas]" class="form-select">
+                                                <select name="points[0][polaritas]" class="form-control">
                                                     <option value="maximize">Maximize</option>
                                                     <option value="minimize">Minimize</option>
                                                 </select>
@@ -174,8 +174,9 @@ if (isset($_GET['version'])) {
                                 </div>
                             </div>
                         </div>
-                        <button class="mb-4 btn btn-primary" type="submit"
-                            style="max-width: 420px; margin-left: 460px">Submit</button>
+                        <div class="mb-4 d-flex justify-content-center">
+                            <button class="btn btn-primary" type="submit" style="width: 320px;">Submit</button>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -438,7 +439,7 @@ if (isset($_GET['version'])) {
                     <label>Satuan</label>
                     <input type="text" class="form-control" name="points[${pointIndex}][satuan]">
                     <label>Polaritas</label>
-                    <select name="points[${pointIndex}][polaritas]" class="form-select">
+                    <select name="points[${pointIndex}][polaritas]" class="form-control">
                         <option value="maximize">Maximize</option>
                         <option value="minimize">Minimize</option>
                     </select>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class DashboardController extends Controller
 {
@@ -24,6 +25,16 @@ class DashboardController extends Controller
         $isAdmin = DB::table('re_user_department')
             ->where('user_id', Auth::id())
             ->where('department_role', 'admin')
+            ->exists();
+
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
             ->exists();
 
         $monthYear = $request->query('month-year', date('Y-m'));
@@ -165,6 +176,8 @@ class DashboardController extends Controller
             'adjSeriesJson',
             'months',
             'isAdmin',
+            'isDirector',
+            'isDivision',
             'progressThisMonth',
             'statusThisMonth',
         ));
@@ -176,6 +189,15 @@ class DashboardController extends Controller
         $isAdmin = DB::table('re_user_department')
             ->where('user_id', Auth::id())
             ->where('department_role', 'admin')
+            ->exists();
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
             ->exists();
         $user_id = Auth::user()->id;
         $departmentInfo = DB::table('re_user_department as rud')
@@ -225,30 +247,34 @@ class DashboardController extends Controller
             $departmentName = 'Semua Unit Kerja';
         }
 
+        // -1 is used to exclude the 'admin' department from the count
+        $totalDepartments = DB::table('department')->count() - 1;
+
         $chartData0 = DB::table('iku_evaluations as ie')
-        ->join('form_iku as fi', 'ie.iku_id', '=', 'fi.id')
-        ->join('sasaran_strategis as ss', 'fi.sasaran_id', '=', 'ss.id')
-        ->join('kontrak_manajemen as km', 'ss.kontrak_id', '=', 'km.kontrak_id')
-        ->where('ie.year', $selectedYear)
-        ->where('ie.month', $selectedMonth)
-        ->groupBy('ss.name', 'ss.position')
-        ->orderBy('ss.position')
-        ->select(
-            'ss.name as x',
-            DB::raw('SUM(ie.ttl) as actual'),
-            DB::raw('SUM(ie.adj) as target')
-        )
-        ->get()
-        ->map(function ($item) {
-            return [
-                'x' => $item->x,
-                'actual' => round($item->actual, 2),
-                'target' => round($item->target, 2)
-            ];
-        });
+            ->join('form_iku as fi', 'ie.iku_id', '=', 'fi.id')
+            ->join('sasaran_strategis as ss', 'fi.sasaran_id', '=', 'ss.id')
+            ->join('kontrak_manajemen as km', 'ss.kontrak_id', '=', 'km.kontrak_id')
+            ->where('ie.year', $selectedYear)
+            ->where('ie.month', $selectedMonth)
+            ->groupBy('ss.name', 'ss.position')
+            ->orderBy('ss.position')
+            ->select(
+                'ss.name as x',
+                DB::raw("SUM(ie.ttl) / $totalDepartments as target"),
+                DB::raw("SUM(ie.adj) / $totalDepartments as actual")
+            )
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'x' => $item->x,
+                    'actual' => round($item->actual, 2),
+                    'target' => round($item->target, 2),
+                ];
+            });
 
         // Compute doughnut chart values
         $totalActual = round($chartData0->sum('actual'), 2);
+
         $gapTo100 = round(100 - $totalActual, 2);
 
         // Top 3 gaps
@@ -266,11 +292,78 @@ class DashboardController extends Controller
             ->take(3)
             ->values();
 
-        $chartData1 = DB::table('department')
-            ->select('department_username as x')
-            ->where('department_id', '!=', 1)
-            ->get();
-            dd($chartData0);
+        // Department
+        $chartData2 = DB::table('iku_evaluations as ie')
+            ->join('users as u', 'ie.user_id', '=', 'u.id')
+            ->join('department as d', 'u.department_id', '=', 'd.department_id')
+            ->where('ie.year', $selectedYear)
+            ->where('ie.month', $selectedMonth)
+            ->where('d.department_id', '!=', 1)
+            ->groupBy('d.department_id', 'd.department_name')
+            ->select(
+                'd.department_name as x',
+                DB::raw('SUM(ie.ttl) as target'),
+                DB::raw('SUM(ie.adj) as actual')
+            )
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'x' => $item->x,
+                    'actual' => round($item->actual, 2),
+                    'target' => round($item->target, 2),
+                ];
+            });
+
+        // Director
+        $chartData1 = DB::table('director as dr')
+            ->leftJoin('department as d', 'dr.director_id', '=', 'd.director_id')
+            ->leftJoin('users as u', 'd.department_id', '=', 'u.department_id')
+            ->leftJoin('iku_evaluations as ie', 'u.id', '=', 'ie.user_id')
+            ->where('ie.year', $selectedYear)
+            ->where('ie.month', $selectedMonth)
+            ->groupBy('dr.director_id', 'dr.director_name')
+            ->select(
+                'dr.director_name as x',
+                DB::raw('COUNT(DISTINCT d.department_id) as total_departments'),
+                DB::raw('SUM(ie.ttl) as total_target'),
+                DB::raw('SUM(ie.adj) as total_actual'),
+                DB::raw('IFNULL(SUM(ie.ttl) / NULLIF(COUNT(DISTINCT d.department_id), 0), 0) as target'),
+                DB::raw('IFNULL(SUM(ie.adj) / NULLIF(COUNT(DISTINCT d.department_id), 0), 0) as actual')
+            )
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'x' => $item->x,
+                    'actual' => round($item->actual, 2),
+                    'target' => round($item->target, 2),
+                ];
+            });
+
+        // Divisions
+        $chartData3 = DB::table('division as dv')
+            ->leftJoin('department as d', 'dv.division_id', '=', 'd.division_id')
+            ->leftJoin('users as u', 'd.department_id', '=', 'u.department_id')
+            ->leftJoin('iku_evaluations as ie', 'u.id', '=', 'ie.user_id')
+            ->where('ie.year', $selectedYear)
+            ->where('ie.month', $selectedMonth)
+            ->groupBy('dv.division_id', 'dv.division_name')
+            ->select(
+                'dv.division_name as x',
+                DB::raw('COUNT(DISTINCT d.department_id) as total_departments'),
+                DB::raw('SUM(ie.ttl) as total_target'),
+                DB::raw('SUM(ie.adj) as total_actual'),
+                DB::raw('IFNULL(SUM(ie.ttl) / NULLIF(COUNT(DISTINCT d.department_id), 0), 0) as target'),
+                DB::raw('IFNULL(SUM(ie.adj) / NULLIF(COUNT(DISTINCT d.department_id), 0), 0) as actual')
+            )
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'x' => $item->x,
+                    'actual' => round($item->actual, 2),
+                    'target' => round($item->target, 2),
+                ];
+            });
+
 
         $departments = DB::table('department')->select('department_id', 'department_name')->get();
         return view('pages.dashboard-admin', compact(
@@ -282,8 +375,12 @@ class DashboardController extends Controller
             'selectedMonthName',
             'months',
             'isAdmin',
+            'isDirector',
+            'isDivision',
             'chartData0',
             'chartData1',
+            'chartData2',
+            'chartData3',
             'totalActual',
             'gapTo100',
             'topGap'

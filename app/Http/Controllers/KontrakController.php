@@ -22,6 +22,16 @@ class KontrakController extends Controller
             ->where('department_role', 'admin')
             ->exists();
 
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
+            ->exists();
+
         $selectedYear = $request->query('year', date('Y'));
         $kontrak_id = 'KM_' . $selectedYear;
 
@@ -56,7 +66,9 @@ class KontrakController extends Controller
             'sasaranGrouped',
             'sasaranStrategis',
             'selectedYear',
-            'isAdmin'
+            'isAdmin',
+            'isDirector',
+            'isDivision'
         ));
     }
 
@@ -136,6 +148,15 @@ class KontrakController extends Controller
             ->where('user_id', Auth::id())
             ->where('department_role', 'admin')
             ->exists();
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
+            ->exists();
         $kontrak_id = 'KM_' . $selectedYear;
 
         $sasaranStrategis = DB::table('sasaran_strategis')
@@ -167,7 +188,9 @@ class KontrakController extends Controller
         return view('pages.kontrak', compact(
             'sasaranGrouped',
             'selectedYear',
-            'isAdmin'
+            'isAdmin',
+            'isDirector',
+            'isDivision',
         ));
     }
 
@@ -177,8 +200,17 @@ class KontrakController extends Controller
             ->where('user_id', Auth::id())
             ->where('department_role', 'admin')
             ->exists();
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
+            ->exists();
         $kpi = DB::table('form_kontrak_manajemen')->where('id', $id)->first();
-        return view('pages.edit-kpi', compact('kpi','isAdmin'));
+        return view('pages.edit-kpi', compact('kpi','isAdmin', 'isDirector', 'isDivision'));
     }
 
     public function updateKpi(Request $request, $id)
@@ -235,6 +267,15 @@ class KontrakController extends Controller
             ->where('user_id', Auth::id())
             ->where('department_role', 'admin')
             ->exists();
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
+            ->exists();
         $iku = DB::table('form_iku')
             ->join('sasaran_strategis', 'form_iku.sasaran_id', '=', 'sasaran_strategis.id')
             ->where('form_iku.id', $id)
@@ -245,7 +286,7 @@ class KontrakController extends Controller
             return redirect()->route('progres.index')->with('error', 'IKU not found.');
         }
 
-        return view('pages.iku.detail', compact('iku', 'isAdmin'));
+        return view('pages.iku.detail', compact('iku', 'isAdmin', 'isDirector', 'isDivision'));
     }
 
     public function exportKontrakManajemen(Request $request)
@@ -263,10 +304,15 @@ class KontrakController extends Controller
             ->where('user_id', Auth::id())
             ->where('department_role', 'admin')
             ->exists();
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
 
-        if (!$isAdmin) {
-            return redirect('/dashboard')->with('error', 'Unauthorized access.');
-        }
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
+            ->exists();
 
         $selectedYear = $request->query('year', date('Y'));
         $kontrak_id = 'KM_' . $selectedYear;
@@ -309,6 +355,8 @@ class KontrakController extends Controller
             'selectedYear' => $selectedYear,
             'sasaranGrouped' => $grouped,
             'isAdmin' => $isAdmin,
+            'isDirector' => $isDirector,
+            'isDivision' => $isDivision,
         ]);
     }
 
@@ -331,14 +379,24 @@ class KontrakController extends Controller
 
     public function showForm(Request $request)
     {
-        if (Auth::user()->role !== 'admin') {
-            return redirect('/penjabaran')->with('error', 'Akses tidak diizinkan');
-        }
+
         $user = Auth::user();
         $isAdmin = DB::table('re_user_department')
             ->where('user_id', Auth::id())
             ->where('department_role', 'admin')
             ->exists();
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
+            ->exists();
+        if (Auth::user()->role !== 'admin' && ($isDirector || $isDivision)) {
+            return redirect('/penjabaran')->with('error', 'Akses tidak diizinkan');
+        }
         $departmentId = $user->department_id;
         $selectedYear = (int) $request->query('year', date('Y'));
         $kontrak_id = 'KM_' . $selectedYear;
@@ -387,7 +445,9 @@ class KontrakController extends Controller
             'kontrak_id',
             'combinedData',
             'groupedFormKontrak',
-            'isAdmin'
+            'isAdmin',
+            'isDirector',
+            'isDivision',
         ));
     }
 
@@ -427,13 +487,22 @@ class KontrakController extends Controller
             ->where('user_id', Auth::id())
             ->where('department_role', 'admin')
             ->exists();
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
+            ->exists();
         $penjabaran = DB::table('penjabaran_strategis')->where('id', $id)->first();
 
         $kpi = DB::table('form_kontrak_manajemen')
             ->where('id', $penjabaran->form_id)
             ->first(['kpi_name', 'target', 'satuan']);
 
-        return view('pages.edit-penjabaran', compact('penjabaran', 'kpi','isAdmin'));
+        return view('pages.edit-penjabaran', compact('penjabaran', 'kpi','isAdmin', 'isDirector', 'isDivision'));
     }
 
     public function updatePenjabaran(Request $request, $id)

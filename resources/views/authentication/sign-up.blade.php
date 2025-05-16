@@ -39,110 +39,185 @@
         <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
             <div class="container">
                 <p class="text-center">
-                    <a href="/dashboard" class="d-flex align-items-center justify-content-center" style="margin-top: 5px;">
-                        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg>
+                    <a href="/dashboard" class="d-flex align-items-center justify-content-center"
+                        style="margin-top: 5px;">
+                        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
                         Back to homepage
                     </a>
                 </p>
-                <div class="row justify-content-center form-bg-image" data-background-lg="../../assets/img/illustrations/signin.svg">
+                <div class="row justify-content-center form-bg-image"
+                    data-background-lg="../../assets/img/illustrations/signin.svg">
                     <div class="col-12 d-flex align-items-center justify-content-center">
-                        <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500" style="transform: scale(0.93); transform-origin: center;">
+                        <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500"
+                            style="transform: scale(0.93); transform-origin: center;">
                             <div class="text-center text-md-center mb-4 mt-md-0">
                                 <h1 class="mb-0 h3">Create Account </h1>
                             </div>
-                            <form method="POST" action="/register" >
-                                @csrf
-                                <!-- Form -->
-                                <div class="form-group mb-4">
-                                    <label for="id">Your Username</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text" id="basic-addon1">
-                                            <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                                            </svg>
-                                        </span>
-                                        <input type="text" name="username" class="form-control" placeholder="Enter your username" id="username" required>
-                                    </div>
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <form method="POST" action="/register">
+                                        @csrf
+                                        <!-- Left Column -->
+                                        <div class="form-group mb-4">
+                                            <label for="id">Username</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="basic-addon1">
+                                                    <svg class="icon icon-xs text-gray-600" fill="currentColor"
+                                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z">
+                                                        </path>
+                                                        <path
+                                                            d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z">
+                                                        </path>
+                                                    </svg>
+                                                </span>
+                                                <input type="text" name="username" class="form-control"
+                                                    placeholder="Enter your username" id="username" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group mb-4">
+                                            <label for="nama">Name</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="basic-addon1">
+                                                    <svg class="icon icon-xs text-gray-600" fill="currentColor"
+                                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z">
+                                                        </path>
+                                                        <path
+                                                            d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z">
+                                                        </path>
+                                                    </svg>
+                                                </span>
+                                                <input type="text" name="nama" class="form-control"
+                                                    placeholder="Enter your Name" id="nama"
+                                                    value="{{ old('nama') }}" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group mb-4">
+                                            <label for="department_id">Pilih Unit Kerja</label>
+                                            <select name="unit_kerja" id="unit_kerja" class="form-control"
+                                                @if ($userId != 1) disabled @endif>
+                                                <option value="">-- Pilih Unit Kerja --</option>
+                                                <optgroup label="Director">
+                                                    @foreach ($directors as $director)
+                                                        <option value="director_{{ $director->director_id }}"
+                                                            @if ($user->director_id == $director->director_id && !$user->department_id && !$user->division_id) selected @endif>
+                                                            -- {{ $director->director_name }}
+                                                        </option>
+                                                    @endforeach
+                                                </optgroup>
+
+                                                <optgroup label="Division">
+                                                    @foreach ($directors as $director)
+                                                        @foreach ($director->divisions as $division)
+                                                            <option value="division_{{ $division->division_id }}"
+                                                                @if ($user->division_id == $division->division_id && !$user->department_id) selected @endif>
+                                                                -- {{ $division->division_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    @endforeach
+                                                </optgroup>
+
+                                                <optgroup label="Department">
+                                                    @foreach ($directors as $director)
+                                                        @foreach ($director->divisions as $division)
+                                                            @foreach ($division->departments as $department)
+                                                                <option
+                                                                    value="department_{{ $department->department_id }}"
+                                                                    @if ($user->department_id == $department->department_id) selected @endif>
+                                                                    -- {{ $department->department_name }}
+                                                                </option>
+                                                            @endforeach
+                                                        @endforeach
+
+                                                        @foreach ($director->departments as $department)
+                                                            @if ($department->division_id === null)
+                                                                <option
+                                                                    value="department_{{ $department->department_id }}"
+                                                                    @if ($user->department_id == $department->department_id) selected @endif>
+                                                                    -- {{ $department->department_name }}
+                                                                </option>
+                                                            @endif
+                                                        @endforeach
+                                                    @endforeach
+                                                </optgroup>
+                                            </select>
+
+                                            @if ($userId != 1)
+                                                <input type="hidden" name="department_id"
+                                                    value="{{ $user->department_id }}">
+                                            @endif
+                                        </div>
                                 </div>
 
-                                <div class="form-group mb-4">
-                                    <label for="nama">Your Name</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text" id="basic-addon1">
-                                            <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                                            </svg>
-                                        </span>
-                                        <input type="text" name="nama" class="form-control" placeholder="Your Name" id="nama" value="{{ old('nama') }}" required>
+                                <div class="col-md-6">
+                                    <!-- Right Column -->
+                                    <div class="form-group mb-4" id="departmentRoleContainer" style="display: none;">
+                                        <label for="department_role">Department Role</label>
+                                        <select name="department_role" id="department_role" class="form-control">
+                                            <option value="User">User</option>
+                                            <option value="Admin">Admin</option>
+                                        </select>
                                     </div>
-                                </div>
 
-                                <div class="form-group mb-4">
-                                    <label for="department_id">Select Department</label>
-                                    <select name="department_id" id="department_id" class="form-control"
-                                        @if ($userId != 1) disabled @endif>
-                                        <option value="">-- Choose Department --</option>
-                                        @foreach ($departments as $department)
-                                            <option value="{{ $department->department_id }}"
-                                                @if ($userId != 1 && $user->department_id == $department->department_id) selected @endif>
-                                                {{ $department->department_name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <div class="form-group mb-4">
+                                        <label for="password">Password</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon2">
+                                                <svg class="icon icon-xs text-gray-600" fill="currentColor"
+                                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                            </span>
+                                            <input type="password" name="password" placeholder="Password"
+                                                class="form-control" id="password" required>
+                                        </div>
+                                    </div>
 
-                                    @if ($userId != 1)
-                                        <input type="hidden" name="department_id" value="{{ $user->department_id }}">
+                                    <div class="form-group mb-4">
+                                        <label for="password_confirmation">Confirm Password</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon2">
+                                                <svg class="icon icon-xs text-gray-600" fill="currentColor"
+                                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                            </span>
+                                            <input type="password" name="password_confirmation"
+                                                id="password_confirmation" class="form-control"
+                                                placeholder="Confirm your password">
+                                        </div>
+                                    </div>
+
+                                    @if ($errors->any())
+                                        <div class="alert">
+                                            <ul>
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
                                     @endif
                                 </div>
-
-                                <div class="form-group mb-4">
-                                    <label for="department_role">Select Role</label>
-                                    <select name="department_role" id="department_role" class="form-control">
-                                        <option value="User">User</option>
-                                        <option value="Admin">Admin</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group mb-4">
-                                    <label for="password">Your Password</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text" id="basic-addon2">
-                                            <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
-                                            </svg>
-                                        </span>
-                                        <input type="password" name="password" placeholder="Password" class="form-control" id="password" required>
-                                    </div>
-                                </div>
-
-                                <div class="form-group mb-4">
-                                    <label for="password_confirmation">Confirm Password</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text" id="basic-addon2">
-                                            <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
-                                            </svg>
-                                        </span>
-                                        <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" placeholder="Confirm your password">
-                                    </div>
-                                </div>
-
-                                @if ($errors->any())
-                                <div class="alert">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                                @endif
-
-                                <div class="d-grid">
+                                <div class="d-grid mt-3">
                                     <button type="submit" class="btn btn-primary">Sign up</button>
                                 </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -150,7 +225,25 @@
         </section>
     </main>
 
-  <!-- Argon Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const select = document.getElementById('unit_kerja');
+            const roleGroup = document.querySelector('[for="department_role"]').parentElement;
+
+            function toggleRoleVisibility() {
+                const val = select.value;
+                if (val.startsWith('director_') || val.startsWith('division_') || val === "") {
+                    roleGroup.style.display = 'none';
+                } else {
+                    roleGroup.style.display = '';
+                }
+            }
+
+            select.addEventListener('change', toggleRoleVisibility);
+            toggleRoleVisibility();
+        });
+    </script>
+    <!-- Argon Scripts -->
     <!-- Core -->
     <script src="{{ asset('assets/vendor/jquery/dist/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
@@ -166,6 +259,8 @@
     <script src="{{ asset('assets/js/demo.min.js') }}"></script>
     <!-- ApexCharts -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+
 </body>
 
 </html>

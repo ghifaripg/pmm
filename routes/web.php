@@ -100,6 +100,22 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/form-evaluasi/update/{id}', [EvaluasiController::class, 'update'])->name('evaluasi.update');
     Route::delete('/form-evaluasi/delete/{id}', [EvaluasiController::class, 'destroy'])->name('evaluasi.destroy');
 
+    Route::get('/shift-table', function () {
+        $names = ['gifari', 'kiki', 'rama', 'amel'];
+        $month = request('bulan');
+        $year = request('tahun');
+        $days = [];
+
+        if ($month && $year) {
+            $totalDays = date("t", mktime(0, 0, 0, $month, 1, $year));
+
+            $days = range(1, $totalDays);
+        }
+
+        return view('pages.testing', compact('names', 'month', 'year', 'days'));
+    });
+
+
     // Export Routes
     Route::get('/export-iku-evaluations', [IkuEvaluationExportController::class, 'export'])->name('export.iku.evaluations');
 });

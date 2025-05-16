@@ -186,8 +186,8 @@ if (isset($_GET['year'])) {
                                 <td class="fw-normal text-center">{{ $penjabaranItem->pic ?? '-' }}</td>
                                 <td class="text-center">
                                     <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-                                        <form action="{{ route('edit-penjabaran', $penjabaranItem->id ?? 0) }}" method="GET"
-                                            style="margin: 0;">
+                                        <form action="{{ route('edit-penjabaran', $penjabaranItem->id ?? 0) }}"
+                                            method="GET" style="margin: 0;">
                                             @csrf
                                             <button type="submit" class="btn btn-pill btn-outline-tertiary"
                                                 style="padding: 0; border: none; background: none;">
@@ -200,7 +200,8 @@ if (isset($_GET['year'])) {
                                             method="POST" style="margin: 0;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-pill btn-outline-danger"
+                                            <button type="button" class="btn btn-pill btn-outline-danger"
+                                                onclick="confirmDelete({{ $penjabaranItem->id ?? 0 }})"
                                                 style="padding: 0; border: none; background: none;">
                                                 <img src="{{ asset('assets/img/trash.png') }}" alt="Delete"
                                                     style="width: 30px; height: 30px; object-fit: contain;">
@@ -234,13 +235,13 @@ if (isset($_GET['year'])) {
 
         function confirmDelete(id) {
             Swal.fire({
-                title: 'Are you sure?',
-                text: "This action cannot be undone!",
+                title: "Apakah Anda yakin?",
+                text: "Data ini akan dihapus secara permanen dan tidak dapat dikembalikan!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: "Ya, Hapus!"
             }).then((result) => {
                 if (result.isConfirmed) {
                     document.getElementById(`delete-form-${id}`).submit();

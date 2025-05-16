@@ -9,10 +9,10 @@
     <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
     <meta name="author" content="Creative Tim">
     <title>@yield('title', 'Dashboard')</title>
+    <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}" type="text/css">
 
     <!-- Canonical SEO -->
     <link rel="canonical" href="https://www.creative-tim.com/product/impact-design-system" />
-    <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}" type="text/css">
 
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('assets/img/apple-touch-icon.png') }}">
@@ -42,6 +42,7 @@
     @include('partials.nav')
 
     @yield('content')
+
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <!-- Argon Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

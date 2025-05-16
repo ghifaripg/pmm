@@ -135,7 +135,7 @@ $departmentUsername = (string) $department->department_username;
                                     <div id="bar-chart"></div>
                                 </div>
                                 <div class="col-md-6">
-                                    <h4 class="text-white p-2 mb-4" style="background-color: #0A48B3;">Direktorat</h4>
+                                    <h4 class="text-white p-2 mb-4" style="background-color: #0A48B3;">Division</h4>
 
                                     <div id="bar-chart3"></div>
                                 </div>
@@ -176,35 +176,28 @@ $departmentUsername = (string) $department->department_username;
                     }
                 });
 
-                // Helper for rendering ApexCharts
-                function createChart(selector, options) {
-                    var chart = new ApexCharts(document.querySelector(selector), options);
-                    chart.render();
-                }
-
-                // Chart Data from backend
                 const chartData = @json($chartData0);
+
+                // Extract categories and data
                 const categories = chartData.map(d => d.x);
-                const targetSeries = chartData.map(d => parseFloat(d.target));
                 const actualSeries = chartData.map(d => parseFloat(d.actual));
-                const greenOverlay = chartData.map(d => d.actual > d.target ? parseFloat((d.actual - d.target).toFixed(
+                const aboveTarget = chartData.map(d => d.actual < d.target ? parseFloat((d.target - d.actual).toFixed(
                     2)) : 0);
-                const redOverlay = chartData.map(d => d.actual < d.target ? parseFloat((d.target - d.actual).toFixed(
+                const belowTarget = chartData.map(d => d.actual > d.target ? parseFloat((d.actual - d.target).toFixed(
                     2)) : 0);
 
-                // Column Chart (Vertical)
                 const columnChartOptions = {
                     series: [{
-                            name: 'Target',
-                            data: targetSeries
+                            name: 'Actual',
+                            data: actualSeries
                         },
                         {
                             name: 'Above Target',
-                            data: greenOverlay
+                            data: aboveTarget
                         },
                         {
                             name: 'Below Target',
-                            data: redOverlay
+                            data: belowTarget
                         }
                     ],
                     chart: {
@@ -212,12 +205,15 @@ $departmentUsername = (string) $department->department_username;
                         height: 400,
                         stacked: true
                     },
+                    colors: ['#0A48B3', '#00E396', '#FF4560'],
                     plotOptions: {
                         bar: {
-                            columnWidth: '40%'
+                            columnWidth: '40%',
+                            dataLabels: {
+                                position: 'top'
+                            }
                         }
                     },
-                    colors: ['#0A48B3', '#00E396', '#FF4560'],
                     xaxis: {
                         categories: categories,
                         labels: {
@@ -241,45 +237,27 @@ $departmentUsername = (string) $department->department_username;
                     }
                 };
 
+                // Ensure createChart is defined and ApexCharts is loaded
+                function createChart(selector, options) {
+                    if (typeof ApexCharts !== 'undefined') {
+                        const chart = new ApexCharts(document.querySelector(selector), options);
+                        chart.render();
+                    } else {
+                        console.error('ApexCharts library is not loaded.');
+                    }
+                }
                 createChart("#column-chart", columnChartOptions);
 
 
-                // Bar Chart 1 (Static Demo Data)
-                const barChartData1 = [{
-                        x: '2011',
-                        y: 10,
-                        expected: 15
-                    },
-                    {
-                        x: '2012',
-                        y: 38,
-                        expected: 50
-                    },
-                    {
-                        x: '2013',
-                        y: 49,
-                        expected: 48
-                    },
-                    {
-                        x: '2014',
-                        y: 70,
-                        expected: 65
-                    },
-                    {
-                        x: '2015',
-                        y: 90,
-                        expected: 75
-                    },
-                    {
-                        x: '2016',
-                        y: 78,
-                        expected: 80
-                    }
-                ];
-                const categories1 = barChartData1.map(d => d.x);
-                const actualSeries1 = barChartData1.map(d => d.y);
-                const aboveTargetSeries1 = barChartData1.map(d => d.expected > d.y ? d.expected - d.y : 0);
-                const belowTargetSeries1 = barChartData1.map(d => d.y > d.expected ? d.y - d.expected : 0);
+                // Bar Chart 1 (Directors)
+                const barchartData1 = @json($chartData1);
+
+                const categories1 = barchartData1.map(d => d.x);
+                const actualSeries1 = barchartData1.map(d => parseFloat(d.actual));
+                const aboveTarget1 = barchartData1.map(d => d.actual < d.target ? parseFloat((d.target - d.actual)
+                    .toFixed(2)) : 0);
+                const belowTarget1 = barchartData1.map(d => d.actual > d.target ? parseFloat((d.actual - d.target)
+                    .toFixed(2)) : 0);
 
                 const barChartOptions1 = {
                     series: [{
@@ -288,11 +266,11 @@ $departmentUsername = (string) $department->department_username;
                         },
                         {
                             name: 'Above Target',
-                            data: aboveTargetSeries1
+                            data: aboveTarget1
                         },
                         {
                             name: 'Below Target',
-                            data: belowTargetSeries1
+                            data: belowTarget1
                         }
                     ],
                     chart: {
@@ -300,13 +278,16 @@ $departmentUsername = (string) $department->department_username;
                         height: 400,
                         stacked: true
                     },
+                    colors: ['#0A48B3', '#00E396', '#FF4560'],
                     plotOptions: {
                         bar: {
                             horizontal: true,
-                            barHeight: '60%'
+                            barHeight: '60%',
+                            dataLabels: {
+                                position: 'top'
+                            }
                         }
                     },
-                    colors: ['#008FFB', '#00E396', '#FF4560'],
                     xaxis: {
                         categories: categories1,
                         labels: {
@@ -328,42 +309,73 @@ $departmentUsername = (string) $department->department_username;
                     }
                 };
 
-                // Bar Chart 3
-                const barChartData3 = [{
-                        x: '2011',
-                        y: 10,
-                        expected: 15
+                // Bar Chart 2 (Departments)
+                const barchartData2 = @json($chartData2);
+                const categories2 = barchartData2.map(d => d.x);
+                const actualSeries2 = barchartData2.map(d => parseFloat(d.actual));
+                const aboveTarget2 = barchartData2.map(d => d.actual < d.target ? parseFloat((d.target - d.actual)
+                    .toFixed(2)) : 0);
+                const belowTarget2 = barchartData2.map(d => d.actual > d.target ? parseFloat((d.actual - d.target)
+                    .toFixed(2)) : 0);
+
+                const barChartOptions2 = {
+                    series: [{
+                            name: 'Actual',
+                            data: actualSeries2
+                        },
+                        {
+                            name: 'Above Target',
+                            data: aboveTarget2
+                        },
+                        {
+                            name: 'Below Target',
+                            data: belowTarget2
+                        }
+                    ],
+                    chart: {
+                        type: 'bar',
+                        height: 400,
+                        stacked: true
                     },
-                    {
-                        x: '2012',
-                        y: 38,
-                        expected: 50
+                    colors: ['#0A48B3', '#00E396', '#FF4560'],
+                    plotOptions: {
+                        bar: {
+                            horizontal: true,
+                            barHeight: '60%',
+                            dataLabels: {
+                                position: 'top'
+                            }
+                        }
                     },
-                    {
-                        x: '2013',
-                        y: 49,
-                        expected: 48
+                    xaxis: {
+                        categories: categories2,
+                        labels: {
+                            style: {
+                                fontSize: '12px'
+                            }
+                        }
                     },
-                    {
-                        x: '2014',
-                        y: 70,
-                        expected: 65
+                    dataLabels: {
+                        enabled: false
                     },
-                    {
-                        x: '2015',
-                        y: 90,
-                        expected: 75
+                    tooltip: {
+                        shared: true,
+                        intersect: false
                     },
-                    {
-                        x: '2016',
-                        y: 78,
-                        expected: 80
+                    legend: {
+                        position: 'top',
+                        horizontalAlign: 'center'
                     }
-                ];
-                const categories3 = barChartData3.map(d => d.x);
-                const actualSeries3 = barChartData3.map(d => d.y);
-                const aboveTargetSeries3 = barChartData3.map(d => d.expected > d.y ? d.expected - d.y : 0);
-                const belowTargetSeries3 = barChartData3.map(d => d.y > d.expected ? d.y - d.expected : 0);
+                };
+
+                // Bar Chart 3 (Divisions)
+                const barchartData3 = @json($chartData3);
+                const categories3 = barchartData3.map(d => d.x);
+                const actualSeries3 = barchartData3.map(d => parseFloat(d.actual));
+                const aboveTarget3 = barchartData3.map(d => d.actual < d.target ? parseFloat((d.target - d.actual)
+                    .toFixed(2)) : 0);
+                const belowTarget3 = barchartData3.map(d => d.actual > d.target ? parseFloat((d.actual - d.target)
+                    .toFixed(2)) : 0);
 
                 const barChartOptions3 = {
                     series: [{
@@ -372,11 +384,11 @@ $departmentUsername = (string) $department->department_username;
                         },
                         {
                             name: 'Above Target',
-                            data: aboveTargetSeries3
+                            data: aboveTarget3
                         },
                         {
                             name: 'Below Target',
-                            data: belowTargetSeries3
+                            data: belowTarget3
                         }
                     ],
                     chart: {
@@ -384,13 +396,16 @@ $departmentUsername = (string) $department->department_username;
                         height: 400,
                         stacked: true
                     },
+                    colors: ['#0A48B3', '#00E396', '#FF4560'],
                     plotOptions: {
                         bar: {
                             horizontal: true,
-                            barHeight: '60%'
+                            barHeight: '60%',
+                            dataLabels: {
+                                position: 'top'
+                            }
                         }
                     },
-                    colors: ['#008FFB', '#00E396', '#FF4560'],
                     xaxis: {
                         categories: categories3,
                         labels: {
@@ -412,56 +427,11 @@ $departmentUsername = (string) $department->department_username;
                     }
                 };
 
-                // Bar Chart 2
-                const barChartData2 = @json($chartData1);
-                const categories2 = barChartData2.map(d => d.x);
-
-                const barChartOptions2 = {
-                    series: [],
-                    chart: {
-                        type: 'bar',
-                        height: 400,
-                        stacked: true
-                    },
-                    plotOptions: {
-                        bar: {
-                            horizontal: true,
-                            barHeight: '60%'
-                        }
-                    },
-                    colors: ['#008FFB', '#00E396', '#FF4560'],
-                    xaxis: {
-                        categories: categories2,
-                        labels: {
-                            style: {
-                                fontSize: '12px'
-                            },
-                        }
-                    },
-                    yaxis: {
-                        categories: categories2,
-                        labels: {
-                            style: {
-                                fontSize: '12px'
-                            },
-                        }
-                    },
-                    dataLabels: {
-                        enabled: false
-                    },
-                    tooltip: {
-                        shared: true,
-                        intersect: false
-                    },
-                    legend: {
-                        position: 'top',
-                        horizontalAlign: 'center'
-                    }
-                };
 
                 // Render Charts
                 createChart("#bar-chart", barChartOptions1);
                 createChart("#bar-chart-2", barChartOptions2);
                 createChart("#bar-chart3", barChartOptions3);
+
             });
         </script>

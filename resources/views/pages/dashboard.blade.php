@@ -1,19 +1,60 @@
 <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}" type="text/css">
 <?php
 use Carbon\Carbon;
-$userId = Auth::user()->id;
-$name = Auth::user()->nama;
-$role = Auth::user()->role;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+$user = Auth::user();
+$userId = $user->id;
+$name = $user->nama;
+$role = $user->role;
 $selectedYear = date('Y');
+
 if (isset($_GET['year'])) {
     $selectedYear = htmlspecialchars($_GET['year']);
 }
-$department_id = Auth::user()->department_id;
-$department = DB::table('department')->where('department_id', $department_id)->select('department_name', 'department_username')->first();
-$departmentName = (string) $department->department_name;
-$departmentUsername = (string) $department->department_username;
+
+$unitName = '';
+$unitUsername = '';
+
+switch ($role) {
+    case 'director':
+        $data = DB::table('director')
+            ->where('director_id', $user->director_id)
+            ->select('director_name as name', 'director_username as username')
+            ->first();
+        break;
+
+    case 'division':
+        $data = DB::table('division')
+            ->where('division_id', $user->division_id)
+            ->select('division_name as name', 'division_username as username')
+            ->first();
+        break;
+
+    case 'department':
+        $data = DB::table('department')
+            ->where('department_id', $user->department_id)
+            ->select('department_name as name', 'department_username as username')
+            ->first();
+        break;
+
+    default:
+        $data = null;
+        break;
+}
+
+if ($data) {
+    $unitName = $data->name;
+    $unitUsername = $data->username;
+}
 
 ?>
+<!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('assets/img/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/img/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/img/favicon-16x16.png') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}">
 <style>
     .table-responsive {
         max-height: 870px;
@@ -41,11 +82,6 @@ $departmentUsername = (string) $department->department_username;
         margin-left: 8px;
     }
 </style>
-<!-- Favicon -->
-<link rel="apple-touch-icon" sizes="120x120" href="{{ asset('assets/img/apple-touch-icon.png') }}">
-<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/img/favicon-32x32.png') }}">
-<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/img/favicon-16x16.png') }}">
-<link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}">
 @extends('layouts.app')
 @section('title', 'Dashboard')
 @section('content')
@@ -78,7 +114,7 @@ $departmentUsername = (string) $department->department_username;
                                     <div class="row">
                                         <div class="col">
                                             <h5 class="card-title text-uppercase text-muted mb-0">Unit Kerja</h5>
-                                            <span class="h2 font-weight-bold mb-0">{{ $departmentUsername }}</span>
+                                            <span class="h2 font-weight-bold mb-0">{{ $unitUsername }}</span>
                                         </div>
                                         <div class="col-auto">
                                             <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
@@ -87,7 +123,7 @@ $departmentUsername = (string) $department->department_username;
                                         </div>
                                     </div>
                                     <p class="mt-3 mb-0 text-sm">
-                                        <span class="text-primary mr-2">{{ $departmentName }} </span>
+                                        <span class="text-primary mr-2">{{ $unitName }} </span>
                                     </p>
                                 </div>
                             </div>
@@ -262,7 +298,13 @@ $departmentUsername = (string) $department->department_username;
                     </div>
                 </div>
                 <!-- Breakdown IKU -->
-                <livewire:breakdown-iku :year="$selectedYear" :month="$selectedMonth" :department="$selectedDepartment" />
+                @if ($role === 'department')
+                    <livewire:breakdown-iku :year="$selectedYear" :month="$selectedMonth" :department="$selectedDepartment" />
+                @elseif ($role === 'division')
+                    <livewire:breakdown-iku-division :year="$selectedYear" :month="$selectedMonth" :division="$user->division_id" />
+                @elseif ($role === 'director')
+                    <livewire:breakdown-iku-director :year="$selectedYear" :month="$selectedMonth" :director="$user->director_id" />
+                @endif
             </div>
         </div>
     </div>
@@ -291,17 +333,17 @@ $departmentUsername = (string) $department->department_username;
                     labels: {
                         rotate: -45,
                         style: {
-                            colors: '#333333', // Dark gray text
+                            colors: '#333333',
                             fontSize: '12px'
                         }
                     },
                     axisBorder: {
                         show: true,
-                        color: '#A0A0A0' // Medium gray axis border
+                        color: '#A0A0A0'
                     },
                     axisTicks: {
                         show: true,
-                        color: '#A0A0A0' // Medium gray axis ticks
+                        color: '#A0A0A0'
                     }
                 },
                 yaxis: {
@@ -310,7 +352,7 @@ $departmentUsername = (string) $department->department_username;
                             return value.toFixed(2);
                         },
                         style: {
-                            colors: '#333333', // Dark gray text
+                            colors: '#333333',
                             fontSize: '12px'
                         }
                     }
@@ -320,7 +362,7 @@ $departmentUsername = (string) $department->department_username;
                     width: 2
                 },
                 grid: {
-                    borderColor: '#E0E0E0', // Light gray grid
+                    borderColor: '#E0E0E0',
                     strokeDashArray: 4
                 },
                 fill: {

@@ -17,6 +17,16 @@ class EvaluasiController extends Controller
             ->where('department_role', 'admin')
             ->exists();
 
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
+            ->exists();
+
         $departmentName = DB::table('department')
             ->where('department_id', $user->department_id)
             ->value('department_username');
@@ -88,7 +98,9 @@ class EvaluasiController extends Controller
             'selectedMonth',
             'selectedMonthName',
             'evaluations',
-            'isAdmin'
+            'isAdmin',
+            'isDirector',
+            'isDivision'
         ));
     }
 
@@ -101,6 +113,16 @@ class EvaluasiController extends Controller
         $isAdmin = DB::table('re_user_department')
             ->where('user_id', Auth::id())
             ->where('department_role', 'admin')
+            ->exists();
+
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
             ->exists();
 
         $departmentName = DB::table('department')
@@ -230,7 +252,9 @@ class EvaluasiController extends Controller
             'selectedMonth',
             'selectedMonthName',
             'evaluations',
-            'isAdmin'
+            'isAdmin',
+            'isDirector',
+            'isDivision',
         ));
     }
 
@@ -296,6 +320,14 @@ class EvaluasiController extends Controller
             ->where('user_id', Auth::id())
             ->where('department_role', 'admin')
             ->exists();
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
+            ->exists();
         $selectedYear = request()->query('year', date('Y'));
         $selectedMonth = request()->query('month', date('n'));
 
@@ -309,7 +341,7 @@ class EvaluasiController extends Controller
             ->where('iku_evaluations.id', $id)
             ->first();
 
-        return view('pages.edit-evaluasi', compact('eval', 'selectedYear', 'selectedMonth', 'isAdmin'));
+        return view('pages.edit-evaluasi', compact('eval', 'selectedYear', 'selectedMonth', 'isAdmin', 'isDirector', 'isDivision'));
     }
 
 

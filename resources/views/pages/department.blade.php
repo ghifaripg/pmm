@@ -9,7 +9,7 @@ if (isset($_GET['year'])) {
 ?>
 
 @extends('layouts.app')
-@section('title', 'List of User')
+@section('title', 'List Unit Kerja')
 @section('content')
     <div class="ml-5 main-content" id="panel" style="overflow-x: hidden">
         <!-- Topnav -->
@@ -22,7 +22,7 @@ if (isset($_GET['year'])) {
                         <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                             <ol class="breadcrumb breadcrumb-links">
                                 <li class="breadcrumb-item"><a href="/dashboard"><i class="fas fa-home"></i></a></li>
-                                <li class="breadcrumb-item active" aria-current="page">List Departement</li>
+                                <li class="breadcrumb-item active" aria-current="page">List Unit Kerja</li>
                             </ol>
                         </nav>
                     </div>
@@ -36,31 +36,29 @@ if (isset($_GET['year'])) {
                         <thead class="thead-light">
                             <tr>
                                 <th class="border-0 rounded-start">No</th>
-                                <th class="border-0">Name</th>
-                                <th class="border-0">Username</th>
-                                <th class="border-0">PIC</th>
-                                <th class="border-0">Edit</th>
-                                <th class="border-0 rounded-end">Delete</th>
+                                <th class="border-0">Nama Unit Kerja</th>
+                                <th class="border-0">Tipe Unit</th>
+                                <th class="border-0">Atasan Langsung</th>
+                                <th class="border-0">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($departments as $department)
+                            @foreach ($departments as $unit)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $department->department_name }}</td>
-                                    <td>{{ $department->department_username }}</td>
-                                    <td>{{ $department->bisnis_names ?? '-' }}</td>
+                                    <td>{{ $unit->name }}</td>
+                                    <td>{{ $unit->type }}</td>
+                                    <td>{{ $unit->atasan }}</td>
                                     <td>
-                                        <a href="{{ url('/departments/edit/' . $department->department_id) }}"
+                                        <a href="{{ url('/departments/edit/' . $unit->id) }}"
                                             class="btn btn-pill btn-outline-primary">Edit</a>
-                                    </td>
-                                    <td>
-                                        <a href="{{ url('/departments/delete/' . $department->department_id) }}"
-                                            onclick="return confirm('Are you sure you want to delete this department?')"
-                                            class="btn btn-pill btn-outline-danger">Delete</a>
+                                        <a href="{{ url('/departments/delete/' . $unit->id) }}"
+                                            class="btn btn-pill btn-outline-danger"
+                                            onclick="return confirm('Are you sure you want to delete this department?')">Delete</a>
                                     </td>
                                 </tr>
                             @endforeach
+
                         </tbody>
                     </table>
                 </div>

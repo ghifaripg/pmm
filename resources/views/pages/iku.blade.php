@@ -282,7 +282,7 @@ $departmentName = (string) $department->department_username;
 
     <div class="ml-6 main-content mt-1 mb-3 d-flex align-items-center">
         <!-- First button -->
-        <a href="/form-iku?year=<?php echo $selectedYear; ?>&version=<?php echo $selectedVersion; ?>"
+        <a href="{{ url('/check-iku') }}?year={{ $selectedYear }}&version={{ $selectedVersion }}"
             class="btn btn-outline-primary d-inline-flex align-items-center me-2">
             <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
@@ -291,6 +291,7 @@ $departmentName = (string) $department->department_username;
             </svg>
             Tambah/Ubah
         </a>
+
 
         <!-- Second button container -->
         @php

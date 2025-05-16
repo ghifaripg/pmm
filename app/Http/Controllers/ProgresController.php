@@ -17,6 +17,16 @@ class ProgresController extends Controller
             ->where('department_role', 'admin')
             ->exists();
 
+        $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+        $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
+            ->exists();
+
         $department = DB::table('department')
             ->where('department_id', $user->department_id)
             ->first();
@@ -46,7 +56,7 @@ class ProgresController extends Controller
 
         $progresData = $progresData->paginate(5);
 
-        return view('pages.progres', compact('progresData', 'isAdmin'));
+        return view('pages.progres', compact('progresData', 'isAdmin', 'isDirector', 'isDivision'));
     }
 
     public function store(Request $request)

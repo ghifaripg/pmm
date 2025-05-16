@@ -27,12 +27,12 @@
 </head>
 
 <body>
-
     <main>
         <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
             <div class="container">
                 <p class="text-center">
-                    <a href="/dashboard" class="d-flex btn btn-outline-secondary align-items-center justify-content-center"
+                    <a href="/dashboard"
+                        class="d-flex btn btn-outline-secondary align-items-center justify-content-center"
                         style="margin-top: 30px; margin-left: 450px; max-width: 400px">
                         <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
                             xmlns="http://www.w3.org/2000/svg">
@@ -48,77 +48,101 @@
                 <div class="row justify-content-center form-bg-image" style="margin-top: 10px"
                     data-background-lg="../../assets/img/illustrations/signin.svg">
                     <div class="col-12 d-flex align-items-center justify-content-center">
-                        <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500">
+                        <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500 mt-4">
                             <div class="text-center text-md-center mb-4 mt-md-0">
-                                <h1 class="mb-0 h3">Create Department</h1>
+                                <h1 class="mb-0 h3">Register Unit Kerja</h1>
                             </div>
 
                             <form method="POST" action="/register-department" class="mt-4">
                                 @csrf
-                                <div class="form-group mb-4">
-                                    <label for="department_name">Department Name</label>
-                                    <input type="text" name="department_name" class="form-control"
-                                        placeholder="Enter Department Name" id="department_name" required>
-                                </div>
 
+                                <!-- Role Type -->
                                 <div class="form-group mb-4">
-                                    <label for="department_username">Department Username</label>
-                                    <input type="text" name="department_username" class="form-control"
-                                        placeholder="Enter Department Username" id="department_username" required>
-                                </div>
-
-                                <div class="form-group mb-4">
-                                    <label for="bisnis-selector">PIC</label>
-                                    <div class="input-group mb-3">
-                                        <select id="bisnis-selector" class="form-control" multiple>
-                                            @foreach ($bisnisTerkait as $bisnis)
-                                                <option value="{{ $bisnis->id }}">{{ $bisnis->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <button type="button" class="btn btn-secondary mt-2 ms-2"
-                                            id="tambah-bisnis-btn">
-                                            Tambah
-                                        </button>
-                                        <button type="button" class="btn btn-outline-secondary mt-2 ms-2"
-                                            data-bs-toggle="modal" data-bs-target="#bisnisModal">
-                                            + Tambah Baru
-                                        </button>
+                                    <label>Registrasi Sebagai:</label><br>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="role_type"
+                                            id="role_director" value="director" required>
+                                        <label class="form-check-label" for="role_director">Direktur</label>
                                     </div>
-
-                                    <div id="bisnis-terkait-list" class="mb-2"></div>
-                                    <div id="bisnis-terkait-inputs"></div>
-                                </div>
-
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary">Create Department</button>
-                                </div>
-                            </form>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal -->
-                <div id="bisnisModal" class="modal fade" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <form id="add-bisnis-form">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Tambah Bisnis Terkait Baru</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label for="new-bisnis-name">Nama Bisnis Terkait</label>
-                                        <input type="text" id="new-bisnis-name" class="form-control"
-                                            placeholder="Masukkan nama bisnis terkait baru" required>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="role_type"
+                                            id="role_division" value="division">
+                                        <label class="form-check-label" for="role_division">Divisi</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="role_type"
+                                            id="role_department" value="department">
+                                        <label class="form-check-label" for="role_department">Departemen</label>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Batal</button>
-                                    <button type="submit" class="btn btn-primary">Tambah</button>
+
+                                <div class="row">
+                                    <!-- Left Column -->
+                                    <div class="col-md-6">
+                                        <!-- Director -->
+                                        <div class="form-group mb-4" id="director_input_group">
+                                            <label for="director_name">Nama Direktur</label>
+                                            <input type="text" name="director_name" class="form-control"
+                                                id="director_name" placeholder="Tulis Nama Direktur">
+                                        </div>
+
+                                        <!-- Director Select -->
+                                        <div class="form-group mb-4 d-none" id="director_select_group">
+                                            <label for="director_select">Direktur</label>
+                                            <select name="director_select" id="director_select" class="form-control"
+                                                required>
+                                                <option value="">-- Pilih --</option>
+                                                @foreach ($directors as $director)
+                                                    <option value="{{ $director->director_id }}">
+                                                        {{ $director->director_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <!-- Division -->
+                                        <div class="form-group mb-4" id="division_input_group">
+                                            <label for="division_name">Nama Divisi</label>
+                                            <input type="text" name="division_name" class="form-control"
+                                                id="division_name" placeholder="Tulis Nama Divisi">
+                                        </div>
+
+                                        <!-- Division Select -->
+                                        <div class="form-group mb-4 d-none" id="division_select_group">
+                                            <label for="division_select">Divisi</label>
+                                            <select name="division_select" id="division_select" class="form-control"
+                                                required>
+                                                <option value="">-- Pilih Divisi --</option>
+                                                <option value="-">-</option>
+                                                @foreach ($divisions as $division)
+                                                    <option value="{{ $division->division_id }}"
+                                                        data-director-id="{{ $division->director_id }}">
+                                                        {{ $division->division_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right Column -->
+                                    <div class="col-md-6">
+                                        <!-- Department -->
+                                        <div class="form-group mb-4">
+                                            <label for="department_name">Nama Departemen</label>
+                                            <input type="text" name="department_name" class="form-control"
+                                                id="department_name" placeholder="Tulis Nama Departemen">
+                                        </div>
+
+                                        <div class="form-group mb-4">
+                                            <label for="username">Username</label>
+                                            <input type="text" name="username" class="form-control"
+                                                id="username" placeholder="Tulis Username" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid mt-3 justify-content-center">
+                                    <button type="submit" style="max-width: 380px" class="btn btn-primary">Register
+                                        Unit Kerja</button>
                                 </div>
                             </form>
                         </div>
@@ -135,91 +159,51 @@
     <script src="{{ asset('assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
     <script>
-        $(document).ready(function() {
-            $('#bisnis-selector').select2({
-                placeholder: "Pilih Bisnis Terkait...",
-                allowClear: true,
-                width: '100%'
-            });
+        function toggleFields() {
+            const role = $('input[name="role_type"]:checked').val();
 
-            const selectedBisnis = [];
+            // Hide all initially
+            $('#director_input_group, #director_select_group').addClass('d-none');
+            $('#division_input_group').removeClass('d-none');
+            $('#division_select_group').addClass('d-none');
 
-            function renderSelectedBisnis() {
-                const list = $('#bisnis-terkait-list');
-                const inputs = $('#bisnis-terkait-inputs');
-                list.empty();
-                inputs.empty();
+            // Enable everything first
+            $('#director_name, #director_select, #division_name, #division_select, #department_name').prop('disabled', false);
 
-                selectedBisnis.forEach((item, index) => {
-                    list.append(`
-                        <div class="d-flex justify-content-between align-items-center border p-2 mb-2 rounded">
-                            <span>${item.text}</span>
-                            <button type="button" class="btn btn-sm btn-danger remove-bisnis" data-index="${index}">&times;</button>
-                        </div>
-                    `);
-
-                    inputs.append(`<input type="hidden" name="bisnis_terkait[]" value="${item.id}">`);
-
-                    if (item.id.startsWith('new_')) {
-                        inputs.append(
-                            `<input type="hidden" name="new_bisnis_names[${item.id}]" value="${item.text}">`
-                            );
-                    }
-
-                });
+            if (role === 'director') {
+                $('#director_input_group').removeClass('d-none');
+                $('#division_name, #department_name').val('').prop('disabled', true);
+            } else if (role === 'division') {
+                $('#director_select_group').removeClass('d-none');
+                $('#division_name').prop('disabled', false);
+                $('#department_name').val('').prop('disabled', true);
+            } else if (role === 'department') {
+                $('#director_select_group').removeClass('d-none');
+                $('#division_input_group').addClass('d-none');
+                $('#division_select_group').removeClass('d-none');
             }
+        }
 
-            $('#tambah-bisnis-btn').click(function() {
-                const selectedOptions = $('#bisnis-selector').select2('data');
+        // Run on role change
+        $('input[name="role_type"]').on('change', toggleFields);
 
-                if (selectedOptions.length === 0) {
-                    alert('Silakan pilih bisnis terkait terlebih dahulu');
-                    return;
-                }
+        // Auto-set director based on division
+        $('#division_select').on('change', function () {
+            const selectedOption = $(this).find(':selected');
+            const directorId = selectedOption.data('director-id');
 
-                selectedOptions.forEach(opt => {
-                    if (!selectedBisnis.find(b => b.id === opt.id)) {
-                        selectedBisnis.push({
-                            id: opt.id,
-                            text: opt.text
-                        });
-                    }
-                });
-
-                renderSelectedBisnis();
-
-                $('#bisnis-selector').val(null).trigger('change');
-            });
-
-            $(document).on('click', '.remove-bisnis', function() {
-                const index = $(this).data('index');
-                selectedBisnis.splice(index, 1);
-                renderSelectedBisnis();
-            });
-
-            $('#add-bisnis-form').on('submit', function(e) {
-                e.preventDefault();
-
-                const newBisnisName = $('#new-bisnis-name').val().trim();
-                if (!newBisnisName) {
-                    alert('Masukkan nama bisnis terkait baru.');
-                    return;
-                }
-
-                const newId = 'new_' + Date.now();
-                selectedBisnis.push({
-                    id: newId,
-                    text: newBisnisName
-                });
-                renderSelectedBisnis();
-
-                $('#new-bisnis-name').val('');
-                var modal = bootstrap.Modal.getInstance(document.getElementById('bisnisModal'));
-                modal.hide();
-            });
+            if (directorId && directorId !== '-') {
+                $('#director_select').val(directorId);
+                $('#director_select').prop('disabled', true);
+            } else {
+                $('#director_select').val('');
+                $('#director_select').prop('disabled', false);
+            }
         });
+
+        // Trigger default toggle on load (in case of form re-render)
+        $(document).ready(toggleFields);
     </script>
 </body>
 

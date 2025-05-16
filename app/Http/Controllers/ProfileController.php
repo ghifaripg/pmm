@@ -21,6 +21,16 @@ class ProfileController extends Controller
         ->where('department_role', 'admin')
         ->exists();
 
+    $isDirector = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'director')
+            ->exists();
+
+    $isDivision = DB::table('users')
+            ->where('id', Auth::id())
+            ->where('role', 'division')
+            ->exists();
+
     $department = DB::table('department')
         ->where('department_id', $user->department_id)
         ->value('department_name');
@@ -37,6 +47,8 @@ class ProfileController extends Controller
         'department' => $department ?? 'No Department',
         'isAdmin' => $isAdmin,
         'bisnisTerkait' => $bisnisTerkait,
+        'isDirector' => $isDirector,
+        'isDivision' => $isDivision,
     ]);
 }
 

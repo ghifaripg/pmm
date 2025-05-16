@@ -136,8 +136,9 @@ if (isset($_GET['year'])) {
                                 @endforeach
                             </div>
                         </div>
-
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <div class="mb-4 d-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
                     </div>
                 </div>
             </form>
