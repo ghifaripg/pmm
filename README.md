@@ -75,6 +75,10 @@ This project is a **Performance Management Website** developed for **PT. Krakata
 4. Run `php artisan migrate`  
 5. Start the server with `php artisan serve`
 
+### ⚙️ Vendor Used
+1. Maatwebsite Excel
+2. dompdf
+
 ---
 
 ### 🌟 Project Values
