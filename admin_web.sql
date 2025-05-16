@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 05, 2025 at 09:38 AM
+-- Generation Time: May 16, 2025 at 09:04 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.2.17
 
@@ -76,21 +76,67 @@ CREATE TABLE `cache_locks` (
 CREATE TABLE `department` (
   `department_id` bigint UNSIGNED NOT NULL,
   `department_name` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `department_username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
+  `department_username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `division_id` bigint UNSIGNED DEFAULT NULL,
+  `director_id` bigint UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `department`
 --
 
-INSERT INTO `department` (`department_id`, `department_name`, `department_username`) VALUES
-(1, 'Admin', 'Admin'),
-(2, 'IT & Management System Department', 'ITMS'),
-(3, 'Finance Department', 'Finance'),
-(4, 'Human Capital Department', 'HC'),
-(6, 'Project Control Department', 'Project Control'),
-(7, 'Real Estate Department', 'Real Estate'),
-(12, 'Legal Department', 'Legal');
+INSERT INTO `department` (`department_id`, `department_name`, `department_username`, `division_id`, `director_id`) VALUES
+(1, 'Admin', 'Admin', NULL, NULL),
+(2, 'IT & Management System Department', 'ITMS', NULL, 2),
+(3, 'Finance Department', 'Finance', NULL, 2),
+(4, 'Human Capital Department', 'HC', NULL, 2),
+(6, 'Project Control Department', 'Project Control', 2, 3),
+(7, 'Real Estate Manager Department', 'Real Estate', 1, 3),
+(12, 'Legal & Compliance Department', 'Legal', NULL, 1),
+(13, 'Internal Audit Department', 'Internal Audit', NULL, 1),
+(14, 'Marketing Industrial Estate & Housing', 'Marketing', 1, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `director`
+--
+
+CREATE TABLE `director` (
+  `director_id` bigint UNSIGNED NOT NULL,
+  `director_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `director_username` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `director`
+--
+
+INSERT INTO `director` (`director_id`, `director_name`, `director_username`) VALUES
+(1, 'President Director', 'President'),
+(2, 'Human Capital & Finance Director', 'Human Capital & Finance'),
+(3, 'Operation Director', 'Operation');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `division`
+--
+
+CREATE TABLE `division` (
+  `division_id` bigint UNSIGNED NOT NULL,
+  `division_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `division_username` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `director_id` bigint UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `division`
+--
+
+INSERT INTO `division` (`division_id`, `division_name`, `division_username`, `director_id`) VALUES
+(1, 'Commercial Property Division', 'Commercial Property', 3),
+(2, 'Hotel Division', 'Hotel', 3);
 
 -- --------------------------------------------------------
 
@@ -165,7 +211,8 @@ INSERT INTO `form_iku` (`id`, `iku_id`, `sasaran_id`, `version`, `iku_atasan`, `
 (259, 'IKUITMS_2025', 4, 2, NULL, 163, NULL, 0, 'Des', NULL, 'Waktu', 'minimize', 10.00),
 (260, 'IKUITMS_2025', 4, 2, NULL, 164, NULL, 0, '', NULL, 'Aplikasi', 'maximize', 5.00),
 (261, 'IKUITMS_2025', 5, 2, NULL, 165, NULL, 0, '100', NULL, '%', 'maximize', 2.00),
-(262, 'IKUITMS_2025', 5, 2, NULL, 166, NULL, 0, '0', NULL, 'Kejadian', 'minimize', 2.00);
+(262, 'IKUITMS_2025', 5, 2, NULL, 166, NULL, 0, '0', NULL, 'Kejadian', 'minimize', 2.00),
+(281, 'IKUITMS_2024', 6, 1, '2', 186, '22', 0, '2', '2', '22', 'maximize', 2.00);
 
 -- --------------------------------------------------------
 
@@ -233,6 +280,7 @@ CREATE TABLE `iku` (
 INSERT INTO `iku` (`iku_id`, `department_name`, `tahun`, `created_by`) VALUES
 ('IKUAdmin_2025', 'Admin', 2025, 'Admin'),
 ('IKUHC_2025', 'HC', 2025, 'HC User 1'),
+('IKUITMS_2024', 'ITMS', 2024, 'ITMS User 1'),
 ('IKUITMS_2025', 'ITMS', 2025, 'ITMS User 1');
 
 -- --------------------------------------------------------
@@ -263,54 +311,57 @@ CREATE TABLE `iku_evaluations` (
   `penyebab_tidak_tercapai` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `program_kerja` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `department_id` bigint UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `iku_evaluations`
 --
 
-INSERT INTO `iku_evaluations` (`id`, `user_id`, `iku_id`, `point_id`, `year`, `month`, `polaritas`, `bobot`, `satuan`, `base`, `target_bulan_ini`, `target_sdbulan_ini`, `realisasi_bulan_ini`, `realisasi_sdbulan_ini`, `percent_target`, `percent_year`, `ttl`, `adj`, `penyebab_tidak_tercapai`, `program_kerja`, `created_at`, `updated_at`) VALUES
-(7, 2, 34, NULL, 2025, 1, 'maximize', '2.00', '%', '10', 10.00, 10.00, -130.00, -130.00, '-1300%', '-1300%', 0.00, 0.00, NULL, NULL, '2025-02-28 01:29:31', '2025-02-28 01:29:31'),
-(8, 2, 35, NULL, 2025, 1, 'maximize', '2.00', 'Jam/kary', '6', 0.50, 0.50, 0.33, 0.33, '66%', '6%', 0.11, 0.11, NULL, NULL, '2025-02-28 01:30:03', '2025-02-28 01:30:03'),
-(9, 2, 36, NULL, 2025, 1, 'maximize', '10.00', '%', '100', 8.00, 8.00, 14.00, 14.00, '175%', '14%', 1.40, 1.40, NULL, NULL, '2025-02-28 01:30:27', '2025-02-28 01:30:27'),
-(10, 2, 37, 36, 2025, 1, 'minimize', '9.00', 'bulan', 'Juli & Des', 0.00, 0.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 01:31:16', '2025-02-28 01:31:16'),
-(11, 2, 37, 37, 2025, 1, 'maximize', '2.00', '%', '100', 0.00, 0.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 01:31:48', '2025-02-28 01:31:48'),
-(12, 2, 38, 38, 2025, 1, 'maximize', '10.00', '%', '100', 30.50, 30.50, 20.98, 20.98, '69%', '21%', 2.10, 2.10, NULL, NULL, '2025-02-28 01:32:47', '2025-02-28 01:32:47'),
-(13, 2, 38, 39, 2025, 1, 'minimize', '2', 'Tanggal', '15', 15.00, 15.00, 19.00, 19.00, '79%', '79%', 1.58, 1.58, NULL, NULL, '2025-02-28 02:39:19', '2025-02-28 02:39:19'),
-(14, 2, 39, NULL, 2025, 1, 'minimize', '9.00', 'Bulan', 'Okt', 0.00, 0.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 02:40:11', '2025-02-28 02:40:11'),
-(15, 2, 40, 40, 2025, 1, 'minimize', '5.00', 'Bln', 'Dec', 0.00, 0.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 02:41:04', '2025-02-28 02:41:04'),
-(16, 2, 40, 41, 2025, 1, 'maximize', '2.00', 'Skor', '7.800 Office, 7.500 Non Office', 0.00, 0.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 02:44:05', '2025-02-28 02:44:05'),
-(17, 2, 41, NULL, 2025, 1, 'maximize', '3.00', 'Tema', '1', 1.00, 1.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 02:44:41', '2025-02-28 02:44:41'),
-(18, 2, 42, NULL, 2025, 1, 'maximize', '8.00', '%', '100', 0.00, 0.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 02:45:22', '2025-02-28 02:45:22'),
-(19, 2, 43, NULL, 2025, 1, 'maximize', '8.00', '%', '100', 5.00, 5.00, 5.00, 5.00, '100%', '5%', 0.40, 0.40, NULL, NULL, '2025-02-28 02:46:21', '2025-02-28 02:46:21'),
-(25, 2, 44, NULL, 2025, 1, 'maximize', '9.00', '%', '100', 30.00, 30.00, 30.00, 30.00, '100%', '30%', 2.70, 2.70, NULL, NULL, '2025-02-28 03:48:51', '2025-02-28 03:48:51'),
-(26, 2, 45, NULL, 2025, 1, 'minimize', '10.00', 'Waktu', 'Des', 0.00, 0.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 03:49:46', '2025-02-28 03:49:46'),
-(27, 2, 46, NULL, 2025, 1, 'maximize', '5.00', 'Aplikasi', '6', 1.00, 1.00, 1.00, 1.00, '100%', '17%', 0.83, 0.83, NULL, NULL, '2025-02-28 03:51:09', '2025-02-28 03:51:09'),
-(28, 2, 47, NULL, 2025, 1, 'maximize', '2.00', '%', '100', 0.00, 0.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 03:51:29', '2025-02-28 03:51:29'),
-(30, 2, 34, NULL, 2025, 2, 'maximize', '2.00', '%', '10', NULL, 10.00, 97.00, -16.00, '-160%', '-160%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:02:20', '2025-02-28 04:02:20'),
-(31, 2, 35, NULL, 2025, 2, 'maximize', '2.00', 'Jam/kary', '6', 0.50, 1.00, 0.00, 0.33, '33%', '6%', 0.11, 0.11, NULL, NULL, '2025-02-28 04:03:08', '2025-02-28 04:03:08'),
-(32, 2, 36, NULL, 2025, 2, 'maximize', '10.00', '%', '100', NULL, 16.00, NULL, 19.33, '121%', '19%', 1.93, 1.93, NULL, NULL, '2025-02-28 04:03:52', '2025-02-28 04:03:52'),
-(33, 2, 37, 36, 2025, 2, 'minimize', '9.00', 'bulan', 'Juli & Des', NULL, 0.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:05:00', '2025-02-28 04:05:00'),
-(34, 2, 37, 37, 2025, 2, 'maximize', '2.00', '%', '100', NULL, 0.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:05:17', '2025-02-28 04:05:17'),
-(35, 2, 38, 38, 2025, 2, 'maximize', '10.00', '%', '100', NULL, 37.68, NULL, 26.71, '71%', '27%', 2.67, 2.67, NULL, NULL, '2025-02-28 04:05:58', '2025-02-28 04:05:58'),
-(36, 2, 38, 39, 2025, 2, 'minimize', '2', 'Tanggal', '15', NULL, 15.00, NULL, 19.00, '79%', '79%', 1.58, 1.58, NULL, NULL, '2025-02-28 04:07:01', '2025-02-28 04:07:01'),
-(37, 2, 39, NULL, 2025, 2, 'minimize', '9.00', 'Bulan', 'Okt', NULL, 0.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:08:01', '2025-02-28 04:08:01'),
-(38, 2, 40, 40, 2025, 2, 'minimize', '5.00', 'Bulan', 'Dec 24', NULL, 0.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:08:42', '2025-02-28 04:08:42'),
-(39, 2, 40, 41, 2025, 2, 'maximize', '2.00', 'Skor', '7.800 Office, 7.500 Non Office', NULL, 0.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:09:12', '2025-02-28 04:09:12'),
-(40, 2, 41, NULL, 2025, 2, 'maximize', '3.00', 'Tema', '1', NULL, 1.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:09:46', '2025-02-28 04:09:46'),
-(41, 2, 42, NULL, 2025, 2, 'maximize', '8.00', '%', '100', NULL, 0.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:10:39', '2025-02-28 04:10:39'),
-(42, 2, 43, NULL, 2025, 2, 'maximize', '8.00', '%', '100', NULL, 10.00, NULL, 10.00, '100%', '10%', 0.80, 0.80, NULL, NULL, '2025-02-28 04:11:44', '2025-02-28 04:11:44'),
-(43, 2, 44, NULL, 2025, 2, 'maximize', '9.00', '%', '100', NULL, 40.00, NULL, 40.00, '100%', '40%', 3.60, 3.60, NULL, NULL, '2025-02-28 04:12:44', '2025-02-28 04:12:44'),
-(44, 2, 45, NULL, 2025, 2, 'minimize', '10.00', 'Waktu', 'Des', NULL, 0.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:13:08', '2025-02-28 04:13:08'),
-(45, 2, 46, NULL, 2025, 2, 'maximize', '5.00', 'Aplikasi', '6', NULL, 1.00, NULL, 1.00, '100%', '17%', 0.83, 0.83, NULL, NULL, '2025-02-28 04:13:43', '2025-02-28 04:13:43'),
-(46, 2, 47, NULL, 2025, 2, 'maximize', '2.00', '%', '100', 0.00, 0.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:14:09', '2025-02-28 04:14:09'),
-(49, 5, 34, NULL, 2025, 3, 'maximize', '2.00', '%', '10', NULL, 10.00, 42.00, 22.00, '220%', '220%', 4.40, 2.40, NULL, NULL, '2025-03-06 03:39:55', '2025-03-06 03:39:55'),
-(50, 2, 231, NULL, 2025, 1, 'minimize', '2.00', 'Kejadian', '0', 0.00, 0.00, 0.00, 0.00, '100%', '100%', 2.00, 2.00, NULL, NULL, '2025-04-22 03:00:13', '2025-04-22 03:00:13'),
-(51, 2, 231, NULL, 2025, 2, 'minimize', '2.00', 'Kejadian', '0', 0.00, 0.00, 0.00, 0.00, '100%', '100%', 2.00, 2.00, NULL, NULL, '2025-04-22 03:07:22', '2025-04-22 03:07:22'),
-(52, 2, 34, NULL, 2025, 4, 'maximize', '2.00', '%', '10', 10.00, 10.00, -52.00, -11.00, '-110%', '-110%', 0.00, 0.00, NULL, NULL, '2025-04-22 04:32:55', '2025-04-22 04:32:55'),
-(53, 2, 35, NULL, 2025, 4, 'maximize', '2.00', 'Jam/kary', '6', 0.50, 2.00, 0.30, 1.30, '65%', '22%', 0.43, 0.43, NULL, NULL, '2025-04-22 04:33:41', '2025-04-22 04:33:41'),
-(54, 4, 232, NULL, 2025, 4, 'minimize', '3.00', '1', '1', 2.00, 2.00, 6.83, 0.33, '250%', '250%', 7.50, 3.60, NULL, NULL, '2025-04-23 01:23:22', '2025-04-23 01:23:22');
+INSERT INTO `iku_evaluations` (`id`, `user_id`, `iku_id`, `point_id`, `year`, `month`, `polaritas`, `bobot`, `satuan`, `base`, `target_bulan_ini`, `target_sdbulan_ini`, `realisasi_bulan_ini`, `realisasi_sdbulan_ini`, `percent_target`, `percent_year`, `ttl`, `adj`, `penyebab_tidak_tercapai`, `program_kerja`, `created_at`, `updated_at`, `department_id`) VALUES
+(7, 2, 34, NULL, 2025, 1, 'maximize', '2.00', '%', '10', 10.00, 10.00, -130.00, -130.00, '-1300%', '-1300%', 0.00, 0.00, NULL, NULL, '2025-02-28 01:29:31', '2025-02-28 01:29:31', NULL),
+(8, 2, 35, NULL, 2025, 1, 'maximize', '2.00', 'Jam/kary', '6', 0.50, 0.50, 0.33, 0.33, '66%', '6%', 0.11, 0.11, NULL, NULL, '2025-02-28 01:30:03', '2025-02-28 01:30:03', NULL),
+(9, 2, 36, NULL, 2025, 1, 'maximize', '10.00', '%', '100', 8.00, 8.00, 14.00, 14.00, '175%', '14%', 1.40, 1.40, NULL, NULL, '2025-02-28 01:30:27', '2025-02-28 01:30:27', NULL),
+(10, 2, 37, 36, 2025, 1, 'minimize', '9.00', 'bulan', 'Juli & Des', 0.00, 0.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 01:31:16', '2025-02-28 01:31:16', NULL),
+(11, 2, 37, 37, 2025, 1, 'maximize', '2.00', '%', '100', 0.00, 0.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 01:31:48', '2025-02-28 01:31:48', NULL),
+(12, 2, 38, 38, 2025, 1, 'maximize', '10.00', '%', '100', 30.50, 30.50, 20.98, 20.98, '69%', '21%', 2.10, 2.10, NULL, NULL, '2025-02-28 01:32:47', '2025-02-28 01:32:47', NULL),
+(13, 2, 38, 39, 2025, 1, 'minimize', '2', 'Tanggal', '15', 15.00, 15.00, 19.00, 19.00, '79%', '79%', 1.58, 1.58, NULL, NULL, '2025-02-28 02:39:19', '2025-02-28 02:39:19', NULL),
+(14, 2, 39, NULL, 2025, 1, 'minimize', '9.00', 'Bulan', 'Okt', 0.00, 0.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 02:40:11', '2025-02-28 02:40:11', NULL),
+(15, 2, 40, 40, 2025, 1, 'minimize', '5.00', 'Bln', 'Dec', 0.00, 0.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 02:41:04', '2025-02-28 02:41:04', NULL),
+(16, 2, 40, 41, 2025, 1, 'maximize', '2.00', 'Skor', '7.800 Office, 7.500 Non Office', 0.00, 0.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 02:44:05', '2025-02-28 02:44:05', NULL),
+(17, 2, 41, NULL, 2025, 1, 'maximize', '3.00', 'Tema', '1', 1.00, 1.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 02:44:41', '2025-02-28 02:44:41', NULL),
+(18, 2, 42, NULL, 2025, 1, 'maximize', '8.00', '%', '100', 0.00, 0.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 02:45:22', '2025-02-28 02:45:22', NULL),
+(19, 2, 43, NULL, 2025, 1, 'maximize', '8.00', '%', '100', 5.00, 5.00, 5.00, 5.00, '100%', '5%', 0.40, 0.40, NULL, NULL, '2025-02-28 02:46:21', '2025-02-28 02:46:21', NULL),
+(25, 2, 44, NULL, 2025, 1, 'maximize', '9.00', '%', '100', 30.00, 30.00, 30.00, 30.00, '100%', '30%', 2.70, 2.70, NULL, NULL, '2025-02-28 03:48:51', '2025-02-28 03:48:51', NULL),
+(26, 2, 45, NULL, 2025, 1, 'minimize', '10.00', 'Waktu', 'Des', 0.00, 0.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 03:49:46', '2025-02-28 03:49:46', NULL),
+(27, 2, 46, NULL, 2025, 1, 'maximize', '5.00', 'Aplikasi', '6', 1.00, 1.00, 1.00, 1.00, '100%', '17%', 0.83, 0.83, NULL, NULL, '2025-02-28 03:51:09', '2025-02-28 03:51:09', NULL),
+(28, 2, 47, NULL, 2025, 1, 'maximize', '2.00', '%', '100', 0.00, 0.00, 0.00, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 03:51:29', '2025-02-28 03:51:29', NULL),
+(30, 2, 34, NULL, 2025, 2, 'maximize', '2.00', '%', '10', NULL, 10.00, 97.00, -16.00, '-160%', '-160%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:02:20', '2025-02-28 04:02:20', NULL),
+(31, 2, 35, NULL, 2025, 2, 'maximize', '2.00', 'Jam/kary', '6', 0.50, 1.00, 0.00, 0.33, '33%', '6%', 0.11, 0.11, NULL, NULL, '2025-02-28 04:03:08', '2025-02-28 04:03:08', NULL),
+(32, 2, 36, NULL, 2025, 2, 'maximize', '10.00', '%', '100', NULL, 16.00, NULL, 19.33, '121%', '19%', 1.93, 1.93, NULL, NULL, '2025-02-28 04:03:52', '2025-02-28 04:03:52', NULL),
+(33, 2, 37, 36, 2025, 2, 'minimize', '9.00', 'bulan', 'Juli & Des', NULL, 0.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:05:00', '2025-02-28 04:05:00', NULL),
+(34, 2, 37, 37, 2025, 2, 'maximize', '2.00', '%', '100', NULL, 0.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:05:17', '2025-02-28 04:05:17', NULL),
+(35, 2, 38, 38, 2025, 2, 'maximize', '10.00', '%', '100', NULL, 37.68, NULL, 26.71, '71%', '27%', 2.67, 2.67, NULL, NULL, '2025-02-28 04:05:58', '2025-02-28 04:05:58', NULL),
+(36, 2, 38, 39, 2025, 2, 'minimize', '2', 'Tanggal', '15', NULL, 15.00, NULL, 19.00, '79%', '79%', 1.58, 1.58, NULL, NULL, '2025-02-28 04:07:01', '2025-02-28 04:07:01', NULL),
+(37, 2, 39, NULL, 2025, 2, 'minimize', '9.00', 'Bulan', 'Okt', NULL, 0.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:08:01', '2025-02-28 04:08:01', NULL),
+(38, 2, 40, 40, 2025, 2, 'minimize', '5.00', 'Bulan', 'Dec 24', NULL, 0.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:08:42', '2025-02-28 04:08:42', NULL),
+(39, 2, 40, 41, 2025, 2, 'maximize', '2.00', 'Skor', '7.800 Office, 7.500 Non Office', NULL, 0.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:09:12', '2025-02-28 04:09:12', NULL),
+(40, 2, 41, NULL, 2025, 2, 'maximize', '3.00', 'Tema', '1', NULL, 1.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:09:46', '2025-02-28 04:09:46', NULL),
+(41, 2, 42, NULL, 2025, 2, 'maximize', '8.00', '%', '100', NULL, 0.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:10:39', '2025-02-28 04:10:39', NULL),
+(42, 2, 43, NULL, 2025, 2, 'maximize', '8.00', '%', '100', NULL, 10.00, NULL, 10.00, '100%', '10%', 0.80, 0.80, NULL, NULL, '2025-02-28 04:11:44', '2025-02-28 04:11:44', NULL),
+(43, 2, 44, NULL, 2025, 2, 'maximize', '9.00', '%', '100', NULL, 40.00, NULL, 40.00, '100%', '40%', 3.60, 3.60, NULL, NULL, '2025-02-28 04:12:44', '2025-02-28 04:12:44', NULL),
+(44, 2, 45, NULL, 2025, 2, 'minimize', '10.00', 'Waktu', 'Des', NULL, 0.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:13:08', '2025-02-28 04:13:08', NULL),
+(45, 2, 46, NULL, 2025, 2, 'maximize', '5.00', 'Aplikasi', '6', NULL, 1.00, NULL, 1.00, '100%', '17%', 0.83, 0.83, NULL, NULL, '2025-02-28 04:13:43', '2025-02-28 04:13:43', NULL),
+(46, 2, 47, NULL, 2025, 2, 'maximize', '2.00', '%', '100', 0.00, 0.00, NULL, 0.00, '0%', '0%', 0.00, 0.00, NULL, NULL, '2025-02-28 04:14:09', '2025-02-28 04:14:09', NULL),
+(49, 5, 34, NULL, 2025, 3, 'maximize', '2.00', '%', '10', NULL, 10.00, 42.00, 22.00, '220%', '220%', 4.40, 2.40, NULL, NULL, '2025-03-06 03:39:55', '2025-03-06 03:39:55', NULL),
+(50, 2, 231, NULL, 2025, 1, 'minimize', '2.00', 'Kejadian', '0', 0.00, 0.00, 0.00, 0.00, '100%', '100%', 2.00, 2.00, NULL, NULL, '2025-04-22 03:00:13', '2025-04-22 03:00:13', NULL),
+(51, 2, 231, NULL, 2025, 2, 'minimize', '2.00', 'Kejadian', '0', 0.00, 0.00, 0.00, 0.00, '100%', '100%', 2.00, 2.00, NULL, NULL, '2025-04-22 03:07:22', '2025-04-22 03:07:22', NULL),
+(52, 2, 34, NULL, 2025, 4, 'maximize', '2.00', '%', '10', 10.00, 10.00, -52.00, -11.00, '-110%', '-110%', 0.00, 0.00, NULL, NULL, '2025-04-22 04:32:55', '2025-04-22 04:32:55', NULL),
+(53, 2, 35, NULL, 2025, 4, 'maximize', '2.00', 'Jam/kary', '6', 0.50, 2.00, 0.30, 1.30, '65%', '22%', 0.43, 0.43, NULL, NULL, '2025-04-22 04:33:41', '2025-04-22 04:33:41', NULL),
+(54, 4, 232, NULL, 2025, 4, 'minimize', '3.00', '1', '1', 2.00, 2.00, 6.83, 0.33, '250%', '250%', 7.50, 3.60, NULL, NULL, '2025-04-23 01:23:22', '2025-04-23 01:23:22', NULL),
+(55, 2, 249, NULL, 2025, 5, 'maximize', '2.00', 'Jam/kary', '6', 2.00, 32.00, 3.00, 12.00, '38%', '200%', 4.00, 2.20, NULL, NULL, '2025-05-06 08:36:44', '2025-05-06 08:36:44', NULL),
+(56, 4, 232, NULL, 2025, 5, 'minimize', '3.00', '1', '1', 2.00, 2.00, 1.00, 1.00, '200%', '100%', 3.00, 3.00, NULL, NULL, '2025-05-07 07:47:14', '2025-05-07 07:47:14', NULL);
 
 -- --------------------------------------------------------
 
@@ -395,7 +446,9 @@ INSERT INTO `isi_iku` (`id`, `iku`, `proker`, `pj`) VALUES
 (163, '12. Peningkatan Infrastruktur Jaringan, Data dan Keamanan Data', '1. Penambahan Fiber Optic Kawasan\r\n2. Security Server dan Website (SSL)', 'Manager, IT Group'),
 (164, '13. Digitalisasi sistem internal', 'Implementasi software internal', 'Manager, IT Group'),
 (165, '14. Pemenuhan Dokumen ESG', 'Menyiapkan Dokumen Pendukung ESG', 'Manager'),
-(166, '15. Zero Accident2', '1. Identifikasi dan Tindakan Preventif\r\n2. Awareness terhadap K3', 'Manager');
+(166, '15. Zero Accident2', '1. Identifikasi dan Tindakan Preventif\r\n2. Awareness terhadap K3', 'Manager'),
+(183, '16. Test 1', 'q1eQ', 'Manager'),
+(186, '2', '2', '22');
 
 -- --------------------------------------------------------
 
@@ -504,8 +557,7 @@ CREATE TABLE `penjabaran_strategis` (
 --
 
 INSERT INTO `penjabaran_strategis` (`id`, `form_id`, `proses_bisnis`, `strategis`, `pic`) VALUES
-(7, 1, 'Operasional, Penjualan', '- Peningkatan Penjualan di Unit Bisnis\r\n- Efesiensi biaya masin2 cc', 'GM, Mgr unit bisnis dan pendukung'),
-(8, 2, '1', '1', '1');
+(7, 1, 'Operasional, Penjualan', '- Peningkatan Penjualan di Unit Bisnis\r\n- Efesiensi biaya masin2 cc', 'GM, Mgr unit bisnis dan pendukung');
 
 -- --------------------------------------------------------
 
@@ -529,8 +581,9 @@ CREATE TABLE `progres` (
 --
 
 INSERT INTO `progres` (`id`, `iku_id`, `user_id`, `status`, `need_discussion`, `meeting_date`, `notes`, `created_at`) VALUES
-(11, 'IKUITMS_2025', 2, 'accept', 0, '2025-02-21', NULL, '2025-02-19 07:22:48'),
-(16, 'IKUHC_2025', 4, 'pending', NULL, '2025-03-05', NULL, '2025-03-05 07:12:30');
+(11, 'IKUITMS_2025', 2, 'reject', 1, '2025-05-16', 'Silahkan diskusi perbaikan Form IKU pada jam 2', '2025-02-19 07:22:48'),
+(16, 'IKUHC_2025', 4, 'pending', NULL, '2025-03-05', NULL, '2025-03-05 07:12:30'),
+(17, 'IKUITMS_2024', 2, 'accept', 0, '2025-05-15', NULL, '2025-05-15 17:47:42');
 
 -- --------------------------------------------------------
 
@@ -566,7 +619,9 @@ INSERT INTO `re_user_department` (`user_id`, `department_id`, `department_role`)
 (4, 4, 'Admin'),
 (5, 2, 'User'),
 (6, 2, 'User'),
-(7, 4, 'User');
+(7, 4, 'User'),
+(12, 12, 'Admin'),
+(13, 14, 'Admin');
 
 -- --------------------------------------------------------
 
@@ -614,8 +669,11 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('1KRnPoqohfPNeq52HDAJaHR5zz90XFsSjJrGyNma', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZUVERWoyNDI2dFFmbnRpNHI2Z1d1ZXhpdlRDdTlBeENyS1pIWTk0RCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQtYWRtaW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1746436822),
-('XrMMVcqE9DFbnrASjacUhFIthdvxX3xWyed9eRzs', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoidWZEQm5sMTBkMnZBYkU1QjJ2VUk1YUViTWlPNGtwejBBelgzaE5CWCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToyO30=', 1746436082);
+('jwEwkG6XuBse6pDwxjTqqkhXenUPyr3nqsSq7xvy', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibnJiT2UyZlZQTkJFM1RJb2hTZW5sWXpHOXVxalAzWHgzUmdjTWplMyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQtYWRtaW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1747337728),
+('Ob16xedtePk1AkqICuWUg2Qo9gnttJtjTvHCLFjv', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiY2p3Z1FEaG10ZlRPTUlQbVRXRFBrSzkzZXpjN0xlVDFiWjllcTJzTCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToyO30=', 1747382145),
+('QNUmkYJZimfOq1pZUZpeBgUyeus29QsEMyP6EJls', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiNHpTajd2VW5KZXJGelF4c3AwcTZ5MzdtUjBpRHpiZDJlcUNsTlZuOSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjk6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wcm9maWxlIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9', 1747332191),
+('QQp8maWTDboaHHQldJ9zAUHhkhzOyRuXlQ3jsHdq', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoib0RjUWVRUTdPYzVGVXNXVXQ3c245R0Z6Y0VYUm5xUkZjNmF0SHFZSSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1747384564),
+('ThlNKza1WxqjG1cQfuu3DmNYA5Thd4MnNDRiBuJP', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiU2Y5SzJYQlA2YjlOS0ozSlFZaHNMOFNHVzJVVVViUHhYc2pEN2NEOSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zaGlmdC10YWJsZT9idWxhbj0yJnRhaHVuPTIwMjQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1747368818);
 
 -- --------------------------------------------------------
 
@@ -627,25 +685,34 @@ CREATE TABLE `users` (
   `id` bigint UNSIGNED NOT NULL,
   `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `department_id` bigint UNSIGNED NOT NULL,
+  `department_id` bigint UNSIGNED DEFAULT NULL,
+  `division_id` bigint UNSIGNED DEFAULT NULL,
+  `director_id` bigint UNSIGNED DEFAULT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `role` varchar(20) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'user'
+  `role` enum('admin','user','director','division','department') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `nama`, `username`, `department_id`, `password`, `created_at`, `updated_at`, `role`) VALUES
-(1, 'Admin', 'admin', 1, '$2y$12$DCGZEXK/TseJDQSfnJan.OVTT5Votu17jKSyaIOOVWrZly6GTTNGu', '2025-02-03 12:54:14', '2025-02-03 12:54:14', 'admin'),
-(2, 'ITMS User 1', 'art', 2, '$2y$12$WvmBiQXpNCRS.oSwpIcdnuvgwhkL1/2X07pdOfUqCdpNAqlZbVvSS', '2025-02-05 13:37:16', '2025-03-17 18:33:11', 'user'),
-(3, 'Finance User 1\r\n', 'patrick', 3, '$2y$12$oQk4e93Fs.FH3v/2lDPqtuYKu472fHFs1IYTMMk5tMdTDWxnVbIsG', '2025-02-10 14:28:52', '2025-02-10 14:28:52', 'user'),
-(4, 'HC User 1', 'tashi', 4, '$2y$12$BNOF2qCmM1lBBJax7L3X9u9mro3h2CQWLAVRT/Rb4mnIkFnj0JxXe', '2025-02-27 01:23:35', '2025-02-27 01:23:35', 'user'),
-(5, 'ITMS User 2', 'joe', 2, '$2y$12$tHCECVWPRXus5iKePGSYOOE3Kk9macrllAcdvotycnUHkgiw.vWFe', '2025-03-05 00:16:58', '2025-03-05 00:44:08', 'user'),
-(6, 'ITMS User 3', 'paul', 2, '$2y$12$ntmo.xX1sN8LwtMNkL1DJ.zVCBN9kkWS4CrcjQtTNxyfeaNIchvnq', '2025-04-21 18:39:04', '2025-04-21 18:39:04', 'user'),
-(7, 'HC User 2', 'mickey', 4, '$2y$12$IRY6s/Seq0TN2yzQgx8NnOVKKGF1f7yveK7euYN3OBHVF/qM8/yLa', '2025-04-23 01:23:08', '2025-04-23 01:23:08', 'user');
+INSERT INTO `users` (`id`, `nama`, `username`, `department_id`, `division_id`, `director_id`, `password`, `created_at`, `updated_at`, `role`) VALUES
+(1, 'Admin', 'admin', 1, NULL, NULL, '$2y$12$DCGZEXK/TseJDQSfnJan.OVTT5Votu17jKSyaIOOVWrZly6GTTNGu', '2025-02-03 12:54:14', '2025-02-03 12:54:14', 'admin'),
+(2, 'ITMS User 1', 'art', 2, NULL, NULL, '$2y$12$WvmBiQXpNCRS.oSwpIcdnuvgwhkL1/2X07pdOfUqCdpNAqlZbVvSS', '2025-02-05 13:37:16', '2025-03-17 18:33:11', 'department'),
+(3, 'Finance User 1\r\n', 'patrick', 3, NULL, NULL, '$2y$12$oQk4e93Fs.FH3v/2lDPqtuYKu472fHFs1IYTMMk5tMdTDWxnVbIsG', '2025-02-10 14:28:52', '2025-02-10 14:28:52', 'department'),
+(4, 'HC User 1', 'tashi', 4, NULL, NULL, '$2y$12$BNOF2qCmM1lBBJax7L3X9u9mro3h2CQWLAVRT/Rb4mnIkFnj0JxXe', '2025-02-27 01:23:35', '2025-02-27 01:23:35', 'department'),
+(5, 'ITMS User 2', 'joe', 2, NULL, NULL, '$2y$12$tHCECVWPRXus5iKePGSYOOE3Kk9macrllAcdvotycnUHkgiw.vWFe', '2025-03-05 00:16:58', '2025-03-05 00:44:08', 'department'),
+(6, 'ITMS User 3', 'paul', 2, NULL, NULL, '$2y$12$ntmo.xX1sN8LwtMNkL1DJ.zVCBN9kkWS4CrcjQtTNxyfeaNIchvnq', '2025-04-21 18:39:04', '2025-04-21 18:39:04', 'department'),
+(7, 'HC User 2', 'mickey', 4, NULL, NULL, '$2y$12$IRY6s/Seq0TN2yzQgx8NnOVKKGF1f7yveK7euYN3OBHVF/qM8/yLa', '2025-04-23 01:23:08', '2025-04-23 01:23:08', 'department'),
+(8, 'President User 1', 'stefan', NULL, NULL, 1, '$2y$12$K3fhIBZvZhGvMhLQmAx4xeNE/3kncutsD2pPMi1NBV.R64Mvc/qpa', '2025-05-13 21:47:40', '2025-05-13 21:47:40', 'director'),
+(9, 'HC and Finance Director 1', 'Raf', NULL, NULL, 2, '$2y$12$w0Y4RC6/5.cf2lmCpOkkledUVyiW4P6NI.8AeGqMqA3i5ldxm7Qoe', '2025-05-14 18:47:35', '2025-05-14 18:47:35', 'director'),
+(10, 'Hotel User 1', 'valerie', NULL, 2, NULL, '$2y$12$L//8v/rAPMEQxTpyuIo.je.4O3.yZWMuqenPv0X77/EfWBOnMeq.i', '2025-05-14 20:04:21', '2025-05-14 20:04:21', 'division'),
+(11, 'Commercial User 1', 'jeff', NULL, 1, NULL, '$2y$12$OlmtB8far5IiX.GqS3mKH.xrt8iG3J.gYHyXQ1xAFx0QK1kNPwNhC', '2025-05-14 20:23:00', '2025-05-14 20:23:00', 'division'),
+(12, 'Legal User 1', 'michael', 12, NULL, NULL, '$2y$12$fEkUiV1zalvxOjjSjU1yLeLCTzNlexQ.48sX.LrOXB9TUmC1Fc79W', '2025-05-15 06:24:21', '2025-05-15 06:24:21', 'department'),
+(13, 'Marketing User 1', 'taylor', 14, NULL, NULL, '$2y$12$072cFOU56uSWLLJic/DwcOaU81ixmUYinP3aRdd6d.foPv/wZayri', '2025-05-15 06:28:29', '2025-05-15 06:28:29', 'department'),
+(14, 'Operation User 1', 'travis', NULL, NULL, 3, '$2y$12$QCWV4IFlkaPCj7JIWNLiguCUZSQuYSaTvZcaAbBk/dlmnTJ2lpoY6', '2025-05-15 06:31:17', '2025-05-15 06:31:17', 'director');
 
 --
 -- Indexes for dumped tables
@@ -673,7 +740,22 @@ ALTER TABLE `cache_locks`
 -- Indexes for table `department`
 --
 ALTER TABLE `department`
-  ADD PRIMARY KEY (`department_id`);
+  ADD PRIMARY KEY (`department_id`),
+  ADD KEY `fk_department_division` (`division_id`),
+  ADD KEY `fk_department_director` (`director_id`);
+
+--
+-- Indexes for table `director`
+--
+ALTER TABLE `director`
+  ADD PRIMARY KEY (`director_id`);
+
+--
+-- Indexes for table `division`
+--
+ALTER TABLE `division`
+  ADD PRIMARY KEY (`division_id`),
+  ADD KEY `fk_division_director` (`director_id`);
 
 --
 -- Indexes for table `failed_jobs`
@@ -809,7 +891,9 @@ ALTER TABLE `sessions`
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `users_name_unique` (`nama`),
-  ADD KEY `user_department_ibfk_1` (`department_id`);
+  ADD KEY `user_department_ibfk_1` (`department_id`),
+  ADD KEY `user_division_ibfk_1` (`division_id`),
+  ADD KEY `user_director_ibfk_1` (`director_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -825,7 +909,19 @@ ALTER TABLE `bisnis_terkait`
 -- AUTO_INCREMENT for table `department`
 --
 ALTER TABLE `department`
-  MODIFY `department_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `department_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT for table `director`
+--
+ALTER TABLE `director`
+  MODIFY `director_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `division`
+--
+ALTER TABLE `division`
+  MODIFY `division_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -837,7 +933,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `form_iku`
 --
 ALTER TABLE `form_iku`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=263;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=282;
 
 --
 -- AUTO_INCREMENT for table `form_kontrak_manajemen`
@@ -849,19 +945,19 @@ ALTER TABLE `form_kontrak_manajemen`
 -- AUTO_INCREMENT for table `iku_evaluations`
 --
 ALTER TABLE `iku_evaluations`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `iku_point`
 --
 ALTER TABLE `iku_point`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
 
 --
 -- AUTO_INCREMENT for table `isi_iku`
 --
 ALTER TABLE `isi_iku`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=167;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=187;
 
 --
 -- AUTO_INCREMENT for table `jobs`
@@ -885,7 +981,7 @@ ALTER TABLE `penjabaran_strategis`
 -- AUTO_INCREMENT for table `progres`
 --
 ALTER TABLE `progres`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `sasaran_strategis`
@@ -897,11 +993,24 @@ ALTER TABLE `sasaran_strategis`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `department`
+--
+ALTER TABLE `department`
+  ADD CONSTRAINT `fk_department_director` FOREIGN KEY (`director_id`) REFERENCES `director` (`director_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_department_division` FOREIGN KEY (`division_id`) REFERENCES `division` (`division_id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `division`
+--
+ALTER TABLE `division`
+  ADD CONSTRAINT `fk_division_director` FOREIGN KEY (`director_id`) REFERENCES `director` (`director_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `form_iku`
@@ -981,7 +1090,9 @@ ALTER TABLE `sessions`
 -- Constraints for table `users`
 --
 ALTER TABLE `users`
-  ADD CONSTRAINT `user_department_ibfk_1` FOREIGN KEY (`department_id`) REFERENCES `department` (`department_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `user_department_ibfk_1` FOREIGN KEY (`department_id`) REFERENCES `department` (`department_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `user_director_ibfk_1` FOREIGN KEY (`director_id`) REFERENCES `director` (`director_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `user_division_ibfk_1` FOREIGN KEY (`division_id`) REFERENCES `division` (`division_id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
