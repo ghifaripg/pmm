@@ -72,8 +72,7 @@ This project is a **Performance Management Website** developed for **PT. Krakata
 1. Export `admin_web.sql` into your MySQL database  
 2. Copy `.env.example` and rename it to `.env`  
 3. Run `npm install` and `composer install`  
-4. Run `php artisan migrate`  
-5. Start the server with `php artisan serve`
+4. Start the server with `php artisan serve`
 
 ### ⚙️ Vendor Used
 1. Maatwebsite Excel
